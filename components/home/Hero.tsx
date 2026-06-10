@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Container } from '../primitives';
@@ -22,7 +24,7 @@ export function Hero() {
   const svgY = useTransform(scrollY, [0, 500], [0, -35]);
 
   // Framer Motion Orchestrated Stagger Variants
-  const containerVariants = {
+  const containerVariants: any = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -33,7 +35,7 @@ export function Hero() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: any = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -47,14 +49,14 @@ export function Hero() {
   return (
     <section 
       ref={containerRef}
-      className="relative overflow-hidden min-h-[85vh] flex flex-col justify-center bg-white pt-10 lg:pt-16 pb-8 z-10"
+      className="relative overflow-hidden min-h-[80vh] flex flex-col justify-center bg-white pt-8 lg:pt-12 pb-6 z-10"
       style={{
         backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',
       }}
     >
-      {/* ── Background radial glow centered behind the video card ── */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_75%_35%,rgba(14,107,99,0.05),transparent_55%)] pointer-events-none" />
+      {/* ── Background radial glow centered behind the graphic ── */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_75%_35%,rgba(14,107,99,0.04),transparent_55%)] pointer-events-none" />
 
       {/* ── Custom curved background shape (reduced dominance, high-end accent) ── */}
       <motion.svg
@@ -67,7 +69,7 @@ export function Hero() {
       >
         <path
           d="M 420 0 L 120 0 C 80 120 40 240 40 360 C 40 500 120 620 200 700 C 280 780 420 840 420 900 V 0 Z"
-          fill="#0E6B63"
+          fill="var(--brand, #0E6B63)"
         />
       </motion.svg>
 
@@ -76,72 +78,101 @@ export function Hero() {
           initial="hidden"
           animate={mounted ? "show" : "hidden"}
           variants={containerVariants}
-          className="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16"
+          className="grid items-center gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12"
         >
           {/* ── Left Column: Value Prop + CTAs + Trust Metrics ── */}
-          <div className="relative py-4 lg:py-10">
+          <div className="relative py-2 lg:py-6">
+            
+            {/* ── Trust Bar above headline ── */}
+            <motion.div variants={itemVariants} className="mb-4">
+              <div className="inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-xl border border-zinc-200/60 bg-white/70 px-3 py-1.5 backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">
+                  Trusted by 500+ research teams
+                </span>
+                <span className="h-3 w-px bg-zinc-200 hidden sm:inline-block" />
+                <div className="flex items-center gap-3 text-[9px] font-black tracking-widest text-zinc-400">
+                  <span>STRIPE</span>
+                  <span>VERCEL</span>
+                  <span>LINEAR</span>
+                  <span>RAMP</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Headline */}
             <motion.div variants={itemVariants}>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-[900] tracking-tight uppercase leading-[1.02] text-zinc-950">
+              <h1 className="text-2xl sm:text-3xl lg:text-[2.5rem] xl:text-[2.75rem] font-[900] tracking-tight uppercase leading-[1.05] text-zinc-950">
                 {isBrands ? (
                   <>
-                    Survey Marketing <span className="text-swoosh text-zinc-950">Platform</span> For Enterprise Brands.
+                    Reach Verified <span className="text-[var(--brand,#0E6B63)]">Respondents.</span> Collect Better Insights.
                   </>
                 ) : (
                   <>
-                    Your Voice Shapes <span className="text-swoosh text-zinc-950">Global</span> Products.
+                    Your Voice Shapes <span className="text-[var(--brand,#BE123C)]">Global</span> Products. Get Rewarded.
                   </>
                 )}
               </h1>
             </motion.div>
 
+            {/* Sub-headline */}
             <motion.div variants={itemVariants}>
-              <p className="mt-5 text-sm sm:text-base text-zinc-500 font-medium leading-relaxed max-w-md">
+              <p className="mt-4 text-xs sm:text-sm text-zinc-500 font-medium leading-relaxed max-w-md">
                 {isBrands ? (
-                  "Field your surveys to premium respondent panels, bypass bot detection, and collect verified insights to guide your next strategic move."
+                  "Field your surveys to premium respondent panels, bypass bot detection with verified identity matches, and collect high-quality insights to guide your next strategic move."
                 ) : (
-                  "Join our elite panel of respondents. Share your perspective on global brands, participate in corporate surveys, and earn rewards for sharing your valuable insights."
+                  "Join our elite panel of verified respondents. Share your perspective on global brands, participate in corporate surveys, and earn rewards for sharing your valuable insights."
                 )}
               </p>
             </motion.div>
 
-            {/* CTAs */}
+            {/* CTA Buttons */}
             <motion.div variants={itemVariants}>
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-6 flex flex-wrap gap-2.5">
                 <Link
                   href="/contact"
-                  className="group inline-flex h-11 items-center justify-center rounded-full bg-[#0E6B63] px-6 text-xs font-bold uppercase tracking-widest text-white shadow-[0_8px_20px_-4px_rgba(14,107,99,0.22)] transition-all duration-300 hover:bg-[#0a4d47] hover:scale-[1.02] hover:shadow-[0_12px_25px_-4px_rgba(14,107,99,0.3)]"
+                  className="group relative inline-flex h-10.5 items-center justify-center rounded-xl bg-[var(--brand,#0E6B63)] px-5.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_6px_20px_-4px_rgba(14,107,99,0.25)] transition-all duration-300 hover:bg-[var(--brand-dark,#0a4d47)] hover:scale-[1.02] hover:shadow-[0_10px_24px_-4px_rgba(14,107,99,0.35)]"
                 >
                   Book a Demo
                 </Link>
                 <Link
                   href="/case-studies"
-                  className="inline-flex h-11 items-center justify-center rounded-full border border-zinc-200 bg-white px-6 text-xs font-bold uppercase tracking-widest text-zinc-800 transition-all duration-300 hover:border-zinc-800 hover:bg-zinc-50"
+                  className="inline-flex h-10.5 items-center justify-center rounded-xl border border-zinc-200 bg-white px-5.5 text-[11px] font-black uppercase tracking-widest text-zinc-800 transition-all duration-300 hover:border-zinc-950 hover:bg-zinc-50/50 hover:scale-[1.02]"
                 >
                   View Case Studies
                 </Link>
               </div>
             </motion.div>
 
-            {/* Credibility badges strip */}
+            {/* Premium Metrics Cards Block */}
             <motion.div variants={itemVariants}>
-              <div className="mt-8 grid grid-cols-3 gap-4 border-t border-zinc-100 pt-6 max-w-md">
-                {[
-                  { value: '250K+', label: 'Responses' },
-                  { value: '500+', label: 'Campaigns' },
-                  { value: '92%', label: 'Completion Rate' }
-                ].map((m) => (
-                  <div key={m.label} className="flex flex-col">
-                    <span className="text-lg sm:text-xl font-extrabold tracking-tight text-zinc-950">{m.value}</span>
-                    <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-zinc-400 leading-snug">
-                      {m.label}
-                    </span>
-                  </div>
-                ))}
+              <div className="mt-8 border-t border-zinc-100 pt-6 max-w-md">
+                <div className="grid grid-cols-2 gap-2.5">
+                  {[
+                    { value: '250K+', label: 'Responses Generated' },
+                    { value: '500+', label: 'Campaigns Delivered' },
+                    { value: '92%', label: 'Avg Completion Rate' },
+                    { value: '99.7%', label: 'Fraud Detection Accuracy' }
+                  ].map((m) => (
+                    <div 
+                      key={m.label} 
+                      className="relative overflow-hidden rounded-xl border border-zinc-200/50 bg-gradient-to-b from-white to-zinc-50/50 p-3 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[var(--brand,#0E6B63)]/40 hover:shadow-[0_8px_16px_rgba(14,107,99,0.04)] hover:-translate-y-0.5 group"
+                    >
+                      {/* Top accent border visible on hover */}
+                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--brand,#0E6B63)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                      <span className="block text-lg sm:text-xl font-black tracking-tight text-zinc-950">
+                        {m.value}
+                      </span>
+                      <span className="mt-0.5 block text-[8px] font-extrabold uppercase tracking-wider text-zinc-400 leading-snug">
+                        {m.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           </div>
 
-          {/* ── Right Column: Testimonial Visual with scroll parallax ── */}
+          {/* ── Right Column: Interactive Dashboard visual with scroll parallax ── */}
           <motion.div 
             variants={itemVariants}
             style={{ y: visualY }} 
@@ -206,7 +237,7 @@ export function Hero() {
       {/* Mobile background block */}
       <div
         className="absolute right-0 left-0 bottom-0 h-[28%] rounded-t-[2.5rem] lg:hidden -z-10 opacity-15"
-        style={{ background: '#0E6B63' }}
+        style={{ background: 'var(--brand, #0E6B63)' }}
       />
     </section>
   );
