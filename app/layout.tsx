@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pulselens - Global Market Research",
+  title: "EvoGlobalInsight - Global Market Research",
   description: "Global market research and audience intelligence helping brands decide with confidence.",
 };
 

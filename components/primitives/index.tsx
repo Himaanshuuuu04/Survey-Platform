@@ -85,7 +85,7 @@ export function Button({ children, variant = 'primary', href, size = 'md', class
 export function GlassCard({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <motion.div
-      whileHover={{ y: -4, boxShadow: '0 20px 50px -16px rgba(13, 148, 136, 0.2)' }}
+      whileHover={{ y: -4, boxShadow: '0 20px 50px -16px rgba(92, 142, 255, 0.2)' }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
       className={`rounded-2xl border border-[var(--line)] bg-white p-6 transition-all ${className}`}
     >

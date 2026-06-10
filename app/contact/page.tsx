@@ -150,7 +150,7 @@ export default function Contact() {
 
           <div className="space-y-5">
             {[
-              { icon: Mail, label: 'Email', val: 'hello@pulselens.com', tint: 'var(--brand)' },
+              { icon: Mail, label: 'Email', val: 'hello@evoglobalinsight.com', tint: 'var(--brand)' },
               { icon: Phone, label: 'Phone', val: '+1 (415) 555-0142', tint: 'var(--accent)' },
               { icon: MapPin, label: 'Office', val: '548 Market Street, San Francisco, CA', tint: 'var(--coral)' },
             ].map((c, i) => (

@@ -1,12 +1,12 @@
 import { ShieldCheck, Globe2, Zap, Brain } from 'lucide-react';
 import { Reveal, Section, SectionEyebrow } from '../primitives';
 
-const BRAND = '#115E59';
+const BRAND = '#5C8EFF';
 
 const items = [
   { icon: ShieldCheck, title: 'Verified Respondents', desc: 'Triple-verified panels with bot detection and identity checks for clean data.', tint: BRAND },
-  { icon: Globe2, title: 'Global Reach', desc: 'Active panels in 50+ countries across 30+ languages for any target audience.', tint: '#0F4C45' },
-  { icon: Zap, title: 'Fast Turnaround', desc: 'Most surveys fielded and results delivered within 7 business days.', tint: '#0A0A0A' },
+  { icon: Globe2, title: 'Global Reach', desc: 'Active panels in 50+ countries across 30+ languages for any target audience.', tint: BRAND },
+  { icon: Zap, title: 'Fast Turnaround', desc: 'Most surveys fielded and results delivered within 7 business days.', tint: BRAND },
   { icon: Brain, title: 'Survey Expertise', desc: 'PhD-led methodology team designing surveys that get reliable, actionable results.', tint: BRAND },
 ];
 
@@ -27,7 +27,7 @@ export function WhyChooseUs() {
           {items.map((it, i) => (
             <Reveal key={it.title} delay={i * 0.05}>
               <div
-                className={`group relative h-full rounded-2xl border border-[#E5E7EB] bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_-16px_rgba(0,0,0,0.12)] ${i % 3 === 0 ? 'sm:translate-y-6' : ''}`}
+                className={`group relative h-full rounded-2xl border border-[#E5E7EB] bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_-16px_rgba(0,0,0,0.12)] ${i % 2 === 1 ? 'sm:translate-y-6' : ''}`}
               >
                 <div
                   className="grid h-11 w-11 place-items-center rounded-xl"

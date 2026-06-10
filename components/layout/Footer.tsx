@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Twitter, Linkedin, Github } from 'lucide-react';
 import { Container } from '../primitives';
+import { EGILogo } from './EGILogo';
 
 export function Footer() {
   return (
@@ -8,14 +9,8 @@ export function Footer() {
       <Container className="py-16">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/" className="flex items-center gap-2.5">
-              <div
-                className="grid h-8 w-8 place-items-center rounded-lg text-white text-sm font-black"
-                style={{ background: 'var(--brand)' }}
-              >
-                P
-              </div>
-              <span className="text-lg font-extrabold tracking-tight">Pulselens</span>
+            <Link href="/" className="group flex items-center">
+              <EGILogo size={56} />
             </Link>
             <p className="mt-4 max-w-sm text-sm">
               Global market research and audience intelligence helping brands decide with confidence.
@@ -51,7 +46,7 @@ export function Footer() {
           ))}
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-[var(--line)] pt-6 text-xs text-[var(--muted)] sm:flex-row">
-          <span>© 2026 Pulselens Research, Inc. All rights reserved.</span>
+          <span>© 2026 EvoGlobalInsight, Inc. All rights reserved.</span>
           <span>Made with care for better decisions.</span>
         </div>
       </Container>

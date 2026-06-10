@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { Target, Users, LineChart } from 'lucide-react';
 import { Reveal, Section, SectionEyebrow, TimelineProgress } from '../primitives';
 
-const BRAND = '#115E59';
+const BRAND = '#5C8EFF';
 
 const steps = [
   { n: 1, icon: Target, title: 'Define', desc: 'We understand your survey objectives and design the right methodology to reach your audience.' },

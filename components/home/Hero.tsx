@@ -57,7 +57,7 @@ export function Hero() {
       }}
     >
       {/* ── Background radial glow centered behind the graphic ── */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_75%_35%,rgba(14,107,99,0.04),transparent_55%)] pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_75%_35%,rgba(92,142,255,0.04),transparent_55%)] pointer-events-none" />
 
       {/* ── Custom curved background shape (reduced dominance, high-end accent) ── */}
       <motion.svg
@@ -70,7 +70,7 @@ export function Hero() {
       >
         <path
           d="M 420 0 L 120 0 C 80 120 40 240 40 360 C 40 500 120 620 200 700 C 280 780 420 840 420 900 V 0 Z"
-          fill="var(--brand, #0E6B63)"
+          fill="var(--brand, #5C8EFF)"
         />
       </motion.svg>
 
@@ -106,7 +106,7 @@ export function Hero() {
               <h1 className="text-2xl sm:text-3xl lg:text-[2.5rem] xl:text-[2.75rem] font-[900] tracking-tight uppercase leading-[1.05] text-zinc-950">
                 {isBrands ? (
                   <>
-                    Reach Verified <span className="text-[var(--brand,#0E6B63)]">Respondents.</span> Collect Better Insights.
+                    Reach Verified <span className="text-[var(--brand,#5C8EFF)]">Respondents.</span> Collect Better Insights.
                   </>
                 ) : (
                   <>
@@ -132,7 +132,7 @@ export function Hero() {
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <Link
                   href="/contact"
-                  className="group relative inline-flex h-10.5 items-center justify-center rounded-xl bg-[var(--brand,#0E6B63)] px-5.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_6px_20px_-4px_rgba(14,107,99,0.25)] transition-all duration-300 hover:bg-[var(--brand-dark,#0a4d47)] hover:scale-[1.02] hover:shadow-[0_10px_24px_-4px_rgba(14,107,99,0.35)] overflow-hidden"
+                  className="group relative inline-flex h-10.5 items-center justify-center rounded-xl bg-[var(--brand,#5C8EFF)] px-5.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_6px_20px_-4px_rgba(92,142,255,0.25)] transition-all duration-300 hover:bg-[var(--brand-dark,#5c8eff)] hover:scale-[1.02] hover:shadow-[0_10px_24px_-4px_rgba(92,142,255,0.35)] overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center gap-1.5">
                     Book a Demo
@@ -164,13 +164,13 @@ export function Hero() {
                     return (
                       <div
                         key={m.label}
-                        className="relative overflow-hidden rounded-xl border border-zinc-200/50 bg-gradient-to-b from-white to-zinc-50/50 p-3 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[var(--brand,#0E6B63)]/40 hover:shadow-[0_8px_16px_rgba(14,107,99,0.04)] hover:-translate-y-0.5 group flex items-center gap-3"
+                        className="relative overflow-hidden rounded-xl border border-zinc-200/50 bg-gradient-to-b from-white to-zinc-50/50 p-3 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[var(--brand,#5C8EFF)]/40 hover:shadow-[0_8px_16px_rgba(92,142,255,0.04)] hover:-translate-y-0.5 group flex items-center gap-3"
                       >
                         {/* Top accent border visible on hover */}
-                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--brand,#0E6B63)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--brand,#5C8EFF)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
 
                         {/* Icon Wrapper */}
-                        <div className="w-8 h-8 rounded-lg bg-[var(--brand,#0E6B63)]/5 flex items-center justify-center text-[var(--brand,#0E6B63)] group-hover:bg-[var(--brand,#0E6B63)] group-hover:text-white transition-colors duration-300 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-[var(--brand,#5C8EFF)]/5 flex items-center justify-center text-[var(--brand,#5C8EFF)] group-hover:bg-[var(--brand,#5C8EFF)] group-hover:text-white transition-colors duration-300 flex-shrink-0">
                           <IconComponent size={14} className="stroke-[2.5]" />
                         </div>
 
@@ -255,7 +255,7 @@ export function Hero() {
       {/* Mobile background block */}
       <div
         className="absolute right-0 left-0 bottom-0 h-[28%] rounded-t-[2.5rem] lg:hidden -z-10 opacity-15"
-        style={{ background: 'var(--brand, #0E6B63)' }}
+        style={{ background: 'var(--brand, #5C8EFF)' }}
       />
     </section>
   );

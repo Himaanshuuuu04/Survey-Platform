@@ -5,7 +5,7 @@ import { Reveal, Section, SectionEyebrow } from '../primitives';
 
 const data = [
   {
-    quote: 'Pulselens delivered insights in two weeks that would have taken our internal team a quarter. The launch hit number one in its category.',
+    quote: 'EvoGlobalInsight delivered insights in two weeks that would have taken our internal team a quarter. The launch hit number one in its category.',
     name: 'Amelia Chen',
     role: 'VP Product, Lumen Audio',
     initials: 'AC',
@@ -19,7 +19,7 @@ const data = [
     tint: 'var(--brand-dark)',
   },
   {
-    quote: 'We replaced four vendors with Pulselens. Faster, cleaner data, and a partner that actually understands our category.',
+    quote: 'We replaced four vendors with EvoGlobalInsight. Faster, cleaner data, and a partner that actually understands our category.',
     name: 'Priya Raman',
     role: 'CMO, Brightleaf Health',
     initials: 'PR',

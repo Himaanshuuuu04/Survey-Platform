@@ -2,12 +2,12 @@ import { BarChart3, MessageSquare, Building2, ShoppingBag, ArrowUpRight } from '
 import { motion } from 'motion/react';
 import { Reveal, Section, SectionEyebrow } from '../primitives';
 
-const BRAND = '#115E59';
+const BRAND = '#5C8EFF';
 
 const items = [
   { icon: BarChart3, title: 'Survey Design & Distribution', desc: 'End-to-end survey creation, distribution, and data collection at global scale.', tint: BRAND },
-  { icon: MessageSquare, title: 'Survey Marketing', desc: 'Targeted outreach campaigns that drive high-quality survey responses.', tint: '#0F4C45' },
-  { icon: Building2, title: 'B2B Panel Access', desc: 'Reach decision makers, executives and professionals across niche industries.', tint: '#0A0A0A' },
+  { icon: MessageSquare, title: 'Survey Marketing', desc: 'Targeted outreach campaigns that drive high-quality survey responses.', tint: BRAND },
+  { icon: Building2, title: 'B2B Panel Access', desc: 'Reach decision makers, executives and professionals across niche industries.', tint: BRAND },
   { icon: ShoppingBag, title: 'Consumer Insights', desc: 'Understand customer needs, market trends and purchase behavior at scale.', tint: BRAND },
 ];
 

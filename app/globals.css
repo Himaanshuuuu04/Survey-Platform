@@ -3,17 +3,17 @@
 @import "tw-animate-css";
 
 /* ═══════════════════════════════════════════
-   PULSELENS — Global Design Tokens
+   EVOGLOBALINSIGHT — Global Design Tokens
    All colors & fonts centralized here.
    Change these to restyle the entire site.
    ═══════════════════════════════════════════ */
 
 @theme {
   /* ── Brand Colors ── */
-  --color-brand: #0E6B63;
-  --color-brand-dark: #0A4D47;
-  --color-brand-light: #129388;
-  --color-brand-soft: #F0FDFB;
+  --color-brand: #5C8EFF;
+  --color-brand-dark: #5C8EFF;
+  --color-brand-light: #02E8F8;
+  --color-brand-soft: #EFF6FF;
   
   /* ── Backgrounds ── */
   --color-bg: #FFFFFF;
@@ -44,14 +44,14 @@
   --line: #E5E7EB;
   --line-hover: #D1D5DB;
 
-  /* ── BRAND: Premium Deep Green Accent ── */
-  --brand: #0E6B63;
-  --brand-dark: #0A4D47;
-  --brand-light: #129388;
-  --brand-soft: #F0FDFB;
-  --brand-glow: rgba(14, 107, 99, 0.18);
+  /* ── BRAND: Exact Blue & Cyan from logo.jpeg ── */
+  --brand: #5C8EFF;
+  --brand-dark: #5C8EFF;
+  --brand-light: #02E8F8;
+  --brand-soft: #EFF6FF;
+  --brand-glow: rgba(92, 142, 255, 0.18);
 
-  --accent: #0E6B63;
+  --accent: #5C8EFF;
   --coral: #EF4444;
   --amber: #F59E0B;
   --success: #10B981;
@@ -92,7 +92,7 @@ h1 {
 
 h2 {
   font-size: clamp(2rem, 3.5vw, 3rem);
-  line-height: 1.08;
+  line-height: 1.15;
   font-weight: 800;
   letter-spacing: -0.025em;
   text-transform: uppercase;
@@ -143,10 +143,10 @@ p {
   content: '';
   position: absolute;
   left: -2%;
-  bottom: 0.04em;
+  bottom: 0.08em;
   width: 104%;
   height: 0.12em;
-  background: rgba(45, 212, 191, 0.22); /* Soft premium minty teal */
+  background: rgba(92, 142, 255, 0.22); /* Soft premium blue from logo */
   border-radius: 999px;
   transform: skewY(-0.6deg);
   z-index: -1;

@@ -6,8 +6,9 @@ import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { useAudience } from './AudienceContext';
 import { motion } from 'motion/react';
+import { EGILogo } from './EGILogo';
 
-const BRAND = '#115E59';
+const BRAND = '#5C8EFF';
 
 const links = [
   { to: '/', label: 'Home' },
@@ -51,16 +52,8 @@ export function Navbar() {
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div
-              className="grid h-8 w-8 place-items-center rounded-lg text-white text-sm font-black transition-transform duration-300 group-hover:scale-105"
-              style={{ background: BRAND }}
-            >
-              P
-            </div>
-            <span className="text-lg font-extrabold tracking-tight text-[#0A0A0A]">
-              Pulselens
-            </span>
+          <Link href="/" className="group flex items-center">
+            <EGILogo size={52} />
           </Link>
 
           {/* Desktop nav with sliding cursor highlight */}
@@ -123,7 +116,7 @@ export function Navbar() {
 
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center rounded-full bg-[#0A0A0A] px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-[#115E59] hover:scale-[1.02] shadow-sm"
+              className="inline-flex items-center justify-center rounded-full bg-[#0A0A0A] px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-white transition-all duration-300 hover:bg-[#5C8EFF] hover:scale-[1.02] shadow-sm"
             >
               Contact
             </Link>
