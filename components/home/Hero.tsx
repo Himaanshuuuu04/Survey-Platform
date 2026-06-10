@@ -6,6 +6,7 @@ import { Container } from '../primitives';
 import { useAudience } from '../layout/AudienceContext';
 import { HeroVisual } from './HeroVisual';
 import Link from 'next/link';
+import { BarChart3, Target, CheckCircle2, ShieldCheck, Star } from 'lucide-react';
 
 export function Hero() {
   const { audience } = useAudience();
@@ -47,7 +48,7 @@ export function Hero() {
   };
 
   return (
-    <section 
+    <section
       ref={containerRef}
       className="relative overflow-hidden min-h-[80vh] flex flex-col justify-center bg-white pt-8 lg:pt-12 pb-6 z-10"
       style={{
@@ -82,20 +83,21 @@ export function Hero() {
         >
           {/* ── Left Column: Value Prop + CTAs + Trust Metrics ── */}
           <div className="relative py-2 lg:py-6">
-            
+
             {/* ── Trust Bar above headline ── */}
             <motion.div variants={itemVariants} className="mb-4">
-              <div className="inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-xl border border-zinc-200/60 bg-white/70 px-3 py-1.5 backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
-                <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">
-                  Trusted by 500+ research teams
-                </span>
-                <span className="h-3 w-px bg-zinc-200 hidden sm:inline-block" />
-                <div className="flex items-center gap-3 text-[9px] font-black tracking-widest text-zinc-400">
-                  <span>STRIPE</span>
-                  <span>VERCEL</span>
-                  <span>LINEAR</span>
-                  <span>RAMP</span>
+              <div className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-xl border border-zinc-200/60 bg-white/70 px-3 py-1.5 backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                {/* 5 Star Rating */}
+                <div className="flex items-center gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={8.5} className="fill-amber-500 stroke-none" />
+                  ))}
+                  <span className="ml-1 text-[8.5px] font-black text-zinc-800">4.9/5 Rating</span>
                 </div>
+                <span className="h-3.5 w-px bg-zinc-200" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400">
+                  Trusted by 500+ teams
+                </span>
               </div>
             </motion.div>
 
@@ -130,9 +132,14 @@ export function Hero() {
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <Link
                   href="/contact"
-                  className="group relative inline-flex h-10.5 items-center justify-center rounded-xl bg-[var(--brand,#0E6B63)] px-5.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_6px_20px_-4px_rgba(14,107,99,0.25)] transition-all duration-300 hover:bg-[var(--brand-dark,#0a4d47)] hover:scale-[1.02] hover:shadow-[0_10px_24px_-4px_rgba(14,107,99,0.35)]"
+                  className="group relative inline-flex h-10.5 items-center justify-center rounded-xl bg-[var(--brand,#0E6B63)] px-5.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_6px_20px_-4px_rgba(14,107,99,0.25)] transition-all duration-300 hover:bg-[var(--brand-dark,#0a4d47)] hover:scale-[1.02] hover:shadow-[0_10px_24px_-4px_rgba(14,107,99,0.35)] overflow-hidden"
                 >
-                  Book a Demo
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    Book a Demo
+                    <svg className="w-3 h-3 transform group-hover:translate-x-0.5 transition-transform duration-300 fill-none stroke-current" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </span>
                 </Link>
                 <Link
                   href="/case-studies"
@@ -148,34 +155,45 @@ export function Hero() {
               <div className="mt-8 border-t border-zinc-100 pt-6 max-w-md">
                 <div className="grid grid-cols-2 gap-2.5">
                   {[
-                    { value: '250K+', label: 'Responses Generated' },
-                    { value: '500+', label: 'Campaigns Delivered' },
-                    { value: '92%', label: 'Avg Completion Rate' },
-                    { value: '99.7%', label: 'Fraud Detection Accuracy' }
-                  ].map((m) => (
-                    <div 
-                      key={m.label} 
-                      className="relative overflow-hidden rounded-xl border border-zinc-200/50 bg-gradient-to-b from-white to-zinc-50/50 p-3 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[var(--brand,#0E6B63)]/40 hover:shadow-[0_8px_16px_rgba(14,107,99,0.04)] hover:-translate-y-0.5 group"
-                    >
-                      {/* Top accent border visible on hover */}
-                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--brand,#0E6B63)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                      <span className="block text-lg sm:text-xl font-black tracking-tight text-zinc-950">
-                        {m.value}
-                      </span>
-                      <span className="mt-0.5 block text-[8px] font-extrabold uppercase tracking-wider text-zinc-400 leading-snug">
-                        {m.label}
-                      </span>
-                    </div>
-                  ))}
+                    { value: '250K+', label: 'Responses Generated', icon: BarChart3 },
+                    { value: '500+', label: 'Campaigns Delivered', icon: Target },
+                    { value: '92%', label: 'Avg Completion Rate', icon: CheckCircle2 },
+                    { value: '99.7%', label: 'Fraud Detection Accuracy', icon: ShieldCheck }
+                  ].map((m) => {
+                    const IconComponent = m.icon;
+                    return (
+                      <div
+                        key={m.label}
+                        className="relative overflow-hidden rounded-xl border border-zinc-200/50 bg-gradient-to-b from-white to-zinc-50/50 p-3 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[var(--brand,#0E6B63)]/40 hover:shadow-[0_8px_16px_rgba(14,107,99,0.04)] hover:-translate-y-0.5 group flex items-center gap-3"
+                      >
+                        {/* Top accent border visible on hover */}
+                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--brand,#0E6B63)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+
+                        {/* Icon Wrapper */}
+                        <div className="w-8 h-8 rounded-lg bg-[var(--brand,#0E6B63)]/5 flex items-center justify-center text-[var(--brand,#0E6B63)] group-hover:bg-[var(--brand,#0E6B63)] group-hover:text-white transition-colors duration-300 flex-shrink-0">
+                          <IconComponent size={14} className="stroke-[2.5]" />
+                        </div>
+
+                        <div>
+                          <span className="block text-base sm:text-lg font-black tracking-tight text-zinc-950 leading-none">
+                            {m.value}
+                          </span>
+                          <span className="mt-1 block text-[7.5px] font-extrabold uppercase tracking-wider text-zinc-400 leading-tight">
+                            {m.label}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </motion.div>
           </div>
 
           {/* ── Right Column: Interactive Dashboard visual with scroll parallax ── */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
-            style={{ y: visualY }} 
+            style={{ y: visualY }}
             className="relative lg:py-8 z-10"
           >
             <HeroVisual />
