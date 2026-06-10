@@ -10,10 +10,10 @@
 
 @theme {
   /* ── Brand Colors ── */
-  --color-brand: #115E59;
-  --color-brand-dark: #0F4C45;
-  --color-brand-light: #14B8A6;
-  --color-brand-soft: #F0FDFA;
+  --color-brand: #0E6B63;
+  --color-brand-dark: #0A4D47;
+  --color-brand-light: #129388;
+  --color-brand-soft: #F0FDFB;
   
   /* ── Backgrounds ── */
   --color-bg: #FFFFFF;
@@ -44,14 +44,14 @@
   --line: #E5E7EB;
   --line-hover: #D1D5DB;
 
-  /* ── BRAND: Deep Teal Green (like the reference) ── */
-  --brand: #115E59;
-  --brand-dark: #0F4C45;
-  --brand-light: #14B8A6;
-  --brand-soft: #F0FDFA;
-  --brand-glow: rgba(17, 94, 89, 0.18);
+  /* ── BRAND: Premium Deep Green Accent ── */
+  --brand: #0E6B63;
+  --brand-dark: #0A4D47;
+  --brand-light: #129388;
+  --brand-soft: #F0FDFB;
+  --brand-glow: rgba(14, 107, 99, 0.18);
 
-  --accent: #115E59;
+  --accent: #0E6B63;
   --coral: #EF4444;
   --amber: #F59E0B;
   --success: #10B981;
