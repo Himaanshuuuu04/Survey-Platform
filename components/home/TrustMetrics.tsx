@@ -1,30 +1,32 @@
-import { Container, Counter, Reveal } from '../primitives';
+import { ShieldCheck, Lock, Award, Star, BadgeCheck, Globe2 } from 'lucide-react';
+import { Container, Reveal } from '../primitives';
 
-const stats = [
-  { value: 50, suffix: '+', label: 'Countries Covered' },
-  { value: 5_000_000, suffix: '+', label: 'Survey Responses' },
-  { value: 100, suffix: '+', label: 'Research Projects' },
-  { value: 95, suffix: '%', label: 'Client Retention' },
+const badges = [
+  { icon: ShieldCheck, label: 'ISO 27001', sub: 'Certified' },
+  { icon: Lock, label: 'GDPR', sub: 'Compliant' },
+  { icon: Award, label: 'ESOMAR', sub: 'Member' },
+  { icon: Star, label: 'Clutch', sub: 'Top 10 Firm' },
+  { icon: BadgeCheck, label: 'SOC 2', sub: 'Type II' },
+  { icon: Globe2, label: '50+ Countries', sub: 'Global Reach' },
 ];
 
 export function TrustMetrics() {
   return (
-    <div className="relative -mt-10">
+    <div className="border-t border-[var(--line)] py-10 sm:py-14" style={{ background: 'var(--bg-soft)' }}>
       <Container>
-        <div className="glass grid grid-cols-2 gap-4 rounded-3xl p-6 sm:grid-cols-4 sm:p-8">
-          {stats.map((s, i) => (
-            <Reveal key={s.label} delay={i * 0.05}>
-              <div className="text-center sm:text-left">
-                <div className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: 'var(--ink)' }}>
-                  <Counter to={s.value} suffix={s.suffix} />
-                </div>
-                <div className="mt-1 text-xs font-semibold uppercase tracking-wider text-[var(--ink-soft)]">
-                  {s.label}
+        <Reveal>
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 lg:gap-16">
+            {badges.map((b) => (
+              <div key={b.label} className="flex items-center gap-2.5 opacity-60 transition-opacity hover:opacity-100">
+                <b.icon size={22} strokeWidth={1.5} className="text-[var(--ink-soft)]" />
+                <div>
+                  <div className="text-sm font-bold uppercase tracking-wide text-[var(--ink)]">{b.label}</div>
+                  <div className="text-[10px] font-medium uppercase tracking-wider text-[var(--muted)]">{b.sub}</div>
                 </div>
               </div>
-            </Reveal>
-          ))}
-        </div>
+            ))}
+          </div>
+        </Reveal>
       </Container>
     </div>
   );

@@ -60,10 +60,10 @@ export function Button({ children, variant = 'primary', href, size = 'md', class
   const sizes = size === 'lg' ? 'px-7 py-3.5 text-base' : 'px-5 py-2.5 text-sm';
   const styles =
     variant === 'primary'
-      ? 'text-white shadow-[0_10px_30px_-10px_var(--brand)] hover:translate-y-[-2px] hover:shadow-[0_18px_40px_-12px_var(--brand)]'
+      ? 'text-white shadow-[0_8px_24px_-8px_var(--brand-glow)] hover:translate-y-[-2px] hover:shadow-[0_14px_32px_-8px_var(--brand-glow)]'
       : variant === 'outline'
-      ? 'border border-[var(--line)] bg-white hover:border-[var(--brand)] hover:text-[var(--brand)]'
-      : 'hover:bg-[var(--brand-soft)]';
+        ? 'border-2 border-[var(--line)] bg-white hover:border-[var(--ink)] hover:text-[var(--ink)]'
+        : 'hover:bg-[var(--brand-soft)]';
   const style = variant === 'primary' ? { background: 'var(--brand)' } : {};
   const content = (
     <span className="relative z-10 inline-flex items-center gap-2">{children}</span>
@@ -85,9 +85,9 @@ export function Button({ children, variant = 'primary', href, size = 'md', class
 export function GlassCard({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <motion.div
-      whileHover={{ y: -4, boxShadow: '0 24px 60px -20px rgba(61,90,254,0.25)' }}
+      whileHover={{ y: -4, boxShadow: '0 20px 50px -16px rgba(13, 148, 136, 0.2)' }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className={`glass rounded-3xl p-6 ${className}`}
+      className={`rounded-2xl border border-[var(--line)] bg-white p-6 transition-all ${className}`}
     >
       {children}
     </motion.div>
@@ -130,7 +130,7 @@ export function GradientBlob({ className = '', from = 'var(--brand)', to = 'var(
 
 export function SectionEyebrow({ children }: { children: ReactNode }) {
   return (
-    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-white px-3 py-1 text-xs font-semibold tracking-wider uppercase text-[var(--ink-soft)]">
+    <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--bg-soft)] px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase text-[var(--ink-soft)]">
       <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--brand)' }} />
       {children}
     </div>
@@ -141,10 +141,10 @@ export function TimelineProgress({ targetRef }: { targetRef: React.RefObject<HTM
   const { scrollYProgress } = useScroll({ target: targetRef, offset: ['start 80%', 'end 30%'] });
   const width = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
   return (
-    <div className="relative h-1.5 w-full rounded-full bg-[var(--line)]">
+    <div className="relative h-1 w-full rounded-full bg-[var(--line)]">
       <motion.div
         className="absolute inset-y-0 left-0 rounded-full"
-        style={{ width, background: 'linear-gradient(90deg, var(--brand), var(--accent))' }}
+        style={{ width, background: 'var(--brand)' }}
       />
     </div>
   );

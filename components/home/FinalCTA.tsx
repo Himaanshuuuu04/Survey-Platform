@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react';
-import { Button, Container, GradientBlob, Reveal } from '../primitives';
+import { Button, Container, Reveal } from '../primitives';
 import { useAudience } from '../layout/AudienceContext';
 
 export function FinalCTA() {
@@ -10,13 +10,15 @@ export function FinalCTA() {
       <Container className="!px-0">
         <Reveal>
           <div
-            className="relative overflow-hidden rounded-[2.5rem] px-8 py-20 text-center text-white sm:px-16"
-            style={{ background: 'linear-gradient(135deg, var(--brand), #1f2bb5 60%, var(--accent))' }}
+            className="relative overflow-hidden rounded-[2rem] px-8 py-20 text-center text-white sm:px-16"
+            style={{ background: 'var(--brand)' }}
           >
-            <GradientBlob className="left-10 top-0 h-72 w-72 opacity-40" from="rgba(255,255,255,0.5)" to="transparent" />
-            <GradientBlob className="bottom-0 right-10 h-72 w-72 opacity-40" from="rgba(255,255,255,0.5)" to="transparent" />
+            {/* Decorative circles */}
+            <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full opacity-20" style={{ background: 'rgba(255,255,255,0.3)' }} />
+            <div className="pointer-events-none absolute -bottom-16 -right-16 h-48 w-48 rounded-full opacity-20" style={{ background: 'rgba(255,255,255,0.3)' }} />
+
             <h2 className="relative text-white">
-              {isBrands ? 'Ready to Understand Your Market?' : 'Ready to make your opinion count?'}
+              {isBrands ? 'Ready To Understand Your Market?' : 'Ready To Make Your Opinion Count?'}
             </h2>
             <p className="relative mx-auto mt-5 max-w-xl text-lg text-white/85">
               {isBrands
@@ -27,12 +29,12 @@ export function FinalCTA() {
               <Button
                 href="/contact"
                 size="lg"
-                className="!bg-white !text-[var(--ink)] hover:!shadow-[0_18px_40px_-10px_rgba(0,0,0,0.35)]"
+                className="!bg-white !text-[var(--ink)] !shadow-[0_8px_24px_-8px_rgba(0,0,0,0.2)] hover:!shadow-[0_14px_32px_-8px_rgba(0,0,0,0.3)]"
               >
                 {isBrands ? 'Start Your Research Project' : 'Join the Panel'}
                 <ArrowRight size={18} />
               </Button>
-              <Button href="/services" variant="outline" size="lg" className="!border-white/40 !bg-transparent !text-white hover:!border-white">
+              <Button href="/services" variant="outline" size="lg" className="!border-white/40 !bg-transparent !text-white hover:!border-white !shadow-none">
                 Explore Services
               </Button>
             </div>

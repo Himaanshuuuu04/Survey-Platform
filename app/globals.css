@@ -1,60 +1,174 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* ═══════════════════════════════════════════
+   PULSELENS — Global Design Tokens
+   All colors & fonts centralized here.
+   Change these to restyle the entire site.
+   ═══════════════════════════════════════════ */
+
+@theme {
+  /* ── Brand Colors ── */
+  --color-brand: #115E59;
+  --color-brand-dark: #0F4C45;
+  --color-brand-light: #14B8A6;
+  --color-brand-soft: #F0FDFA;
+  
+  /* ── Backgrounds ── */
+  --color-bg: #FFFFFF;
+  --color-bg-soft: #F8FAFA;
+  
+  /* ── Typography ── */
+  --color-ink: #0A0A0A;
+  --color-ink-soft: #525252;
+  --color-muted: #9CA3AF;
+  
+  /* ── Borders ── */
+  --color-line: #E5E7EB;
+  --color-line-hover: #D1D5DB;
+  
+  /* ── Semantic ── */
+  --color-success: #10B981;
+  --color-coral: #EF4444;
+  --color-amber: #F59E0B;
+}
+
 :root {
-  --bg: #F7F8FB;
+  --bg: #FFFFFF;
+  --bg-soft: #F8FAFA;
   --surface: #FFFFFF;
-  --ink: #0B1020;
-  --ink-soft: #4A5072;
-  --muted: #8A91B4;
-  --line: #E6E8F2;
-  --brand: #3D5AFE;
-  --brand-soft: #E8ECFF;
-  --accent: #3DDC97;
-  --coral: #FF6B6B;
-  --amber: #FFB547;
+  --ink: #0A0A0A;
+  --ink-soft: #525252;
+  --muted: #9CA3AF;
+  --line: #E5E7EB;
+  --line-hover: #D1D5DB;
+
+  /* ── BRAND: Deep Teal Green (like the reference) ── */
+  --brand: #115E59;
+  --brand-dark: #0F4C45;
+  --brand-light: #14B8A6;
+  --brand-soft: #F0FDFA;
+  --brand-glow: rgba(17, 94, 89, 0.18);
+
+  --accent: #115E59;
+  --coral: #EF4444;
+  --amber: #F59E0B;
+  --success: #10B981;
+
+  --bar-bg: #0A0A0A;
+  --bar-text: #FFFFFF;
 }
 
 [data-audience='participants'] {
-  --brand: #FF6B6B;
-  --brand-soft: #FFE8E8;
+  --brand: #BE123C;
+  --brand-dark: #9F1239;
+  --brand-soft: #FFF1F2;
+  --brand-glow: rgba(190, 18, 60, 0.18);
 }
 
-html, body, #root {
+/* ── Base ── */
+html,
+body,
+#root {
   height: 100%;
   background: var(--bg);
   color: var(--ink);
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
 }
 
-h1 { font-size: clamp(2.5rem, 5vw, 4.25rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.02em; }
-h2 { font-size: clamp(1.875rem, 3.2vw, 2.75rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.015em; }
-h3 { font-size: 1.375rem; line-height: 1.25; font-weight: 700; }
-h4 { font-size: 1.125rem; line-height: 1.3; font-weight: 600; }
-p  { color: var(--ink-soft); line-height: 1.6; }
-
-.glass {
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.7);
-  box-shadow: 0 8px 30px rgba(11,16,32,0.06);
+/* ── Typography Scale ── */
+h1 {
+  font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+  line-height: 1.02;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--ink);
 }
 
+h2 {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+h3 {
+  font-size: 1.375rem;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 1.125rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+p {
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+/* ── Glass Surface ── */
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Brand Text Gradient ── */
 .brand-gradient-text {
-  background: linear-gradient(120deg, var(--brand), var(--accent));
+  background: linear-gradient(120deg, var(--brand), var(--brand-dark));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
+/* ── Swoosh Underline Decoration ── */
+.text-swoosh {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+.text-swoosh::after {
+  content: '';
+  position: absolute;
+  left: -2%;
+  bottom: 0.04em;
+  width: 104%;
+  height: 0.12em;
+  background: rgba(45, 212, 191, 0.22); /* Soft premium minty teal */
+  border-radius: 999px;
+  transform: skewY(-0.6deg);
+  z-index: -1;
+}
+
+/* ── Scrollbar hide ── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 
+/* ── Marquee edge fade ── */
+.marquee-fade {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+/* ── Animations ── */
 @keyframes pulseDot {
   0%, 100% { transform: scale(1); opacity: 0.9; }
   50% { transform: scale(1.6); opacity: 0.4; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
