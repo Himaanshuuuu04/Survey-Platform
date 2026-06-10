@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --bg: #F7F8FB;
+  --surface: #FFFFFF;
+  --ink: #0B1020;
+  --ink-soft: #4A5072;
+  --muted: #8A91B4;
+  --line: #E6E8F2;
+  --brand: #3D5AFE;
+  --brand-soft: #E8ECFF;
+  --accent: #3DDC97;
+  --coral: #FF6B6B;
+  --amber: #FFB547;
+}
+
+[data-audience='participants'] {
+  --brand: #FF6B6B;
+  --brand-soft: #FFE8E8;
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+h1 { font-size: clamp(2.5rem, 5vw, 4.25rem); line-height: 1.05; font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.875rem, 3.2vw, 2.75rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.015em; }
+h3 { font-size: 1.375rem; line-height: 1.25; font-weight: 700; }
+h4 { font-size: 1.125rem; line-height: 1.3; font-weight: 600; }
+p  { color: var(--ink-soft); line-height: 1.6; }
+
+.glass {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow: 0 8px 30px rgba(11,16,32,0.06);
+}
+
+.brand-gradient-text {
+  background: linear-gradient(120deg, var(--brand), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.6); opacity: 0.4; }
+}
