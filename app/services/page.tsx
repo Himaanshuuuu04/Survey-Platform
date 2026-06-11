@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import {
   Users, Send, ShieldCheck, CheckSquare, Globe, SlidersHorizontal,
   ArrowRight, Check, Activity, Sparkles, BarChart3, Database, Target,
@@ -333,7 +333,30 @@ export default function Services() {
   const [activeIndex, setActiveIndex] = useState(0);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const backgroundTextRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll progress targeting the section container
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Calculate card number parallax translation offset
+  const numberParallax = useTransform(scrollYProgress, [0, 1], [-25, 25]);
+
+  // Floating particles local state
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; duration: number; delay: number }>>([]);
+  useEffect(() => {
+    const generated = Array.from({ length: 15 }).map((_, i) => ({
+      id: i,
+      x: Math.random() * 100, // percentage
+      y: Math.random() * 80 + 10, // percentage (avoid edge clipping)
+      size: Math.random() * 5 + 3, // size in px
+      duration: Math.random() * 15 + 15, // seconds
+      delay: Math.random() * 5
+    }));
+    setParticles(generated);
+  }, []);
 
   const updateCarousel = (index: number) => {
     if (viewportRef.current && trackRef.current) {
@@ -352,15 +375,6 @@ export default function Services() {
             duration: 0.8,
             ease: 'power3.out'
           });
-
-          // Subtly shift background typography
-          if (backgroundTextRef.current) {
-            gsap.to(backgroundTextRef.current, {
-              x: -index * 35,
-              duration: 1.2,
-              ease: 'power2.out'
-            });
-          }
         }
       }
     }
@@ -629,7 +643,11 @@ export default function Services() {
       </Section>
 
       {/* SECTION 4: How It Works (GSAP Storytelling Carousel in light theme) */}
-      <Section className="bg-white border-b border-zinc-200 overflow-hidden relative py-24 sm:py-32" id="services-how-it-works">
+      <section 
+        ref={sectionRef}
+        className="bg-white border-b border-zinc-200 overflow-hidden relative py-24 sm:py-32" 
+        id="services-how-it-works"
+      >
         {/* Subtle grid pattern overlay */}
         <div
           className="absolute inset-0 z-0 opacity-[0.25] pointer-events-none"
@@ -639,23 +657,42 @@ export default function Services() {
           }}
         />
 
-        {/* Ambient radial glows */}
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(92,142,255,0.03),transparent_70%)] pointer-events-none" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(2,232,248,0.02),transparent_70%)] pointer-events-none" />
+        {/* Ambient radial glows & gradients */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-blue-50/10 to-white pointer-events-none z-0" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(92,142,255,0.02),transparent_70%)] pointer-events-none z-0" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(2,232,248,0.015),transparent_70%)] pointer-events-none z-0" />
 
-        {/* Giant background typography watermark */}
-        <div 
-          ref={backgroundTextRef}
-          className="absolute top-[28%] left-[-10%] text-[10vw] font-[1000] uppercase tracking-tighter text-transparent [-webkit-text-stroke:1.5px_rgba(9,9,11,0.035)] pointer-events-none select-none leading-none z-0 font-sans whitespace-nowrap"
-        >
-          SURVEY LIFECYCLE • SURVEY LIFECYCLE • SURVEY LIFECYCLE
-        </div>
+        {/* Floating Ambient Particles */}
+        {particles.map((p) => (
+          <motion.div
+            key={p.id}
+            className="absolute rounded-full bg-[#5B84FF]/20 pointer-events-none z-0"
+            style={{
+              left: `${p.x}%`,
+              top: `${p.y}%`,
+              width: p.size,
+              height: p.size,
+              filter: 'blur(0.5px)',
+            }}
+            animate={{
+              y: [0, -80, 0],
+              x: [0, Math.random() * 30 - 15, 0],
+              opacity: [0.15, 0.45, 0.15],
+            }}
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              delay: p.delay,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
 
         <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[1fr_3.2fr] lg:gap-16 items-start">
             
             {/* Left Column: Title & Navigation */}
-            <div className="text-left flex flex-col h-full justify-between lg:sticky lg:top-32">
+            <div className="text-left flex flex-col h-full justify-between lg:sticky lg:top-32 relative z-10">
               <div>
                 <Reveal>
                   <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4">
@@ -678,42 +715,63 @@ export default function Services() {
                 </Reveal>
               </div>
 
-              {/* Slider Navigation (Diagonal slash arrow control) - Raw chevrons matching reference style */}
+              {/* Slider Navigation - Raw chevrons matching reference style */}
               <Reveal delay={0.15}>
-                <div className="flex items-center gap-3 mt-8 select-none">
+                <div className="flex items-center gap-4 mt-8 select-none">
                   {/* Left Chevron Button */}
                   <button 
                     onClick={handlePrev}
                     disabled={activeIndex === 0}
-                    className="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-20 disabled:pointer-events-none transition-all duration-300 active:scale-95 bg-transparent border border-zinc-200 rounded-sm shadow-sm hover:bg-zinc-50 cursor-pointer"
+                    className="w-12 h-12 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-20 disabled:pointer-events-none transition-all duration-300 active:scale-95 bg-transparent border border-zinc-200 rounded-md shadow-sm hover:bg-zinc-50 cursor-pointer"
                     aria-label="Previous step"
                   >
-                    <ChevronLeft size={20} strokeWidth={2} />
+                    <ChevronLeft size={24} strokeWidth={2} />
                   </button>
 
                   {/* Diagonal slash line */}
-                  <div className="w-[1.5px] h-6 bg-zinc-300 rotate-[25deg] self-center" />
+                  <div className="w-[1.5px] h-8 bg-zinc-300 rotate-[25deg] self-center" />
 
                   {/* Right Chevron Button */}
                   <button 
                     onClick={handleNext}
                     disabled={activeIndex === steps.length - 1}
-                    className="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-20 disabled:pointer-events-none transition-all duration-300 active:scale-95 bg-transparent border border-zinc-200 rounded-sm shadow-sm hover:bg-zinc-50 cursor-pointer"
+                    className="w-12 h-12 flex items-center justify-center text-zinc-400 hover:text-zinc-950 disabled:opacity-20 disabled:pointer-events-none transition-all duration-300 active:scale-95 bg-transparent border border-zinc-200 rounded-md shadow-sm hover:bg-zinc-50 cursor-pointer"
                     aria-label="Next step"
                   >
-                    <ChevronRight size={20} strokeWidth={2} />
+                    <ChevronRight size={24} strokeWidth={2} />
                   </button>
                 </div>
               </Reveal>
             </div>
 
-            {/* Right Column: Horizontal Cards Slider (GSAP driven) */}
+            {/* Right Column: Horizontal Cards Slider */}
             <div 
               ref={viewportRef}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               className="relative w-full overflow-hidden select-none cursor-grab active:cursor-grabbing pb-8 pt-4 px-2"
             >
+              {/* Progress timeline bar connecting stages */}
+              <div className="relative w-full h-[2.5px] bg-zinc-100 mb-12 z-10 rounded-full">
+                {/* Active progress segment */}
+                <motion.div
+                  className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#5B84FF] to-[#02E8F8]"
+                  animate={{ width: `${(activeIndex / (steps.length - 1)) * 100}%` }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                />
+                {/* Stage node dots */}
+                <div className="absolute inset-0 flex justify-between pointer-events-none">
+                  {steps.map((_, dotIdx) => (
+                    <div 
+                      key={dotIdx} 
+                      className={`w-2 h-2 rounded-full -translate-y-[2.75px] transition-all duration-500 ${
+                        dotIdx <= activeIndex ? 'bg-[#5B84FF] scale-125 shadow-[0_0_8px_rgba(91,132,255,0.4)]' : 'bg-zinc-200'
+                      }`} 
+                    />
+                  ))}
+                </div>
+              </div>
+
               <div 
                 ref={trackRef}
                 className="flex gap-8 items-center w-max transition-all duration-300 ease-out"
@@ -725,17 +783,38 @@ export default function Services() {
                     <div 
                       key={idx}
                       onClick={() => setActiveIndex(idx)}
-                      className={`snap-center flex-shrink-0 h-[420px] rounded-xl border p-8 flex flex-col justify-between transition-all duration-500 ease-out cursor-pointer relative w-[290px] sm:w-[325px] ${
+                      className={`snap-center flex-shrink-0 h-[420px] rounded-xl border p-8 flex flex-col justify-between transition-all duration-500 ease-out cursor-pointer relative w-[290px] sm:w-[325px] overflow-hidden ${
                         isActive 
-                          ? 'border-transparent shadow-[0_20px_40px_rgba(91,132,255,0.08)] z-10 scale-[1.01]' 
-                          : 'border-zinc-800 bg-[#151824] hover:bg-[#1a1e2d] hover:border-zinc-700 z-0'
+                          ? 'border-zinc-950/15 shadow-[0_24px_50px_rgba(91,132,255,0.12)] z-10 scale-[1.04]' 
+                          : 'border-zinc-200/50 bg-gradient-to-tr from-white/40 to-white/80 backdrop-blur-md hover:bg-white/95 hover:border-zinc-300 hover:shadow-[0_12px_32px_rgba(0,0,0,0.03)] text-zinc-900 z-0'
                       }`}
                       style={{
                         backgroundColor: isActive ? step.color : undefined,
                       }}
                     >
+                      {/* Subtly animated active card glow pulse */}
+                      {isActive && (
+                        <motion.div
+                          className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(91,132,255,0.15),transparent_70%)] pointer-events-none"
+                          animate={{ opacity: [0.6, 1, 0.6] }}
+                          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      )}
+
+                      {/* Giant background cropped number with parallax */}
+                      <motion.div 
+                        style={{ x: numberParallax }}
+                        className={`absolute -bottom-10 -right-4 text-[11rem] font-[1000] leading-none select-none pointer-events-none z-0 font-sans tracking-tighter transition-colors duration-500 ${
+                          isActive 
+                            ? 'text-zinc-950/[0.035]' 
+                            : 'text-zinc-950/[0.022]'
+                        }`}
+                      >
+                        {step.num}
+                      </motion.div>
+
                       {/* Top Row: Number bracket */}
-                      <span className={`text-[11px] font-mono font-bold tracking-wider transition-colors duration-500 ${
+                      <span className={`relative z-10 text-[11px] font-mono font-bold tracking-wider transition-colors duration-500 ${
                         isActive 
                           ? 'text-zinc-950/50' 
                           : 'text-zinc-400'
@@ -744,18 +823,18 @@ export default function Services() {
                       </span>
 
                       {/* Title */}
-                      <div className="flex flex-col mt-4">
+                      <div className="relative z-10 flex flex-col mt-4">
                         <h3 className={`text-2xl sm:text-3xl font-[1000] uppercase tracking-tighter transition-colors duration-500 leading-none whitespace-normal break-words mt-2 ${
                           isActive 
                             ? 'text-zinc-950' 
-                            : 'text-white'
+                            : 'text-zinc-900'
                         }`}>
                           {step.title}
                         </h3>
                       </div>
 
                       {/* MIDDLE: Unique Animated Visual State per Step */}
-                      <div className="flex-grow flex items-center justify-center my-4 relative h-[120px]">
+                      <div className="relative z-10 flex-grow flex items-center justify-center my-4 h-[120px]">
                         <AnimatePresence mode="wait">
                           {isActive ? (
                             <motion.div
@@ -850,10 +929,10 @@ export default function Services() {
                       </div>
 
                       {/* Bottom: Description */}
-                      <p className={`text-[11.5px] sm:text-xs leading-relaxed font-semibold transition-colors duration-500 mt-auto ${
+                      <p className={`relative z-10 text-[11.5px] sm:text-xs leading-relaxed font-semibold transition-colors duration-500 mt-auto ${
                         isActive 
                           ? 'text-zinc-950' 
-                          : 'text-zinc-400'
+                          : 'text-zinc-500'
                       }`}>
                         {step.desc}
                       </p>
@@ -865,10 +944,10 @@ export default function Services() {
 
           </div>
         </div>
-      </Section>
+      </section>
 
       {/* SECTION 5: CTA (Dark Section matching new footer) */}
-      <section className="bg-[#0A0B0E] text-white relative overflow-hidden py-24 sm:py-32 border-t border-zinc-800/60 z-10">
+      <section className="bg-[#05070F] text-white relative overflow-hidden py-24 sm:py-32 border-t border-zinc-800/60 z-10">
         {/* Subtle radial glow backing */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(92,142,255,0.06),transparent_60%)] pointer-events-none" />
 
