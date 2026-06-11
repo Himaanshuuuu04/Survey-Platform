@@ -1,5 +1,5 @@
 "use client";
-
+import RotatingText from './RotatingText'
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Container } from '../primitives';
@@ -106,15 +106,53 @@ export function Hero() {
               <h1 className="text-2xl sm:text-3xl lg:text-[2.5rem] xl:text-[2.75rem] font-[900] tracking-tight uppercase leading-[1.05] text-zinc-950">
                 {isBrands ? (
                   <>
-                    Reach Verified <span className="text-[var(--brand,#5C8EFF)]">Respondents.</span> Collect Better Insights.
+                    Reach Verified{' '}
+                    <span className="text-[var(--brand,#5C8EFF)] inline-flex overflow-hidden vertical-align-middle pb-1">
+                      <RotatingText
+                        texts={['Respondents.', 'Audiences.', 'Professionals.', 'Consumers.', 'Experts']}
+                        mainClassName="inline-flex text-[var(--brand,#5C8EFF)]"
+                        staggerFrom="last"
+                        initial={{ y: '100%' }}
+                        animate={{ y: 0 }}
+                        exit={{ y: '-120%' }}
+                        staggerDuration={0.020}
+                        splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1"
+                        transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                        rotationInterval={2500}
+                        splitBy="characters"
+                        auto
+                        loop
+                      />
+                    </span>
+                    {' '}
+                    Collect Better Insights.
                   </>
                 ) : (
                   <>
-                    Your Voice Shapes <span className="text-[var(--brand,#BE123C)]">Global</span> Products. Get Rewarded.
+                    Your Voice Shapes{' '}
+                    <span className="text-[var(--brand,#BE123C)] inline-flex overflow-hidden vertical-align-middle pb-1">
+                      <RotatingText
+                        texts={['Global', 'Future', "Tomorrow's", 'Everyday', 'Leading']}
+                        mainClassName="inline-flex text-[var(--brand,#BE123C)]"
+                        staggerFrom="last"
+                        initial={{ y: '100%' }}
+                        animate={{ y: 0 }}
+                        exit={{ y: '-120%' }}
+                        staggerDuration={0.020}
+                        splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1"
+                        transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+                        rotationInterval={2500}
+                        splitBy="characters"
+                        auto
+                        loop
+                      />
+                    </span>{' '}
+                    Products. Get Rewarded.
                   </>
                 )}
               </h1>
             </motion.div>
+
 
             {/* Sub-headline */}
             <motion.div variants={itemVariants}>

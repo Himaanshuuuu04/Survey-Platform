@@ -21,7 +21,7 @@ export function EGILogo({ className = '', iconOnly = false, size = 48 }: EGILogo
         }}
       >
         <img
-          src="/logo.jpeg"
+          src="/logo.webp"
           alt="EvoGlobalInsight Icon"
           style={{
             position: 'absolute',
@@ -42,7 +42,7 @@ export function EGILogo({ className = '', iconOnly = false, size = 48 }: EGILogo
   return (
     <div className={`flex items-center select-none ${className}`}>
       <img
-        src="/logo.jpeg"
+        src="/logo.webp"
         alt="EvoGlobalInsight Logo"
         style={{
           height: `${size}px`,

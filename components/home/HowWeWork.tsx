@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Target, Users, LineChart } from 'lucide-react';
 import { Reveal, Section, SectionEyebrow, TimelineProgress } from '../primitives';
-
+import ScrollStack, { ScrollStackItem } from './ScrollStack'
 const BRAND = '#5C8EFF';
 
 const steps = [
@@ -19,30 +19,57 @@ export function HowWeWork() {
         <h2 className="max-w-2xl">From Survey Brief To Actionable Data — <span className="text-swoosh">In Three Moves</span>.</h2>
       </Reveal>
 
-      <div ref={ref} className="relative mt-14">
+      <div ref={ref} className="relative mt-14 max-w-3xl mx-auto">
         <div className="mb-10 px-3">
           <TimelineProgress targetRef={ref} />
         </div>
-        <div className="grid gap-8 md:grid-cols-3">
+        
+        <ScrollStack 
+          useWindowScroll={true} 
+          itemDistance={60} 
+          itemScale={0.05} 
+          itemStackDistance={25}
+          rotationAmount={1.5}
+          blurAmount={1.5}
+          baseScale={0.9}
+          className="w-full"
+        >
           {steps.map((s, i) => (
-            <Reveal key={s.n} delay={i * 0.1}>
-              <div className="relative rounded-2xl border border-[#E5E7EB] bg-white p-7">
+            <ScrollStackItem
+              key={s.n}
+              itemClassName="border border-zinc-200/80 bg-white p-8 sm:p-12 rounded-[2.5rem] h-auto flex flex-col justify-between shadow-xl"
+            >
+              <div>
                 <div className="flex items-center justify-between">
                   <div
-                    className="grid h-12 w-12 place-items-center rounded-xl text-white"
-                    style={{ background: BRAND }}
+                    className="grid h-14 w-14 place-items-center rounded-2xl text-white shadow-md"
+                    style={{
+                      background: `linear-gradient(135deg, ${BRAND} 0%, #3B82F6 100%)`,
+                    }}
                   >
-                    <s.icon size={20} />
+                    <s.icon size={24} className="stroke-[2]" />
                   </div>
-                  <span className="text-5xl font-extrabold text-[#E5E7EB]">0{s.n}</span>
+                  <span className="text-5xl sm:text-6xl font-[900] tracking-tight text-zinc-200/80 select-none">
+                    0{s.n}
+                  </span>
                 </div>
-                <h3 className="mt-5">Step {s.n} — {s.title}</h3>
-                <p className="mt-2 text-sm">{s.desc}</p>
+                <div className="mt-8">
+                  <span className="text-xs font-black uppercase tracking-widest text-[var(--brand,#5C8EFF)]">
+                    Phase 0{s.n}
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-[900] tracking-tight uppercase mt-2 text-zinc-950">
+                    {s.title}
+                  </h3>
+                  <p className="mt-3 text-sm sm:text-base text-zinc-500 font-medium leading-relaxed">
+                    {s.desc}
+                  </p>
+                </div>
               </div>
-            </Reveal>
+            </ScrollStackItem>
           ))}
-        </div>
+        </ScrollStack>
       </div>
     </Section>
   );
 }
+
