@@ -19,9 +19,9 @@ export function HowWeWork() {
         <h2 className="max-w-2xl">From Survey Brief To Actionable Data — <span className="text-swoosh">In Three Moves</span>.</h2>
       </Reveal>
 
-      <div ref={ref} className="relative mt-14 max-w-3xl mx-auto">
-        <div className="mb-10 px-3">
-          <TimelineProgress targetRef={ref} />
+      <div ref={ref} className="relative ml-0 max-w-3xl mx-auto pl-6 sm:pl-10">
+        <div className="absolute left-0 sm:left-2 top-4 bottom-4 w-1">
+          <TimelineProgress targetRef={ref} vertical={true} />
         </div>
         
         <ScrollStack 

@@ -137,14 +137,26 @@ export function SectionEyebrow({ children }: { children: ReactNode }) {
   );
 }
 
-export function TimelineProgress({ targetRef }: { targetRef: React.RefObject<HTMLElement | null> }) {
+export function TimelineProgress({ targetRef, vertical = false }: { targetRef: React.RefObject<HTMLElement | null>; vertical?: boolean }) {
   const { scrollYProgress } = useScroll({ target: targetRef, offset: ['start 80%', 'end 30%'] });
-  const width = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  const progress = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
+  
+  if (vertical) {
+    return (
+      <div className="relative w-1 h-full rounded-full bg-[var(--line)]">
+        <motion.div
+          className="absolute inset-x-0 top-0 rounded-full"
+          style={{ height: progress, background: 'var(--brand)' }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="relative h-1 w-full rounded-full bg-[var(--line)]">
       <motion.div
         className="absolute inset-y-0 left-0 rounded-full"
-        style={{ width, background: 'var(--brand)' }}
+        style={{ width: progress, background: 'var(--brand)' }}
       />
     </div>
   );

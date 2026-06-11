@@ -1,5 +1,6 @@
 import { ShieldCheck, Globe2, Zap, Brain } from 'lucide-react';
 import { Reveal, Section, SectionEyebrow } from '../primitives';
+import MagicBento from './MagicBento';
 
 const BRAND = '#5C8EFF';
 
@@ -23,23 +24,26 @@ export function WhyChooseUs() {
             <p className="mt-5 text-lg">We obsess over respondent quality, survey design, and data integrity so your marketing surveys deliver real business value.</p>
           </Reveal>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {items.map((it, i) => (
-            <Reveal key={it.title} delay={i * 0.05}>
-              <div
-                className={`group relative h-full rounded-2xl border border-[#E5E7EB] bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_-16px_rgba(0,0,0,0.12)] ${i % 2 === 1 ? 'sm:translate-y-6' : ''}`}
-              >
-                <div
-                  className="grid h-11 w-11 place-items-center rounded-xl"
-                  style={{ background: `color-mix(in srgb, ${it.tint} 10%, white)`, color: it.tint }}
-                >
-                  <it.icon size={20} />
-                </div>
-                <h3 className="mt-5">{it.title}</h3>
-                <p className="mt-2 text-sm">{it.desc}</p>
-              </div>
-            </Reveal>
-          ))}
+        <div className="w-full">
+          <Reveal delay={0.25}>
+            <MagicBento
+              theme="light"
+              textAutoHide={true}
+              enableSpotlight
+              enableBorderGlow={true}              
+              spotlightRadius={610}
+              particleCount={0}
+              glowColor="92, 142, 255"
+              disableAnimations={false}
+              cards={items.map((it, idx) => ({
+                title: it.title,
+                description: it.desc,
+                icon: it.icon,
+                tint: it.tint,
+                className: idx === 0 || idx === 3 ? 'md:col-span-2 md:aspect-[8/3]' : 'md:col-span-1 md:aspect-[4/3]'
+              }))}
+            />
+          </Reveal>
         </div>
       </div>
     </Section>

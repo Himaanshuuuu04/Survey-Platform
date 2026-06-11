@@ -2,6 +2,7 @@
 
 import { Cpu, HeartPulse, Landmark, ShoppingCart, GraduationCap, Car, ShoppingBag, Radio, Plane, Film } from 'lucide-react';
 import { Container, Reveal } from '../primitives';
+import CountUp from './CountUp';
 
 const items = [
   { icon: HeartPulse, label: 'Healthcare' },
@@ -188,14 +189,20 @@ export function IndustriesMarquee() {
         <Container>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 items-center text-center">
             {[
-              { val: '250K+', desc: 'Responses Generated' },
-              { val: '500+', desc: 'Campaigns Delivered' },
-              { val: '92%', desc: 'Completion Rate' },
-              { val: '99.7%', desc: 'Fraud Detection Accuracy' }
+              { val: 250, suffix: 'K+', desc: 'Responses Generated' },
+              { val: 500, suffix: '+', desc: 'Campaigns Delivered' },
+              { val: 92, suffix: '%', desc: 'Completion Rate' },
+              { val: 99.7, suffix: '%', desc: 'Fraud Detection Accuracy' }
             ].map((stat, idx) => (
               <div key={idx} className="flex flex-col items-center">
                 <span className="text-4xl sm:text-5xl lg:text-6xl font-[950] tracking-tight text-[#0A0A0A] leading-none">
-                  {stat.val}
+                  <CountUp
+                    from={0}
+                    to={stat.val}
+                    duration={1.5}
+                    separator=","
+                  />
+                  {stat.suffix}
                 </span>
                 <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-[#0A0A0A]/70 mt-3 leading-tight max-w-[150px]">
                   {stat.desc}

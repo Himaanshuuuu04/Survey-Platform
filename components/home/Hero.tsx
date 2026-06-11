@@ -1,5 +1,6 @@
 "use client";
 import RotatingText from './RotatingText'
+import CountUp from './CountUp';
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Container } from '../primitives';
@@ -193,10 +194,10 @@ export function Hero() {
               <div className="mt-8 border-t border-zinc-100 pt-6 max-w-md">
                 <div className="grid grid-cols-2 gap-2.5">
                   {[
-                    { value: '250K+', label: 'Responses Generated', icon: BarChart3 },
-                    { value: '500+', label: 'Campaigns Delivered', icon: Target },
-                    { value: '92%', label: 'Avg Completion Rate', icon: CheckCircle2 },
-                    { value: '99.7%', label: 'Fraud Detection Accuracy', icon: ShieldCheck }
+                    { val: 250, suffix: 'K+', label: 'Responses Generated', icon: BarChart3 },
+                    { val: 500, suffix: '+', label: 'Campaigns Delivered', icon: Target },
+                    { val: 92, suffix: '%', label: 'Avg Completion Rate', icon: CheckCircle2 },
+                    { val: 99.7, suffix: '%', label: 'Fraud Detection Accuracy', icon: ShieldCheck }
                   ].map((m) => {
                     const IconComponent = m.icon;
                     return (
@@ -214,7 +215,13 @@ export function Hero() {
 
                         <div>
                           <span className="block text-base sm:text-lg font-black tracking-tight text-zinc-950 leading-none">
-                            {m.value}
+                            <CountUp
+                              from={0}
+                              to={m.val}
+                              duration={1.5}
+                              separator=","
+                            />
+                            {m.suffix}
                           </span>
                           <span className="mt-1 block text-[7.5px] font-extrabold uppercase tracking-wider text-zinc-400 leading-tight">
                             {m.label}
