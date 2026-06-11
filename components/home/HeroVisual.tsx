@@ -134,13 +134,13 @@ export function HeroVisual() {
           x: { delay: 0.3, duration: 0.6 },
           y: floatTransition(5.5, 0.2)
         }}
-        className="absolute -top-2 right-2 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300"
+        className="absolute -top-2 right-2 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
       >
         <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
           <Check size={10} strokeWidth={3.5} />
         </div>
         <div>
-          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 leading-none">Avg Completion</span>
+          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Avg Completion</span>
           <span className="text-[10.5px] font-black text-zinc-950">92% Completion Rate</span>
         </div>
       </motion.div>
@@ -154,13 +154,13 @@ export function HeroVisual() {
           x: { delay: 0.45, duration: 0.6 },
           y: floatTransition(6, 0.5)
         }}
-        className="absolute top-[44%] -left-2 lg:-left-4 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300"
+        className="absolute top-[44%] -left-2 lg:-left-4 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
       >
         <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
           <ShieldCheck size={10} strokeWidth={3} />
         </div>
         <div>
-          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 leading-none">Security Engine</span>
+          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Security Engine</span>
           <span className="text-[10.5px] font-black text-zinc-950">Bot Detection Active</span>
         </div>
       </motion.div>
@@ -174,13 +174,13 @@ export function HeroVisual() {
           x: { delay: 0.6, duration: 0.6 },
           y: floatTransition(6.5, 0.8)
         }}
-        className="absolute top-[22%] -right-14 lg:-right-18 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300"
+        className="absolute top-[22%] -right-14 lg:-right-18 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
       >
         <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
           <Users size={10} strokeWidth={3} />
         </div>
         <div>
-          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 leading-none">Audience Quality</span>
+          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Audience Quality</span>
           <span className="text-[10.5px] font-black text-zinc-950">Verified Respondents</span>
         </div>
       </motion.div>
@@ -193,13 +193,13 @@ export function HeroVisual() {
           opacity: { delay: 0.75, duration: 0.6 },
           y: floatTransition(5, 1.2)
         }}
-        className="absolute bottom-1 -right-2 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300"
+        className="absolute bottom-1 -right-2 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
       >
         <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
           <TrendingUp size={10} strokeWidth={3} />
         </div>
         <div>
-          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 leading-none">Platform Scale</span>
+          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Platform Scale</span>
           <span className="text-[10.5px] font-black text-zinc-950">250K+ Responses</span>
         </div>
       </motion.div>
@@ -212,7 +212,7 @@ export function HeroVisual() {
           opacity: { delay: 0.9, duration: 0.8 },
           y: floatTransition(7, 0)
         }}
-        className="absolute -bottom-6 -left-2 lg:-left-6 z-30 max-w-[280px] rounded-2xl border border-white/60 bg-white/80 backdrop-blur-lg p-3.5 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1),0_8px_16px_-8px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] hover:shadow-[0_36px_60px_rgba(0,0,0,0.14)] transition-all duration-300 hover:scale-[1.01]"
+        className="absolute -bottom-6 -left-2 lg:-left-6 z-30 max-w-[280px] rounded-2xl border border-white/60 bg-white/80 backdrop-blur-lg p-3.5 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1),0_8px_16px_-8px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] hover:shadow-[0_36px_60px_rgba(0,0,0,0.14)] transition-all duration-300 hover:scale-[1.01] will-change-transform"
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-2.5">
