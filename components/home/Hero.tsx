@@ -111,7 +111,7 @@ export function Hero() {
                     <span className="text-[var(--brand,#5C8EFF)] inline-flex overflow-hidden vertical-align-middle pb-1">
                       <RotatingText
                         texts={['Respondents.', 'Audiences.', 'Professionals.', 'Consumers.', 'Experts']}
-                        mainClassName="inline-flex text-[var(--brand,#5C8EFF)]"
+                        mainClassName="inline-flex text-[var(--brand,#5C8EFF)] font-black"
                         staggerFrom="last"
                         initial={{ y: '100%' }}
                         animate={{ y: 0 }}
@@ -126,7 +126,7 @@ export function Hero() {
                       />
                     </span>
                     {' '}
-                    Collect Better Insights.
+                    Collect <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">Better Insights.</span>
                   </>
                 ) : (
                   <>
@@ -134,7 +134,7 @@ export function Hero() {
                     <span className="text-[var(--brand,#BE123C)] inline-flex overflow-hidden vertical-align-middle pb-1">
                       <RotatingText
                         texts={['Global', 'Future', "Tomorrow's", 'Everyday', 'Leading']}
-                        mainClassName="inline-flex text-[var(--brand,#BE123C)]"
+                        mainClassName="inline-flex text-[var(--brand,#BE123C)] font-black"
                         staggerFrom="last"
                         initial={{ y: '100%' }}
                         animate={{ y: 0 }}
@@ -148,7 +148,7 @@ export function Hero() {
                         loop
                       />
                     </span>{' '}
-                    Products. Get Rewarded.
+                    Products. <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">Get Rewarded.</span>
                   </>
                 )}
               </h1>

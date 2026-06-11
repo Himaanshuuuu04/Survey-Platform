@@ -16,7 +16,7 @@ export function HowWeWork() {
     <Section id="how-we-work" className="border-t border-[#E5E7EB] bg-[#F8FAFA]">
       <Reveal><SectionEyebrow>How we work</SectionEyebrow></Reveal>
       <Reveal delay={0.05}>
-        <h2 className="max-w-2xl">From Survey Brief To Actionable Data — <span className="text-swoosh">In Three Moves</span>.</h2>
+        <h2 className="max-w-2xl">From Survey Brief To Actionable Data — <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide text-swoosh">In Three Moves</span>.</h2>
       </Reveal>
 
       <div ref={ref} className="relative ml-0 max-w-3xl mx-auto pl-6 sm:pl-10">

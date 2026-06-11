@@ -38,7 +38,7 @@ export function IndustriesMarquee() {
           <h2 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-[900] tracking-tight uppercase leading-[1.08] text-zinc-950">
             DEEP EXPERTISE ACROSS<br />
             THE CATEGORIES THAT<br />
-            <span className="text-swoosh">MOVE THE WORLD</span>.
+            <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide text-swoosh">MOVE THE WORLD</span>.
           </h2>
         </div>
       </Container>

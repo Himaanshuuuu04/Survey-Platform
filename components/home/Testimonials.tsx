@@ -1,7 +1,7 @@
 import { Reveal, Section, SectionEyebrow } from '../primitives';
 import Carousel from './Carousel';
 
-const data = [
+const cases = [
   {
     quote: 'EvoGlobalInsight delivered insights in two weeks that would have taken our internal team a quarter. The launch hit number one in its category.',
     name: 'Amelia Chen',
@@ -52,7 +52,8 @@ export function Testimonials() {
             round={false}
           />
         </div>
-      </Reveal>
+
+      </div>
     </Section>
   );
 }
