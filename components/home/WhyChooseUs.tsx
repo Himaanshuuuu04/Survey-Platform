@@ -1,88 +1,198 @@
-import { ShieldCheck, Globe2, Zap, Brain } from 'lucide-react';
-import { Reveal, Section, SectionEyebrow } from '../primitives';
+"use client";
 
-const BRAND = '#5C8EFF';
+import { useRef, useState, useEffect } from 'react';
+import { useInView } from 'motion/react';
+import { Reveal, Section, Container } from '../primitives';
 
-const items = [
-  { 
-    icon: ShieldCheck, 
-    title: 'Verified Respondents', 
-    metric: '99.7% Fraud Detection Accuracy',
-    desc: 'Triple-verified panels with bot detection and identity checks for clean data.', 
-    tint: BRAND 
+interface ProcessStep {
+  n: number;
+  orbGrad: string;
+  title: string;
+  desc: string;
+}
+
+const steps: ProcessStep[] = [
+  {
+    n: 1,
+    orbGrad: 'from-[#5B84FF] to-[#29D5FF]',
+    title: 'Survey Design',
+    desc: 'Research objectives, questionnaire creation, and sampling strategy.'
   },
-  { 
-    icon: Globe2, 
-    title: 'Global Reach', 
-    metric: '50+ Countries Included',
-    desc: 'Active panels in 50+ countries across 30+ languages for any target audience.', 
-    tint: BRAND 
+  {
+    n: 2,
+    orbGrad: 'from-[#29D5FF] to-[#2563EB]',
+    title: 'Audience Recruitment',
+    desc: 'Verified respondent sourcing, targeted outreach, and panel activation.'
   },
-  { 
-    icon: Zap, 
-    title: 'Fast Turnaround', 
-    metric: 'Average Delivery in 7 Days',
-    desc: 'Most surveys fielded and results delivered within 7 business days.', 
-    tint: BRAND 
+  {
+    n: 3,
+    orbGrad: 'from-[#3B82F6] to-[#02E8F8]',
+    title: 'Data Collection',
+    desc: 'Survey deployment, real-time response monitoring, and quality control.'
   },
-  { 
-    icon: Brain, 
-    title: 'Survey Expertise', 
-    metric: '10+ Years Research Experience',
-    desc: 'PhD-led methodology team designing surveys that get reliable, actionable results.', 
-    tint: BRAND 
-  },
+  {
+    n: 4,
+    orbGrad: 'from-[#02E8F8] to-[#5B84FF]',
+    title: 'Insight Delivery',
+    desc: 'Deep data analysis, report generation, and actionable recommendations.'
+  }
 ];
 
 export function WhyChooseUs() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      setActiveStep(1);
+      
+      const t2 = setTimeout(() => setActiveStep(2), 1000);
+      const t3 = setTimeout(() => setActiveStep(3), 2100);
+      const t4 = setTimeout(() => setActiveStep(4), 3200);
+      
+      return () => {
+        clearTimeout(t2);
+        clearTimeout(t3);
+        clearTimeout(t4);
+      };
+    }
+  }, [isInView]);
+
   return (
-    <Section className="!pt-10 sm:!pt-14">
-      <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <Reveal><SectionEyebrow>Why companies choose us</SectionEyebrow></Reveal>
-          <Reveal delay={0.05}>
-            <h2 className="text-balance leading-[1.15]">
-              Survey Data You Can<br className="hidden sm:inline" /> <span className="text-swoosh">Stake A Decision</span> On.
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="mt-5 text-lg">
-              We obsess over respondent quality, survey design, and data integrity so your marketing surveys deliver real business value.
+    <section 
+      ref={containerRef}
+      id="how-it-works" 
+      className="border-t border-[#E5E7EB] bg-[#FAFAFA] relative overflow-hidden py-20 sm:py-28"
+      style={{
+        backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
+        backgroundSize: '24px 24px',
+      }}
+    >
+      {/* Extremely light blue radial glow to create depth */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_35%,rgba(92,142,255,0.03),transparent_55%)] pointer-events-none" />
+
+      {/* Giant faded step number in background */}
+      <div className="absolute top-0 right-10 text-[20rem] sm:text-[28rem] lg:text-[36rem] font-[1000] text-zinc-950/2 tracking-tighter select-none pointer-events-none leading-none transition-all duration-1000 ease-in-out">
+        0{activeStep || 1}
+      </div>
+
+      <Container>
+        {/* HEADLINE AREA */}
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr] items-end mb-16 relative z-10">
+          <div>
+            <Reveal>
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1 text-[9px] font-black tracking-widest uppercase text-[#5B84FF] mb-5">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#29D5FF] animate-pulse" />
+                HOW IT WORKS &middot; 4 STEPS
+              </div>
+            </Reveal>
+            <Reveal delay={0.05}>
+              <h2 className="text-6xl sm:text-7xl lg:text-8xl font-[1000] tracking-tight uppercase leading-[0.95] text-zinc-950">
+                THE<br />
+                <span className="text-transparent [-webkit-text-stroke:1.5px_#111111] font-black tracking-wider">
+                  PROCESS.
+                </span>
+              </h2>
+            </Reveal>
+          </div>
+          <Reveal delay={0.1} className="lg:max-w-md">
+            <p className="text-base sm:text-lg text-zinc-500 font-medium leading-relaxed">
+              From survey design to verified insights, our proven research workflow delivers reliable, high-quality data at scale.
             </p>
           </Reveal>
         </div>
-        
-        <div className="relative">
-          {/* Subtle blue gradient glow behind the card grid to create depth */}
-          <div className="pointer-events-none absolute -inset-10 -z-10 rounded-full bg-[radial-gradient(circle_at_center,rgba(92,142,255,0.06)_0%,transparent_65%)] blur-3xl" />
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {items.map((it, i) => (
-              <Reveal key={it.title} delay={i * 0.05}>
+        {/* ANIMATED PATH & ROCKET (Hidden on mobile for better scaling, layout defaults to stack) */}
+        <div className="relative w-full hidden lg:block overflow-visible mb-6 z-10 px-4">
+          <svg viewBox="0 0 1000 120" fill="none" className="w-full overflow-visible">
+            {/* Curved background line */}
+            <path 
+              d="M 125,70 C 200,95 300,45 375,70 C 450,95 550,45 625,70 C 700,95 800,45 875,70" 
+              stroke="#E4E4E7" 
+              strokeWidth="2.5" 
+              strokeLinecap="round"
+              strokeDasharray="4 4"
+            />
+            
+            {/* Step Indicators (Milestone Dots) */}
+            <circle cx="125" cy="70" r={activeStep >= 1 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 1 ? 'fill-[#29D5FF]' : 'fill-zinc-300'}`} style={activeStep >= 1 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
+            <circle cx="375" cy="70" r={activeStep >= 2 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 2 ? 'fill-[#29D5FF]' : 'fill-zinc-300'}`} style={activeStep >= 2 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
+            <circle cx="625" cy="70" r={activeStep >= 3 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 3 ? 'fill-[#29D5FF]' : 'fill-zinc-300'}`} style={activeStep >= 3 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
+            <circle cx="875" cy="70" r={activeStep >= 4 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 4 ? 'fill-[#29D5FF]' : 'fill-zinc-300'}`} style={activeStep >= 4 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
+
+            {/* Custom SVG Rocket */}
+            <g>
+              {/* Rocket Nose Points Forward (Positive X direction) */}
+              {/* Flame */}
+              <path d="M -12,0 L -22,4 L -18,0 L -22,-4 Z" fill="#29D5FF" />
+              {/* Fins */}
+              <path d="M -8,5 L -14,10 L -4,5 Z" fill="#5B84FF" />
+              <path d="M -8,-5 L -14,-10 L -4,-5 Z" fill="#5B84FF" />
+              {/* Body */}
+              <path d="M -10,-5 L 6,-5 C 12,-5 16,0 16,0 C 16,0 12,5 6,5 L -10,5 Z" fill="#FFFFFF" stroke="#5B84FF" strokeWidth="1.5" />
+              {/* Window */}
+              <circle cx="0" cy="0" r="2.5" fill="#111111" />
+              <circle cx="0" cy="0" r="1.2" fill="#29D5FF" />
+              
+              {isInView && (
+                <animateMotion 
+                  dur="3.2s" 
+                  repeatCount="1" 
+                  fill="freeze"
+                  path="M 125,70 C 200,95 300,45 375,70 C 450,95 550,45 625,70 C 700,95 800,45 875,70"
+                  rotate="auto"
+                />
+              )}
+            </g>
+          </svg>
+        </div>
+
+        {/* PROCESS CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+          {steps.map((step, idx) => {
+            const isActive = activeStep >= step.n;
+            return (
+              <Reveal key={step.n} delay={idx * 0.08}>
                 <div
-                  className={`group relative h-full rounded-2xl border border-zinc-200/80 bg-white p-7 transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-12px_rgba(92,142,255,0.12)] hover:border-[#5C8EFF]/35 ${i % 2 === 1 ? 'sm:translate-y-6' : ''}`}
+                  className={`relative flex flex-col h-full bg-white border rounded-[2rem] p-8 transition-all duration-500 ease-out group ${
+                    isActive 
+                      ? 'border-[#5B84FF]/60 shadow-[0_20px_45px_rgba(91,132,255,0.12)] scale-[1.03] -translate-y-2' 
+                      : 'border-zinc-200/80 shadow-sm hover:-translate-y-1 hover:shadow-md'
+                  }`}
                 >
-                  <div
-                    className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#5C8EFF]/15 bg-[#EFF6FF] text-[#5C8EFF] transition-colors group-hover:bg-[#5C8EFF] group-hover:text-white"
-                  >
-                    <it.icon size={26} strokeWidth={2} />
+                  {/* Large faded step number in background */}
+                  <div className={`absolute top-4 right-6 text-7xl font-[1000] select-none pointer-events-none transition-colors duration-500 ${
+                    isActive ? 'text-blue-50/70' : 'text-zinc-100'
+                  }`}>
+                    0{step.n}
                   </div>
-                  
-                  <h3 className="mt-6 text-xl font-extrabold text-zinc-950 tracking-tight leading-snug">{it.title}</h3>
-                  
-                  {/* Credibility Metric Highlight */}
-                  <div className="mt-2 text-xs font-black uppercase tracking-wider text-[#5C8EFF] flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
-                    {it.metric}
-                  </div>
-                  
-                  <p className="mt-3.5 text-sm text-zinc-500 leading-relaxed font-medium">{it.desc}</p>
+
+                  {/* Gradient Orb */}
+                  <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${step.orbGrad} shadow-lg mb-8 transition-transform duration-500 ${
+                    isActive ? 'scale-110' : ''
+                  }`} />
+
+                  {/* Step Label */}
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#5B84FF] font-sans">
+                    STEP 0{step.n}
+                  </span>
+
+                  {/* Title */}
+                  <h3 className="text-xl font-extrabold text-[#111111] mt-2 tracking-tight">
+                    {step.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-sm text-zinc-500 font-medium leading-relaxed mt-3.5">
+                    {step.desc}
+                  </p>
                 </div>
               </Reveal>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      </div>
-    </Section>
+      </Container>
+    </section>
   );
 }
