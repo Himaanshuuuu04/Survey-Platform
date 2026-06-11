@@ -630,10 +630,12 @@ function WordRevealText({ text, delay = 0 }: { text: string; delay?: number }) {
   );
 }
 
-function CapabilitiesWatermark() {
-  const letters = Array.from("capabilities");
+function DeliveringStatement() {
+  const line1 = Array.from("WHAT WE");
+  const line2 = Array.from("DELIVER.");
+
   return (
-    <motion.div
+    <motion.h2
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
@@ -645,29 +647,41 @@ function CapabilitiesWatermark() {
           }
         }
       }}
-      className="text-[11vw] sm:text-[9vw] font-[1000] tracking-tighter normal-case leading-none text-zinc-900 text-center select-none font-sans flex justify-center items-center gap-[0.05em]"
+      className="text-[9.5vw] sm:text-[7.5vw] font-[1000] tracking-tighter uppercase leading-[0.9] text-center select-none font-sans flex flex-col items-center justify-center py-6"
     >
-      {letters.map((letter, index) => (
-        <motion.span
-          key={index}
-          variants={{
-            hidden: { opacity: 0, y: 60, scale: 0.8, rotateX: 45, filter: "blur(8px)" },
-            visible: { opacity: 1, y: 0, scale: 1, rotateX: 0, filter: "blur(0px)" }
-          }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          whileHover={{ 
-            scale: 1.15, 
-            y: -10,
-            color: "#5B84FF",
-            textShadow: "0 10px 30px rgba(91, 132, 255, 0.3)",
-            transition: { duration: 0.2, ease: "easeOut" }
-          }}
-          className="inline-block cursor-default origin-bottom"
-        >
-          {letter}
-        </motion.span>
-      ))}
-    </motion.div>
+      <div className="flex justify-center items-center gap-[0.03em] text-zinc-950">
+        {line1.map((letter, index) => (
+          <motion.span
+            key={index}
+            variants={{
+              hidden: { opacity: 0, y: 50, rotateX: 45, filter: "blur(6px)" },
+              visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }
+            }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ scale: 1.12, y: -5 }}
+            className="inline-block origin-bottom cursor-default hover:text-[#5B84FF] transition-colors duration-200"
+          >
+            {letter === " " ? "\u00A0" : letter}
+          </motion.span>
+        ))}
+      </div>
+      <div className="flex justify-center items-center gap-[0.03em] text-transparent [-webkit-text-stroke:1.3px_#111111] sm:[-webkit-text-stroke:2px_#111111] tracking-wide mt-2">
+        {line2.map((letter, index) => (
+          <motion.span
+            key={index}
+            variants={{
+              hidden: { opacity: 0, y: 50, rotateX: 45, filter: "blur(6px)" },
+              visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }
+            }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ scale: 1.12, y: -5 }}
+            className="inline-block origin-bottom cursor-default hover:[-webkit-text-stroke-color:#5B84FF] transition-colors duration-200"
+          >
+            {letter === " " ? "\u00A0" : letter}
+          </motion.span>
+        ))}
+      </div>
+    </motion.h2>
   );
 }
 
@@ -828,9 +842,9 @@ export default function Services() {
             ))}
           </div>
 
-          {/* Center Giant capabilities watermark emerging from shade */}
+          {/* Center Giant two-line Delivering Statement emerging from shade */}
           <div className="w-full relative overflow-hidden flex justify-center items-center py-8 select-none">
-            <CapabilitiesWatermark />
+            <DeliveringStatement />
           </div>
 
           {/* Thin divider line */}
