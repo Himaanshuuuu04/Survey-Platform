@@ -58,7 +58,7 @@ export function WhatWeDo() {
           <h2 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-[900] tracking-tight uppercase leading-[1.08] text-zinc-950 text-balance">
             Survey Solutions<br />
             That Turn Questions<br />
-            Into <span className="text-swoosh">Clear Answers</span>.
+            Into <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide text-swoosh">Clear Answers</span>.
           </h2>
         </Reveal>
       </div>
