@@ -11,137 +11,402 @@ import {
 import { ServicesHero } from '@/components/services/ServicesHero';
 import { Button, Reveal, Section, Container, Counter } from '@/components/primitives';
 
-// BENTO CARDS DATA
-const bentoCards = [
-  {
-    title: "Audience Recruitment",
-    desc: "Pinpoint your exact target market. Access niche consumer panels, verified B2B decision makers, parents, students, healthcare workers, and custom profiles globally using granular demographic, firmographic, and behavioral selectors.",
-    tag: "Audience targeting",
-    span: "lg:col-span-2",
-    icon: Users,
-    glow: "bg-[radial-gradient(circle_at_20%_20%,rgba(92,142,255,0.15),transparent_50%)]",
-    visual: (
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-2 w-full">
-        {[
-          { label: "B2B Decision Makers", active: true },
-          { label: "Niche Consumers", active: true },
-          { label: "Healthcare Pro", active: true },
-          { label: "Active Parents", active: true },
-          { label: "Global Students", active: false },
-          { label: "SMB Owners", active: true }
-        ].map((item, idx) => (
-          <div
-            key={idx}
-            className={`px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all duration-300 ${item.active
-                ? "bg-white border-[#5B84FF]/30 text-[#5B84FF] shadow-[0_2px_8px_rgba(91,132,255,0.08)]"
-                : "bg-white border-zinc-200 text-zinc-400"
+// PLAYGROUND 1: AUDIENCE RECRUITMENT
+function AudienceRecruitmentPlayground() {
+  const floatingChips = [
+    { text: "B2B Tech Buyers", x: "-35%", y: "-25%", delay: 0, color: "text-[#5B84FF] border-[#5B84FF]/20" },
+    { text: "Healthcare Pro", x: "32%", y: "-35%", delay: 0.5, color: "text-[#2563EB] border-[#2563EB]/20" },
+    { text: "SMB Owners", x: "-38%", y: "25%", delay: 1, color: "text-[#7C3AED] border-[#7C3AED]/20" },
+    { text: "Active Parents", x: "35%", y: "20%", delay: 1.5, color: "text-[#02E8F8] border-[#02E8F8]/20" },
+    { text: "Global Students", x: "2%", y: "-42%", delay: 2, color: "text-[#5B84FF] border-[#5B84FF]/20" },
+    { text: "Niche Consumers", x: "-2%", y: "42%", delay: 2.5, color: "text-[#7C3AED] border-[#7C3AED]/20" },
+  ];
+
+  return (
+    <div className="relative w-full aspect-[4/3] max-w-[550px] mx-auto bg-slate-50/40 rounded-3xl border border-zinc-200/50 overflow-hidden flex items-center justify-center p-8 shadow-[0_8px_30px_rgba(0,0,0,0.015)]">
+      {/* Concentric rings */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[14%] aspect-square rounded-full border border-dashed border-zinc-200" />
+        <div className="w-[34%] aspect-square rounded-full border border-dashed border-zinc-200/80 absolute" />
+        <div className="w-[58%] aspect-square rounded-full border border-dashed border-zinc-200/60 absolute" />
+        <div className="w-[82%] aspect-square rounded-full border border-dashed border-zinc-200/40 absolute" />
+      </div>
+
+      {/* Crosshairs lines */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[85%] h-[1px] bg-gradient-to-r from-transparent via-zinc-200/80 to-transparent" />
+        <div className="h-[85%] w-[1px] bg-gradient-to-b from-transparent via-zinc-200/80 to-transparent absolute" />
+      </div>
+
+      {/* Pulse radar scanner effect */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+        className="absolute w-[80%] aspect-square rounded-full bg-[conic-gradient(from_0deg,rgba(91,132,255,0.06),transparent_40%)] pointer-events-none origin-center"
+      />
+
+      {/* Target Center Node */}
+      <div className="relative z-10 flex items-center justify-center">
+        <motion.div
+          animate={{ scale: [1, 1.25, 1], opacity: [0.8, 1, 0.8] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="w-5 h-5 rounded-full bg-[#5B84FF] flex items-center justify-center relative shadow-[0_0_15px_rgba(91,132,255,0.4)]"
+        >
+          <span className="w-2.5 h-2.5 rounded-full bg-white" />
+          <span className="absolute -inset-3 rounded-full border border-[#5B84FF]/30 animate-ping" />
+        </motion.div>
+      </div>
+
+      {/* Floating demographic tag chips */}
+      {floatingChips.map((chip, idx) => (
+        <motion.div
+          key={idx}
+          style={{ x: chip.x, y: chip.y }}
+          animate={{
+            y: [`calc(${chip.y} - 8px)`, `calc(${chip.y} + 8px)`, `calc(${chip.y} - 8px)`],
+            x: [`calc(${chip.x} - 6px)`, `calc(${chip.x} + 6px)`, `calc(${chip.x} - 6px)`]
+          }}
+          transition={{
+            duration: 5 + idx,
+            repeat: Infinity,
+            delay: chip.delay,
+            ease: "easeInOut"
+          }}
+          whileHover={{ scale: 1.08, zIndex: 30 }}
+          className={`absolute px-3.5 py-2 rounded-2xl border bg-white/95 backdrop-blur-md text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-[0_4px_16px_rgba(0,0,0,0.04)] flex items-center gap-2 transition-shadow duration-300 hover:shadow-[0_12px_24px_rgba(91,132,255,0.15)] select-none ${chip.color}`}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-[#02E8F8]" />
+          {chip.text}
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+// PLAYGROUND 2: SURVEY DISTRIBUTION
+function SurveyDistributionPlayground() {
+  return (
+    <div className="relative w-full aspect-[4/3] max-w-[550px] mx-auto bg-slate-50/40 rounded-3xl border border-zinc-200/50 overflow-hidden flex items-center justify-center p-8 shadow-[0_8px_30px_rgba(0,0,0,0.015)]">
+      {/* Background radial soft light */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(91,132,255,0.03),transparent_70%)] pointer-events-none" />
+
+      {/* SVG Path lines for connections */}
+      <svg viewBox="0 0 400 300" className="absolute inset-0 w-full h-full pointer-events-none" fill="none">
+        <defs>
+          <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#5B84FF" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#02E8F8" stopOpacity="0.2" />
+          </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        
+        {/* Connection curve lines */}
+        <path d="M 200 150 Q 110 110 60 70" stroke="url(#gradient1)" strokeWidth="1.5" strokeDasharray="5 3" />
+        <path d="M 200 150 Q 290 110 340 70" stroke="url(#gradient1)" strokeWidth="1.5" strokeDasharray="5 3" />
+        <path d="M 200 150 Q 110 190 60 230" stroke="url(#gradient1)" strokeWidth="1.5" strokeDasharray="5 3" />
+        <path d="M 200 150 Q 290 190 340 230" stroke="url(#gradient1)" strokeWidth="1.5" strokeDasharray="5 3" />
+
+        {/* Native animated flowing particles */}
+        <circle r="4" fill="#02E8F8" filter="url(#glow)">
+          <animateMotion dur="2.8s" repeatCount="indefinite" path="M 200 150 Q 110 110 60 70" />
+        </circle>
+        <circle r="4" fill="#5B84FF" filter="url(#glow)">
+          <animateMotion dur="2.2s" repeatCount="indefinite" path="M 200 150 Q 290 110 340 70" />
+        </circle>
+        <circle r="4" fill="#5B84FF" filter="url(#glow)">
+          <animateMotion dur="3.2s" repeatCount="indefinite" path="M 200 150 Q 110 190 60 230" />
+        </circle>
+        <circle r="4" fill="#02E8F8" filter="url(#glow)">
+          <animateMotion dur="2.5s" repeatCount="indefinite" path="M 200 150 Q 290 190 340 230" />
+        </circle>
+      </svg>
+
+      {/* Central Hub Node */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <motion.div 
+          animate={{ boxShadow: ["0 0 15px rgba(91,132,255,0.2)", "0 0 30px rgba(91,132,255,0.4)", "0 0 15px rgba(91,132,255,0.2)"] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="relative z-10 w-16 h-16 rounded-2xl bg-zinc-950 border border-zinc-800 flex flex-col items-center justify-center shadow-lg"
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-[#02E8F8] animate-pulse absolute top-2 right-2" />
+          <Send size={20} className="text-[#5B84FF]" />
+          <span className="text-[7px] font-black uppercase text-zinc-400 tracking-wider mt-1.5">CORE</span>
+        </motion.div>
+      </div>
+
+      {/* Channel Nodes */}
+      <div className="absolute top-[35px] left-[20px] sm:left-[35px] z-10">
+        <motion.div 
+          whileHover={{ y: -2 }}
+          className="px-3.5 py-2.5 bg-white border border-zinc-200/80 rounded-2xl flex flex-col items-start gap-0.5 text-left shadow-sm min-w-[110px]"
+        >
+          <span className="text-[9px] font-black uppercase tracking-wider text-zinc-950">Panel API</span>
+          <span className="text-[7.5px] font-medium text-zinc-400">Direct integration</span>
+          <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full mt-1.5 flex items-center gap-1">
+            <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" /> Connected
+          </span>
+        </motion.div>
+      </div>
+
+      <div className="absolute top-[35px] right-[20px] sm:right-[35px] z-10">
+        <motion.div 
+          whileHover={{ y: -2 }}
+          className="px-3.5 py-2.5 bg-white border border-zinc-200/80 rounded-2xl flex flex-col items-start gap-0.5 text-left shadow-sm min-w-[110px]"
+        >
+          <span className="text-[9px] font-black uppercase tracking-wider text-zinc-950">SMS Link</span>
+          <span className="text-[7.5px] font-medium text-zinc-400">Mobile direct</span>
+          <span className="text-[8px] font-bold text-[#5B84FF] bg-[#5B84FF]/5 px-1.5 py-0.5 rounded-full mt-1.5 flex items-center gap-1">
+            <span className="w-1 h-1 rounded-full bg-[#02E8F8] animate-pulse" /> Active
+          </span>
+        </motion.div>
+      </div>
+
+      <div className="absolute bottom-[35px] left-[20px] sm:left-[35px] z-10">
+        <motion.div 
+          whileHover={{ y: -2 }}
+          className="px-3.5 py-2.5 bg-white border border-zinc-200/80 rounded-2xl flex flex-col items-start gap-0.5 text-left shadow-sm min-w-[110px]"
+        >
+          <span className="text-[9px] font-black uppercase tracking-wider text-zinc-950">Email Send</span>
+          <span className="text-[7.5px] font-medium text-zinc-400">Secure templates</span>
+          <span className="text-[8px] font-bold text-[#5B84FF] bg-[#5B84FF]/5 px-1.5 py-0.5 rounded-full mt-1.5 flex items-center gap-1">
+            <span className="w-1 h-1 rounded-full bg-[#02E8F8] animate-pulse" /> Transmitting
+          </span>
+        </motion.div>
+      </div>
+
+      <div className="absolute bottom-[35px] right-[20px] sm:right-[35px] z-10">
+        <motion.div 
+          whileHover={{ y: -2 }}
+          className="px-3.5 py-2.5 bg-white border border-zinc-200/80 rounded-2xl flex flex-col items-start gap-0.5 text-left shadow-sm min-w-[110px]"
+        >
+          <span className="text-[9px] font-black uppercase tracking-wider text-zinc-950">Mobile App</span>
+          <span className="text-[7.5px] font-medium text-zinc-400">In-app intercept</span>
+          <span className="text-[8px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full mt-1.5 flex items-center gap-1">
+            <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" /> Connected
+          </span>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+// PLAYGROUND 3: DATA VALIDATION
+function DataValidationPlayground() {
+  const [inflow, setInflow] = useState<Array<{ id: number; name: string; type: string; status: 'pending' | 'verified' | 'failed'; detail: string }>>([
+    { id: 1, name: "Response #9821", type: "VPN Proxy Check", status: 'pending', detail: "Analyzing IP reputation..." },
+    { id: 2, name: "Response #9822", type: "B2B Tech Cohort", status: 'verified', detail: "Valid fingerprint match" },
+    { id: 3, name: "Response #9823", type: "Speedrunner Match", status: 'failed', detail: "Completed in 14s (threshold 120s)" },
+    { id: 4, name: "Response #9824", type: "Healthcare Cohort", status: 'verified', detail: "Unique device record verified" },
+  ]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setInflow(prev => {
+        const next = [...prev];
+        const first = next.shift()!;
+        const newId = first.id + 4;
+        const randomType = Math.random() > 0.5 
+          ? (Math.random() > 0.5 ? "B2B Tech Cohort" : "Consumer Panel")
+          : (Math.random() > 0.5 ? "VPN Proxy Check" : "Speedrunner Match");
+        
+        let status: 'pending' | 'verified' | 'failed' = 'pending';
+        let detail = "Analyzing...";
+        if (randomType.includes("Cohort") || randomType.includes("Panel")) {
+          status = 'verified';
+          detail = "Unique device record verified";
+        } else if (randomType.includes("VPN")) {
+          status = 'failed';
+          detail = "Residential proxy mismatch";
+        } else {
+          status = 'failed';
+          detail = "Completed in under 15 seconds";
+        }
+
+        const newItem = {
+          id: newId,
+          name: `Response #${newId + 9800}`,
+          type: randomType,
+          status,
+          detail
+        };
+        return [...next, newItem];
+      });
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="relative w-full aspect-[4/3] max-w-[550px] mx-auto bg-slate-50/40 rounded-3xl border border-zinc-200/50 overflow-hidden flex flex-col justify-between p-6 shadow-[0_8px_30px_rgba(0,0,0,0.015)]">
+      <div className="flex justify-between items-center pb-2 border-b border-zinc-200/60 z-10">
+        <span className="text-[10px] font-black uppercase text-zinc-400 tracking-wider">Validation Shield Feed</span>
+        <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1 font-mono">
+          99.7% ACCURACY
+        </span>
+      </div>
+
+      <div className="absolute top-[48%] left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#5B84FF] to-transparent z-20 pointer-events-none">
+        <div className="absolute top-[-4px] left-[50%] -translate-x-[50%] bg-[#5B84FF] text-white text-[7px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">
+          Validator Checkpoint
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2.5 relative z-10 flex-grow justify-center py-4 overflow-hidden">
+        <AnimatePresence mode="popLayout">
+          {inflow.map((item, index) => {
+            const isPending = index === 0;
+            const isVerified = item.status === 'verified';
+            const isFailed = item.status === 'failed';
+
+            return (
+              <motion.div
+                key={item.id}
+                layout
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                animate={{ 
+                  opacity: isPending ? 0.6 : (isFailed ? 0.35 : 1),
+                  scale: isFailed ? 0.96 : 1,
+                  y: 0,
+                  borderColor: isPending ? "rgb(228,228,231)" : (isFailed ? "rgba(239,68,68,0.2)" : "rgba(16,185,129,0.2)")
+                }}
+                exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                className="p-2.5 bg-white border rounded-xl flex items-center justify-between shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
+              >
+                <div className="flex flex-col text-left gap-0.5">
+                  <span className="text-[9.5px] font-black uppercase tracking-wide text-zinc-900">{item.name}</span>
+                  <span className="text-[8px] font-bold text-zinc-400 uppercase tracking-widest">{item.type}</span>
+                  <span className="text-[8px] font-semibold text-zinc-500">{item.detail}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {isPending ? (
+                    <span className="text-[8px] font-black text-amber-500 bg-amber-50 px-2 py-0.5 rounded-full uppercase tracking-wide flex items-center gap-1 font-sans">
+                      <span className="w-1 h-1 rounded-full bg-amber-400 animate-pulse" /> Check
+                    </span>
+                  ) : isVerified ? (
+                    <span className="text-[8px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wide flex items-center gap-1 font-sans">
+                      <Check size={8} strokeWidth={3} /> Verified
+                    </span>
+                  ) : (
+                    <span className="text-[8px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full uppercase tracking-wide flex items-center gap-1 font-sans">
+                      Discarded
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-zinc-200/60 text-center z-10">
+        <div>
+          <span className="block text-[7px] font-black text-zinc-400 uppercase tracking-wider">Device ID</span>
+          <span className="text-[9px] font-bold text-zinc-800 font-mono">Fingerprint</span>
+        </div>
+        <div>
+          <span className="block text-[7px] font-black text-zinc-400 uppercase tracking-wider">Geographic</span>
+          <span className="text-[9px] font-bold text-zinc-800 font-mono">Verified IP</span>
+        </div>
+        <div>
+          <span className="block text-[7px] font-black text-zinc-400 uppercase tracking-wider">Behavioral</span>
+          <span className="text-[9px] font-bold text-zinc-800 font-mono">Keystroke</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// PLAYGROUND 4: INSIGHT DELIVERY
+function InsightDeliveryPlayground() {
+  const [activeTab, setActiveTab] = useState<'b2b' | 'consumers' | 'healthcare'>('b2b');
+
+  const data = {
+    b2b: [
+      { label: "US Tech Leaders", value: 92, count: "480 completed" },
+      { label: "EU IT Managers", value: 85, count: "390 completed" },
+      { label: "APAC Developers", value: 78, count: "380 completed" }
+    ],
+    consumers: [
+      { label: "Premium Shoppers", value: 95, count: "620 completed" },
+      { label: "Active Parents", value: 88, count: "510 completed" },
+      { label: "Suburban Families", value: 91, count: "550 completed" }
+    ],
+    healthcare: [
+      { label: "Primary Care MDs", value: 86, count: "120 completed" },
+      { label: "Clinical Specialists", value: 80, count: "95 completed" },
+      { label: "Nursing Directors", value: 89, count: "140 completed" }
+    ]
+  };
+
+  return (
+    <div className="relative w-full aspect-[4/3] max-w-[550px] mx-auto bg-slate-50/40 rounded-3xl border border-zinc-200/50 overflow-hidden flex flex-col justify-between p-6 shadow-[0_8px_30px_rgba(0,0,0,0.015)]">
+      <div className="flex justify-between items-center pb-2 border-b border-zinc-200/60 z-10">
+        <span className="text-[10px] font-black uppercase text-zinc-400 tracking-wider">Live Metrics Console</span>
+        <div className="flex gap-1 bg-zinc-200/60 p-1 rounded-xl">
+          {(['b2b', 'consumers', 'healthcare'] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-2 py-0.5 rounded-lg text-[8.5px] font-black uppercase tracking-wider transition-all duration-300 ${
+                activeTab === tab 
+                  ? "bg-white text-zinc-900 shadow-sm" 
+                  : "text-zinc-500 hover:text-zinc-800"
               }`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${item.active ? "bg-[#02E8F8]" : "bg-zinc-300"}`} />
-            {item.label}
-          </div>
-        ))}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </div>
-    )
-  },
-  {
-    title: "Survey Distribution",
-    desc: "Deploy surveys across multiple digital routes dynamically. Our automated routing system dispatch link triggers, mobile-optimized modules, and email sends in real-time.",
-    tag: "Multi-Route Dispatch",
-    span: "lg:col-span-1",
-    icon: Send,
-    glow: "bg-[radial-gradient(circle_at_80%_20%,rgba(92,142,255,0.15),transparent_50%)]",
-    visual: (
-      <div className="mt-6 flex flex-col gap-2.5 w-full">
-        {[
-          { type: "Panel API", route: "Direct API dispatch", val: "Active" },
-          { type: "Link Router", route: "Dynamic routing URL", val: "Active" },
-          { type: "Email Dispatch", route: "Secure invitation sends", val: "Ready" }
-        ].map((item, idx) => (
-          <div key={idx} className="p-3 bg-white rounded-xl border border-zinc-200/80 flex items-center justify-between">
-            <div className="flex flex-col text-left">
-              <span className="text-[10px] font-black text-zinc-950 uppercase tracking-wider">{item.type}</span>
-              <span className="text-[8px] text-zinc-400 font-semibold">{item.route}</span>
+
+      <div className="flex flex-col gap-4 relative z-10 flex-grow justify-center py-4">
+        {data[activeTab].map((item, idx) => (
+          <div key={idx} className="flex flex-col text-left gap-1">
+            <div className="flex justify-between items-center text-[10px] font-bold text-zinc-700">
+              <span className="uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5B84FF]" />
+                {item.label}
+              </span>
+              <span className="font-mono text-zinc-900 text-[11px] font-black">{item.value}% Valid</span>
             </div>
-            <span className="text-[9px] font-black uppercase text-[#5B84FF] bg-[#5B84FF]/10 px-2 py-0.5 rounded-full flex items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-[#02E8F8] animate-pulse" />
-              {item.val}
-            </span>
+            
+            <div className="flex gap-3 items-center">
+              <div className="h-3 bg-zinc-100/90 rounded-full flex-grow overflow-hidden border border-zinc-200/40">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${item.value}%` }}
+                  transition={{ duration: 1.2, ease: "easeOut" }}
+                  className="h-full bg-gradient-to-r from-[#5B84FF] to-[#02E8F8]"
+                />
+              </div>
+              <span className="text-[9px] font-bold text-zinc-400 min-w-[70px] text-right font-mono uppercase tracking-tight">{item.count}</span>
+            </div>
           </div>
         ))}
       </div>
-    )
-  },
-  {
-    title: "Data Validation",
-    desc: "Neutralize fraudulent entries automatically. Our validator runs device fingerprint checks, geographical verification, and timing logs to enforce a 99.7% data validation accuracy rate.",
-    tag: "Fraud validation",
-    span: "lg:col-span-1",
-    icon: ShieldCheck,
-    glow: "bg-[radial-gradient(circle_at_20%_80%,rgba(92,142,255,0.15),transparent_50%)]",
-    visual: (
-      <div className="mt-6 p-4 bg-white rounded-2xl border border-zinc-200/80 shadow-sm flex flex-col gap-2 w-full text-left">
-        <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
-          <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Quality Shield</span>
-          <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">PASS</span>
+
+      <div className="grid grid-cols-3 gap-2.5 pt-2 border-t border-zinc-200/60 text-center z-10">
+        <div className="bg-white border border-zinc-100 rounded-2xl p-2.5 shadow-[0_2px_6px_rgba(0,0,0,0.005)]">
+          <span className="block text-[8px] font-black text-zinc-400 uppercase tracking-widest leading-tight">Total Sync</span>
+          <span className="text-sm font-black text-zinc-950 font-mono tracking-tight">1.6M+</span>
         </div>
-        <div className="space-y-1.5 mt-1">
-          <div className="flex items-center justify-between text-[8px] font-black uppercase text-zinc-700">
-            <span>Device Fingerprint</span>
-            <span className="text-zinc-950 font-extrabold text-[9px]">Unique</span>
-          </div>
-          <div className="flex items-center justify-between text-[8px] font-black uppercase text-zinc-700">
-            <span>Location Check</span>
-            <span className="text-zinc-950 font-extrabold text-[9px]">Verified</span>
-          </div>
-          <div className="flex items-center justify-between text-[8px] font-black uppercase text-zinc-700">
-            <span>Bot Protection</span>
-            <span className="text-zinc-950 font-extrabold text-[9px]">Secure</span>
-          </div>
+        <div className="bg-white border border-zinc-100 rounded-2xl p-2.5 shadow-[0_2px_6px_rgba(0,0,0,0.005)]">
+          <span className="block text-[8px] font-black text-[#5B84FF] uppercase tracking-widest leading-tight">Validity</span>
+          <span className="text-sm font-black text-emerald-600 font-mono tracking-tight">99.7%</span>
+        </div>
+        <div className="bg-white border border-zinc-100 rounded-2xl p-2.5 shadow-[0_2px_6px_rgba(0,0,0,0.005)]">
+          <span className="block text-[8px] font-black text-zinc-400 uppercase tracking-widest leading-tight">Duplicates</span>
+          <span className="text-sm font-black text-zinc-950 font-mono tracking-tight">0.0%</span>
         </div>
       </div>
-    )
-  },
-  {
-    title: "Insight Delivery",
-    desc: "Receive raw research responses as clean, structured, and validated datasets. Our files integrate immediately into your analytics platforms, saving dozens of manual preparation hours.",
-    tag: "Data Deliveries",
-    span: "lg:col-span-2",
-    icon: CheckSquare,
-    glow: "bg-[radial-gradient(circle_at_80%_80%,rgba(92,142,255,0.15),transparent_50%)]",
-    visual: (
-      <div className="mt-6 flex flex-col gap-3 w-full text-left">
-        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-zinc-400">
-          <span>Target Completed</span>
-          <span className="text-zinc-950">92%</span>
-        </div>
-        <div className="h-2 w-full bg-zinc-100 rounded-full overflow-hidden">
-          <motion.div
-            initial={{ width: 0 }}
-            whileInView={{ width: "92%" }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="h-full bg-gradient-to-r from-[#5B84FF] to-[#02E8F8]"
-          />
-        </div>
-        <div className="grid grid-cols-3 gap-2 mt-1">
-          <div className="p-2 border border-zinc-100 rounded-xl text-center bg-zinc-50/50">
-            <span className="block text-[10px] font-black text-zinc-950">1,250</span>
-            <span className="text-[7px] text-zinc-400 uppercase font-black tracking-wider">Completed</span>
-          </div>
-          <div className="p-2 border border-zinc-100 rounded-xl text-center bg-zinc-50/50">
-            <span className="block text-[10px] font-black text-[#5B84FF]">0</span>
-            <span className="text-[7px] text-zinc-400 uppercase font-black tracking-wider">Duplicates</span>
-          </div>
-          <div className="p-2 border border-zinc-100 rounded-xl text-center bg-zinc-50/50">
-            <span className="block text-[10px] font-black text-emerald-600">99.7%</span>
-            <span className="text-[7px] text-zinc-400 uppercase font-black tracking-wider">Validity</span>
-          </div>
-        </div>
-      </div>
-    )
-  }
-];
+    </div>
+  );
+}
 
 // HOW IT WORKS STEPS DATA
 const steps = [
@@ -329,6 +594,83 @@ function ValidationFeed({ isActive, isHovered, hoverTextDark }: { isActive: bool
   );
 }
 
+function WordRevealText({ text, delay = 0 }: { text: string; delay?: number }) {
+  const words = text.split(" ");
+  return (
+    <motion.span
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.03,
+            delayChildren: delay,
+          }
+        }
+      }}
+      className="inline-block text-xs sm:text-[13px] font-medium text-zinc-500 leading-relaxed text-left font-sans tracking-tight normal-case"
+    >
+      {words.map((word, index) => (
+        <span key={index} className="inline-block mr-1">
+          <motion.span
+            variants={{
+              hidden: { opacity: 0, y: 8 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="inline-block"
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </motion.span>
+  );
+}
+
+function CapabilitiesWatermark() {
+  const letters = Array.from("capabilities");
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.03,
+          }
+        }
+      }}
+      className="text-[11vw] sm:text-[9vw] font-[1000] tracking-tighter normal-case leading-none text-zinc-900 text-center select-none font-sans flex justify-center items-center gap-[0.05em]"
+    >
+      {letters.map((letter, index) => (
+        <motion.span
+          key={index}
+          variants={{
+            hidden: { opacity: 0, y: 60, scale: 0.8, rotateX: 45, filter: "blur(8px)" },
+            visible: { opacity: 1, y: 0, scale: 1, rotateX: 0, filter: "blur(0px)" }
+          }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          whileHover={{ 
+            scale: 1.15, 
+            y: -10,
+            color: "#5B84FF",
+            textShadow: "0 10px 30px rgba(91, 132, 255, 0.3)",
+            transition: { duration: 0.2, ease: "easeOut" }
+          }}
+          className="inline-block cursor-default origin-bottom"
+        >
+          {letter}
+        </motion.span>
+      ))}
+    </motion.div>
+  );
+}
+
 export default function Services() {
   const [activeIndex, setActiveIndex] = useState(0);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -455,63 +797,139 @@ export default function Services() {
       {/* Services Hero Section */}
       <ServicesHero />
 
-      {/* SECTION 2: What We Provide (Bento Grid) */}
-      <Section className="bg-white border-b border-zinc-200" id="services-what-we-provide">
-        <div className="max-w-2xl text-left mb-16">
-          <Reveal>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4">
-              <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
-              OUR CAPABILITIES
-            </div>
-          </Reveal>
-          <Reveal delay={0.05} className="mt-2">
-            <h2 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-[900] tracking-tight uppercase leading-[1.08] text-zinc-950">
-              CAPABILITIES FOR<br />
-              <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">
-                SURVEY OPERATIONS.
-              </span>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1} className="mt-4">
-            <p className="text-zinc-500 font-medium text-sm sm:text-base max-w-lg leading-relaxed">
-              An end-to-end platform built for high-performance survey operations, audience targeting, and validated response collection.
-            </p>
-          </Reveal>
-        </div>
+      {/* SECTION 2: What We Provide (Immersive Storytelling) */}
+      <section className="bg-white border-b border-zinc-200 relative overflow-hidden py-24 sm:py-32" id="services-capabilities">
+        {/* Subtle grid pattern overlay matching hero */}
+        <div
+          className="absolute inset-0 z-0 opacity-[0.25] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(rgba(24,24,27,0.08) 1.2px, transparent 1.2px)',
+            backgroundSize: '24px 24px',
+          }}
+        />
+        
+        {/* Subtle radial glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(92,142,255,0.02),transparent_70%)] pointer-events-none" />
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {bentoCards.map((card, idx) => {
-            const Icon = card.icon;
-            return (
-              <Reveal key={idx} delay={idx * 0.05} className={`${card.span}`}>
-                <div className="h-full p-8 rounded-[2rem] border border-zinc-200 bg-[#FAFAFA] shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.04)] hover:translate-y-[-2px] hover:bg-white transition-all duration-300 group relative overflow-hidden flex flex-col justify-between">
-                  {/* Visual Hover Glow */}
-                  <div className={`absolute inset-0 ${card.glow} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+        <div className="relative z-10 max-w-[1400px] mx-auto px-5 sm:px-8">
+          {/* Top 5-Column Typewriter reveal grid */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-left mb-12">
+            {[
+              "pinpoint your target audience globally",
+              "deploy surveys across digital channels",
+              "verify response data in real-time",
+              "deliver clean analytical datasets",
+              "scale operations with egi platform"
+            ].map((sentence, sIdx) => (
+              <div key={sIdx} className="flex flex-col border-t border-zinc-200/80 pt-4">
+                <span className="text-[10px] font-mono font-bold text-[#5B84FF] mb-2">0{sIdx + 1}</span>
+                <WordRevealText text={sentence} delay={sIdx * 0.1} />
+              </div>
+            ))}
+          </div>
 
-                  <div className="relative z-10 text-left">
-                    {/* Icon */}
-                    <div className="w-11 h-11 rounded-2xl bg-white border border-zinc-200/80 flex items-center justify-center text-[#5B84FF] shadow-sm group-hover:border-[#5B84FF]/25 group-hover:shadow-[0_4px_16px_rgba(91,132,255,0.1)] transition-all duration-300">
-                      <Icon size={18} strokeWidth={2.5} />
-                    </div>
+          {/* Center Giant capabilities watermark emerging from shade */}
+          <div className="w-full relative overflow-hidden flex justify-center items-center py-8 select-none">
+            <CapabilitiesWatermark />
+          </div>
 
-                    <h3 className="mt-6 text-lg sm:text-xl font-extrabold text-zinc-950 uppercase tracking-tight flex items-center gap-1.5">
-                      {card.title}
-                    </h3>
+          {/* Thin divider line */}
+          <div className="h-[1px] bg-zinc-200/60 w-full my-16" />
 
-                    <p className="mt-3 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed">
-                      {card.desc}
-                    </p>
+          {/* Core Capability Panels */}
+          <div className="space-y-28 sm:space-y-36">
+            
+            {/* Panel 01: Audience Recruitment */}
+            <Reveal>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <div className="lg:col-span-5 text-left flex flex-col justify-center">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
+                    <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
+                    01 — Audience Recruitment
                   </div>
-
-                  <div className="relative z-10 w-full mt-6">
-                    {card.visual}
-                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-[900] uppercase tracking-tight text-zinc-950 leading-tight">
+                    Precision target<br />
+                    <span className="text-transparent [-webkit-text-stroke:1px_#111111] font-black tracking-wide">matching.</span>
+                  </h3>
+                  <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
+                    Access niche consumer panels, verified B2B decision makers, parents, students, healthcare workers, and custom profiles globally using granular demographic, firmographic, and behavioral selectors.
+                  </p>
                 </div>
-              </Reveal>
-            );
-          })}
+                <div className="lg:col-span-7">
+                  <AudienceRecruitmentPlayground />
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Panel 02: Survey Distribution */}
+            <Reveal>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <div className="lg:col-span-5 text-left flex flex-col justify-center">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
+                    <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
+                    02 — Survey Distribution
+                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-[900] uppercase tracking-tight text-zinc-950 leading-tight">
+                    Multi-route<br />
+                    <span className="text-transparent [-webkit-text-stroke:1px_#111111] font-black tracking-wide">dynamic dispatch.</span>
+                  </h3>
+                  <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
+                    Deploy surveys across multiple digital channels dynamically. Our automated routing system dispatches API triggers, mobile intercepts, SMS alerts, and secure email campaigns in real-time.
+                  </p>
+                </div>
+                <div className="lg:col-span-7">
+                  <SurveyDistributionPlayground />
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Panel 03: Data Validation */}
+            <Reveal>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <div className="lg:col-span-5 text-left flex flex-col justify-center">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
+                    <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
+                    03 — Data Validation
+                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-[900] uppercase tracking-tight text-zinc-950 leading-tight">
+                    Real-time quality<br />
+                    <span className="text-transparent [-webkit-text-stroke:1px_#111111] font-black tracking-wide">shielding.</span>
+                  </h3>
+                  <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
+                    Neutralize fraudulent entries automatically. Our validator runs device fingerprint checks, geographical verification, behavior patterns, and timing logs to enforce a 99.7% data validation accuracy rate.
+                  </p>
+                </div>
+                <div className="lg:col-span-7">
+                  <DataValidationPlayground />
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Panel 04: Insight Delivery */}
+            <Reveal>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <div className="lg:col-span-5 text-left flex flex-col justify-center">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
+                    <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
+                    04 — Insight Delivery
+                  </div>
+                  <h3 className="text-3xl sm:text-4xl font-[900] uppercase tracking-tight text-zinc-950 leading-tight">
+                    Structured analysis<br />
+                    <span className="text-transparent [-webkit-text-stroke:1px_#111111] font-black tracking-wide">readiness.</span>
+                  </h3>
+                  <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
+                    Receive research responses as clean, structured, and validated datasets. Our files integrate immediately into your analytics platforms and database pipelines, saving dozens of manual preparation hours.
+                  </p>
+                </div>
+                <div className="lg:col-span-7">
+                  <InsightDeliveryPlayground />
+                </div>
+              </div>
+            </Reveal>
+
+          </div>
         </div>
-      </Section>
+      </section>
 
       {/* SECTION 3: Global Reach & Panel Scale (Premium timeline in light theme) */}
       <Section className="bg-white border-b border-zinc-200 overflow-hidden relative" id="services-audience-reach">
