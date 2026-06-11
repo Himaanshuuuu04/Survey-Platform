@@ -1,12 +1,20 @@
+import { useEffect, useRef, useState } from 'react';
 import { ShieldCheck, Globe2, Zap, Brain } from 'lucide-react';
-import { Reveal, Section, SectionEyebrow } from '../primitives';
+import { Container, Reveal } from '../primitives';
 import MagicBento from './MagicBento';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
+
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 interface ProcessStep {
   n: number;
   orbGrad: string;
   title: string;
   desc: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  tint: string;
 }
 
 const steps: ProcessStep[] = [
@@ -14,25 +22,33 @@ const steps: ProcessStep[] = [
     n: 1,
     orbGrad: 'from-[#5B84FF] to-[#29D5FF]',
     title: 'Survey Design',
-    desc: 'Research objectives, questionnaire creation, and sampling strategy.'
+    desc: 'Research objectives, questionnaire creation, and sampling strategy.',
+    icon: Brain,
+    tint: '#5B84FF'
   },
   {
     n: 2,
     orbGrad: 'from-[#29D5FF] to-[#2563EB]',
     title: 'Audience Recruitment',
-    desc: 'Verified respondent sourcing, targeted outreach, and panel activation.'
+    desc: 'Verified respondent sourcing, targeted outreach, and panel activation.',
+    icon: Globe2,
+    tint: '#29D5FF'
   },
   {
     n: 3,
     orbGrad: 'from-[#3B82F6] to-[#02E8F8]',
     title: 'Data Collection',
-    desc: 'Survey deployment, real-time response monitoring, and quality control.'
+    desc: 'Survey deployment, real-time response monitoring, and quality control.',
+    icon: ShieldCheck,
+    tint: '#3B82F6'
   },
   {
     n: 4,
     orbGrad: 'from-[#02E8F8] to-[#5B84FF]',
     title: 'Insight Delivery',
-    desc: 'Deep data analysis, report generation, and actionable recommendations.'
+    desc: 'Deep data analysis, report generation, and actionable recommendations.',
+    icon: Zap,
+    tint: '#02E8F8'
   }
 ];
 
@@ -178,7 +194,7 @@ export function WhyChooseUs() {
               particleCount={0}
               glowColor="92, 142, 255"
               disableAnimations={false}
-              cards={items.map((it, idx) => ({
+              cards={steps.map((it, idx) => ({
                 title: it.title,
                 description: it.desc,
                 icon: it.icon,

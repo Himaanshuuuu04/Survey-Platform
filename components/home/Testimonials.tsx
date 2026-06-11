@@ -35,7 +35,7 @@ export function Testimonials() {
       <Reveal delay={0.1}>
         <div className="flex justify-center mt-12 w-full">
           <Carousel
-            items={data.map((t, idx) => ({
+            items={cases.map((t, idx) => ({
               id: idx,
               quote: t.quote,
               name: t.name,
@@ -52,8 +52,7 @@ export function Testimonials() {
             round={false}
           />
         </div>
-
-      </div>
+      </Reveal>
     </Section>
   );
 }
