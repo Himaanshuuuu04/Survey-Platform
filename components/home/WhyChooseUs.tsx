@@ -38,24 +38,91 @@ const steps: ProcessStep[] = [
 
 export function WhyChooseUs() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-100px" });
-  const [activeStep, setActiveStep] = useState(0);
+  const pathRef = useRef<SVGPathElement>(null);
+  const rocketRef = useRef<SVGGElement>(null);
+  const [activeStep, setActiveStep] = useState(1);
 
   useEffect(() => {
-    if (isInView) {
-      setActiveStep(1);
-      
-      const t2 = setTimeout(() => setActiveStep(2), 1000);
-      const t3 = setTimeout(() => setActiveStep(3), 2100);
-      const t4 = setTimeout(() => setActiveStep(4), 3200);
-      
+    if (typeof window === 'undefined' || !pathRef.current || !rocketRef.current || !containerRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // 1. Explicitly set rocket's initial position at path progress 0 before creating animation
+      gsap.set(rocketRef.current, {
+        x: 0,
+        y: 0,
+        transformOrigin: "50% 50%",
+        motionPath: {
+          path: pathRef.current!,
+          align: pathRef.current!,
+          alignOrigin: [0.5, 0.5],
+          autoRotate: true,
+          start: 0,
+          end: 0,
+        },
+        opacity: 1 // make it visible once positioned at start
+      });
+
+      // 2. Create ScrollTrigger animation
+      gsap.to(rocketRef.current, {
+        motionPath: {
+          path: pathRef.current!,
+          align: pathRef.current!,
+          alignOrigin: [0.5, 0.5],
+          autoRotate: true,
+          start: 0,
+          end: 1,
+        },
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 75%",
+          end: "bottom 80%",
+          scrub: 0.5,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const p = self.progress;
+            let nextStep = 1;
+            if (p < 0.30) {
+              nextStep = 1;
+            } else if (p >= 0.30 && p < 0.63) {
+              nextStep = 2;
+            } else if (p >= 0.63 && p < 0.95) {
+              nextStep = 3;
+            } else {
+              nextStep = 4;
+            }
+            setActiveStep((prev) => (prev !== nextStep ? nextStep : prev));
+          },
+        },
+      });
+    }, containerRef);
+
+    // Refresh ScrollTrigger once everything is fully loaded
+    const handleLoad = () => {
+      ScrollTrigger.refresh();
+    };
+
+    if (document.readyState === 'complete') {
+      const t = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 200);
       return () => {
-        clearTimeout(t2);
-        clearTimeout(t3);
-        clearTimeout(t4);
+        clearTimeout(t);
+        ctx.revert();
+      };
+    } else {
+      window.addEventListener('load', handleLoad);
+      const t = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 500);
+
+      return () => {
+        window.removeEventListener('load', handleLoad);
+        clearTimeout(t);
+        ctx.revert();
       };
     }
-  }, [isInView]);
+  }, []);
 
   return (
     <section 

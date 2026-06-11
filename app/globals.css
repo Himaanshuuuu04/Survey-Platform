@@ -302,10 +302,12 @@ p {
 .mascot-walk-container {
   position: absolute;
   bottom: 0;
+  left: 60%;
   animation: walk-back-and-forth-left 28s linear infinite;
   display: flex;
   flex-direction: column;
   align-items: center;
+  will-change: transform;
 }
 
 .mascot-bob-container {
@@ -324,16 +326,16 @@ p {
 
 @keyframes walk-back-and-forth-left {
   0%, 100% {
-    left: 60%;
+    transform: translate3d(0vw, 0, 0);
   }
   49% {
-    left: 75%;
+    transform: translate3d(15vw, 0, 0);
   }
   50% {
-    left: 75%;
+    transform: translate3d(15vw, 0, 0);
   }
   99% {
-    left: 60%;
+    transform: translate3d(0vw, 0, 0);
   }
 }
 
@@ -360,6 +362,7 @@ p {
   gap: 1.25rem;
   width: max-content;
   animation: marquee-scroll-l2r 38s linear infinite;
+  will-change: transform;
 }
 
 .marquee-track-l2r:hover {
@@ -380,6 +383,7 @@ p {
   gap: 1.25rem;
   width: max-content;
   animation: marquee-scroll-r2l 38s linear infinite;
+  will-change: transform;
 }
 
 .marquee-track-r2l:hover {

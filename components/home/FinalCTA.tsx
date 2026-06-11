@@ -72,7 +72,7 @@ export function FinalCTA() {
                   repeatType: 'mirror',
                   ease: 'easeInOut'
                 }}
-                className="w-[340px] h-[340px] sm:w-[420px] sm:h-[420px] lg:w-[460px] lg:h-[460px] relative select-none"
+                className="w-[340px] h-[340px] sm:w-[420px] sm:h-[420px] lg:w-[460px] lg:h-[460px] relative select-none will-change-transform"
               >
                 <svg viewBox="0 0 400 400" fill="none" className="w-full h-full overflow-visible">
                   <defs>
