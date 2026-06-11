@@ -44,7 +44,7 @@ export function ServicesHero() {
 
   return (
     <section
-      className="relative overflow-hidden pt-36 pb-20 sm:pt-44 sm:pb-28 border-b border-[#E5E7EB] bg-[#FAFAFA] z-10"
+      className="relative overflow-hidden pt-18 pb-12 sm:pt-22 sm:pb-16 border-b border-[#E5E7EB] bg-[#FAFAFA] z-10"
       style={{
         backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',

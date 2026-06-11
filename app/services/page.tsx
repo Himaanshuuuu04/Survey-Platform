@@ -2,7 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
-import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+import { motion, AnimatePresence, useScroll, useTransform, useInView, useMotionValue, animate } from 'motion/react';
 import {
   Users, Send, ShieldCheck, CheckSquare, Globe, SlidersHorizontal,
   ArrowRight, Check, Activity, Sparkles, BarChart3, Database, Target,
@@ -248,11 +253,7 @@ function DataValidationPlayground() {
         </span>
       </div>
 
-      <div className="absolute top-[48%] left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#5B84FF] to-transparent z-20 pointer-events-none">
-        <div className="absolute top-[-4px] left-[50%] -translate-x-[50%] bg-[#5B84FF] text-white text-[7px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">
-          Validator Checkpoint
-        </div>
-      </div>
+
 
       <div className="flex flex-col gap-2.5 relative z-10 flex-grow justify-center py-4 overflow-hidden">
         <AnimatePresence mode="popLayout">
@@ -594,7 +595,7 @@ function ValidationFeed({ isActive, isHovered, hoverTextDark }: { isActive: bool
   );
 }
 
-function WordRevealText({ text, delay = 0 }: { text: string; delay?: number }) {
+function WordRevealText({ text, delay = 0, className = '' }: { text: string; delay?: number; className?: string }) {
   const words = text.split(" ");
   return (
     <motion.span
@@ -610,7 +611,7 @@ function WordRevealText({ text, delay = 0 }: { text: string; delay?: number }) {
           }
         }
       }}
-      className="inline-block text-xs sm:text-[13px] font-medium text-zinc-500 leading-relaxed text-left font-sans tracking-tight normal-case"
+      className={`inline-block text-xs sm:text-[13px] leading-relaxed text-left font-sans tracking-tight normal-case ${className || 'font-medium text-zinc-500'}`}
     >
       {words.map((word, index) => (
         <span key={index} className="inline-block mr-1">
@@ -635,54 +636,112 @@ function DeliveringStatement() {
   const line2 = Array.from("DELIVER.");
 
   return (
-    <motion.h2
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      variants={{
-        hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: 0.03,
-          }
+    <>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes float-up-down {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
         }
-      }}
-      className="text-[9.5vw] sm:text-[7.5vw] font-[1000] tracking-tighter uppercase leading-[0.9] text-center select-none font-sans flex flex-col items-center justify-center py-6"
-    >
-      <div className="flex justify-center items-center gap-[0.03em] text-zinc-950">
-        {line1.map((letter, index) => (
-          <motion.span
-            key={index}
-            variants={{
-              hidden: { opacity: 0, y: 50, rotateX: 45, filter: "blur(6px)" },
-              visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }
-            }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ scale: 1.12, y: -5 }}
-            className="inline-block origin-bottom cursor-default hover:text-[#5B84FF] transition-colors duration-200"
-          >
-            {letter === " " ? "\u00A0" : letter}
-          </motion.span>
-        ))}
-      </div>
-      <div className="flex justify-center items-center gap-[0.03em] text-transparent [-webkit-text-stroke:1.3px_#111111] sm:[-webkit-text-stroke:2px_#111111] tracking-wide mt-2">
-        {line2.map((letter, index) => (
-          <motion.span
-            key={index}
-            variants={{
-              hidden: { opacity: 0, y: 50, rotateX: 45, filter: "blur(6px)" },
-              visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }
-            }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ scale: 1.12, y: -5 }}
-            className="inline-block origin-bottom cursor-default hover:[-webkit-text-stroke-color:#5B84FF] transition-colors duration-200"
-          >
-            {letter === " " ? "\u00A0" : letter}
-          </motion.span>
-        ))}
-      </div>
-    </motion.h2>
+        @keyframes float-down-up {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(8px); }
+        }
+        .float-letter-odd {
+          animation: float-up-down 2.8s ease-in-out infinite;
+        }
+        .float-letter-even {
+          animation: float-down-up 2.8s ease-in-out infinite;
+        }
+      `}} />
+      <motion.h2
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.03,
+            }
+          }
+        }}
+        className="text-[14.5vw] sm:text-[11.5vw] lg:text-[10vw] font-[1000] tracking-tighter uppercase leading-[0.9] text-center select-none font-sans flex flex-col items-center justify-center py-6"
+      >
+        <div className="flex justify-center items-center gap-[0.03em] text-zinc-950">
+          {line1.map((letter, index) => (
+            <motion.span
+              key={index}
+              variants={{
+                hidden: { opacity: 0, y: 50, rotateX: 45, filter: "blur(6px)" },
+                visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }
+              }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ scale: 1.12, y: -5 }}
+              className="inline-block origin-bottom cursor-default hover:text-[#5B84FF] transition-colors duration-200"
+            >
+              {letter === " " ? (
+                "\u00A0"
+              ) : (
+                <span 
+                  className={`inline-block ${index % 2 === 0 ? 'float-letter-even' : 'float-letter-odd'}`}
+                  style={{ animationDelay: `${index * 0.12}s` }}
+                >
+                  {letter}
+                </span>
+              )}
+            </motion.span>
+          ))}
+        </div>
+        <div className="flex justify-center items-center gap-[0.03em] text-transparent [-webkit-text-stroke:1.3px_#111111] sm:[-webkit-text-stroke:2px_#111111] tracking-wide mt-2">
+          {line2.map((letter, index) => (
+            <motion.span
+              key={index}
+              variants={{
+                hidden: { opacity: 0, y: 50, rotateX: 45, filter: "blur(6px)" },
+                visible: { opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }
+              }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ scale: 1.12, y: -5 }}
+              className="inline-block origin-bottom cursor-default hover:[-webkit-text-stroke-color:#5B84FF] transition-colors duration-200"
+            >
+              {letter === " " ? (
+                "\u00A0"
+              ) : (
+                <span 
+                  className={`inline-block ${index % 2 === 0 ? 'float-letter-even' : 'float-letter-odd'}`}
+                  style={{ animationDelay: `${(index + line1.length) * 0.12}s` }}
+                >
+                  {letter}
+                </span>
+              )}
+            </motion.span>
+          ))}
+        </div>
+      </motion.h2>
+    </>
   );
+}
+
+function DecimalCounter({ to, suffix = '', decimals = 0, duration = 1.6 }: { to: number; suffix?: string; decimals?: number; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-40px' });
+  const mv = useMotionValue(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    const controls = animate(mv, to, {
+      duration,
+      ease: 'easeOut',
+      onUpdate: (v) => {
+        if (ref.current) {
+          ref.current.textContent = v.toFixed(decimals) + suffix;
+        }
+      },
+    });
+    return controls.stop;
+  }, [inView, to, suffix, decimals, duration, mv]);
+
+  return <span ref={ref}>0.0{suffix}</span>;
 }
 
 export default function Services() {
@@ -691,7 +750,7 @@ export default function Services() {
   const trackRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Scroll progress targeting the section container
+  // Scroll progress targeting the Section 4 container
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"]
@@ -699,6 +758,38 @@ export default function Services() {
 
   // Calculate card number parallax translation offset
   const numberParallax = useTransform(scrollYProgress, [0, 1], [-25, 25]);
+
+  // Section 2 Scroll & Ref configuration for timeline
+  const timelineContainerRef = useRef<HTMLDivElement>(null);
+  const [activeStep, setActiveStep] = useState(0);
+  const [timelineProgress, setTimelineProgress] = useState(0);
+
+  useEffect(() => {
+    if (!timelineContainerRef.current) return;
+
+    const scrollTriggerInstance = ScrollTrigger.create({
+      trigger: timelineContainerRef.current,
+      start: "top 85%",
+      end: "bottom 15%",
+      scrub: true,
+      onUpdate: (self) => {
+        const progress = self.progress;
+        setTimelineProgress(progress);
+        
+        let step = 0;
+        if (progress < 0.20) step = 0;
+        else if (progress < 0.40) step = 1;
+        else if (progress < 0.60) step = 2;
+        else if (progress < 0.80) step = 3;
+        else step = 4;
+        setActiveStep(step);
+      }
+    });
+
+    return () => {
+      scrollTriggerInstance.kill();
+    };
+  }, []);
 
   // Floating particles local state
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; duration: number; delay: number }>>([]);
@@ -812,7 +903,10 @@ export default function Services() {
       <ServicesHero />
 
       {/* SECTION 2: What We Provide (Immersive Storytelling) */}
-      <section className="bg-white border-b border-zinc-200 relative overflow-hidden py-24 sm:py-32" id="services-capabilities">
+      <section 
+        className="bg-white border-b border-zinc-200 relative overflow-hidden py-24 sm:py-32" 
+        id="services-capabilities"
+      >
         {/* Subtle grid pattern overlay matching hero */}
         <div
           className="absolute inset-0 z-0 opacity-[0.25] pointer-events-none"
@@ -826,120 +920,290 @@ export default function Services() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(92,142,255,0.02),transparent_70%)] pointer-events-none" />
 
         <div className="relative z-10 max-w-[1400px] mx-auto px-5 sm:px-8">
-          {/* Top 5-Column Typewriter reveal grid */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-left mb-12">
-            {[
-              "pinpoint your target audience globally",
-              "deploy surveys across digital channels",
-              "verify response data in real-time",
-              "deliver clean analytical datasets",
-              "scale operations with egi platform"
-            ].map((sentence, sIdx) => (
-              <div key={sIdx} className="flex flex-col border-t border-zinc-200/80 pt-4">
-                <span className="text-[10px] font-mono font-bold text-[#5B84FF] mb-2">0{sIdx + 1}</span>
-                <WordRevealText text={sentence} delay={sIdx * 0.1} />
+          
+          {/* Connected Interactive Workflow Process Strip */}
+          <div ref={timelineContainerRef} className="relative z-10 w-full mb-12">
+            {/* Horizontal progress path track */}
+            <div className="relative w-full h-[2.5px] bg-zinc-150 rounded-full mb-8">
+              <motion.div
+                className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-[#5B84FF] to-[#02E8F8]"
+                style={{ width: `${timelineProgress * 100}%` }}
+              />
+              
+              {/* Sliding Active Blue/Cyan dot */}
+              <motion.div
+                className="absolute w-4 h-4 rounded-full bg-gradient-to-r from-[#5B84FF] to-[#02E8F8] border-2 border-white -translate-y-[5.75px] shadow-[0_0_10px_rgba(2,232,248,0.8)] z-20"
+                style={{ left: `calc(${timelineProgress * 100}% - 8px)` }}
+                transition={{ type: "spring", stiffness: 200, damping: 22 }}
+              />
+
+              {/* Timeline nodes along progress line */}
+              <div className="absolute inset-0 flex justify-between pointer-events-none">
+                {[0, 1, 2, 3, 4].map((stepIdx) => {
+                  const isCompleted = stepIdx < activeStep;
+                  const isActive = stepIdx === activeStep;
+                  return (
+                    <div 
+                      key={stepIdx}
+                      className={`w-3.5 h-3.5 rounded-full -translate-y-[5.75px] border-2 bg-white transition-all duration-300 ${
+                        isCompleted 
+                          ? 'border-[#5B84FF] bg-[#5B84FF] scale-110 shadow-[0_0_8px_rgba(91,132,255,0.3)]' 
+                          : isActive 
+                            ? 'border-[#02E8F8] bg-white scale-125 shadow-[0_0_12px_rgba(2,232,248,0.7)]' 
+                            : 'border-zinc-200'
+                      }`}
+                    />
+                  );
+                })}
               </div>
-            ))}
+            </div>
+
+            {/* Timelines descriptions grid */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-left">
+              {[
+                "pinpoint your target audience globally",
+                "deploy surveys across digital channels",
+                "verify response data in real-time",
+                "deliver clean analytical datasets",
+                "scale operations with egi platform"
+              ].map((sentence, sIdx) => {
+                const isCompleted = sIdx < activeStep;
+                const isActive = sIdx === activeStep;
+                return (
+                  <div 
+                    key={sIdx} 
+                    className={`flex flex-col pt-3 pb-4 px-3 rounded-xl transition-all duration-300 border ${
+                      isActive 
+                        ? 'bg-slate-50/50 border-[#5B84FF]/15 shadow-[0_4px_20px_rgba(91,132,255,0.05)]' 
+                        : 'border-transparent bg-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <span className={`text-[10px] font-mono font-bold transition-colors duration-300 ${
+                        isActive 
+                          ? 'text-[#5B84FF]' 
+                          : isCompleted 
+                            ? 'text-[#02E8F8]' 
+                            : 'text-zinc-400'
+                      }`}>
+                        0{sIdx + 1}
+                      </span>
+                      {isCompleted && (
+                        <Check size={8} strokeWidth={4} className="text-[#02E8F8]" />
+                      )}
+                      {isActive && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
+                      )}
+                    </div>
+                    <WordRevealText 
+                      text={sentence} 
+                      delay={0}
+                      className={`transition-colors duration-300 ${
+                        isActive 
+                          ? 'text-zinc-950 font-semibold' 
+                          : isCompleted 
+                            ? 'text-zinc-600 font-medium' 
+                            : 'text-zinc-400 font-medium'
+                      }`}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Center Giant two-line Delivering Statement emerging from shade */}
-          <div className="w-full relative overflow-hidden flex justify-center items-center py-8 select-none">
+          <div className="w-full relative overflow-hidden flex justify-center items-center py-4 select-none">
             <DeliveringStatement />
           </div>
 
           {/* Thin divider line */}
-          <div className="h-[1px] bg-zinc-200/60 w-full my-16" />
+          <div className="h-[1px] bg-zinc-200/60 w-full mt-8 mb-12" />
 
           {/* Core Capability Panels */}
-          <div className="space-y-28 sm:space-y-36">
+          <div className="space-y-20 sm:space-y-24">
             
             {/* Panel 01: Audience Recruitment */}
-            <Reveal>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                <div className="lg:col-span-5 text-left flex flex-col justify-center">
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
-                    <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
-                    01 — Audience Recruitment
+            <div className="relative z-10">
+              <Reveal>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
+                  <div className="lg:col-span-5 text-left flex flex-col justify-center">
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
+                      01 — Audience Recruitment
+                    </div>
+                    <h3 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-[1000] uppercase tracking-tighter text-zinc-950 leading-[1.05]">
+                      Precision target matching.
+                    </h3>
+                    <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
+                      Access niche consumer panels, verified B2B decision makers, parents, students, healthcare workers, and custom profiles globally using granular demographic, firmographic, and behavioral selectors.
+                    </p>
+
+                    {/* Metrics grid */}
+                    <div className="mt-8 pt-6 border-t border-zinc-200/50 grid grid-cols-3 gap-4">
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <Counter to={250} suffix="K+" />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Respondents</span>
+                      </div>
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <Counter to={120} suffix="+" />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Attributes</span>
+                      </div>
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <Counter to={50} suffix="+" />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Countries</span>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-3xl sm:text-4xl font-[900] uppercase tracking-tight text-zinc-950 leading-tight">
-                    Precision target<br />
-                    <span className="text-transparent [-webkit-text-stroke:1px_#111111] font-black tracking-wide">matching.</span>
-                  </h3>
-                  <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
-                    Access niche consumer panels, verified B2B decision makers, parents, students, healthcare workers, and custom profiles globally using granular demographic, firmographic, and behavioral selectors.
-                  </p>
+
+                  <div className="lg:col-span-7 relative">
+                    <AudienceRecruitmentPlayground />
+                  </div>
                 </div>
-                <div className="lg:col-span-7">
-                  <AudienceRecruitmentPlayground />
-                </div>
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
 
             {/* Panel 02: Survey Distribution */}
-            <Reveal>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                <div className="lg:col-span-5 text-left flex flex-col justify-center">
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
-                    <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
-                    02 — Survey Distribution
+            <div className="relative z-10">
+              <Reveal>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
+                  <div className="lg:col-span-5 text-left flex flex-col justify-center">
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
+                      02 — Survey Distribution
+                    </div>
+                    <h3 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-[1000] uppercase tracking-tighter text-zinc-950 leading-[1.05]">
+                      Multi-route dynamic dispatch.
+                    </h3>
+                    <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
+                      Deploy surveys across multiple digital channels dynamically. Our automated routing system dispatches API triggers, mobile intercepts, SMS alerts, and secure email campaigns in real-time.
+                    </p>
+
+                    {/* Metrics grid */}
+                    <div className="mt-8 pt-6 border-t border-zinc-200/50 grid grid-cols-3 gap-4">
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <Counter to={92} suffix="%" />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Completion Rate</span>
+                      </div>
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <Counter to={10} suffix="K+" />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Daily Sends</span>
+                      </div>
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <Counter to={4} />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Core Routes</span>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-3xl sm:text-4xl font-[900] uppercase tracking-tight text-zinc-950 leading-tight">
-                    Multi-route<br />
-                    <span className="text-transparent [-webkit-text-stroke:1px_#111111] font-black tracking-wide">dynamic dispatch.</span>
-                  </h3>
-                  <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
-                    Deploy surveys across multiple digital channels dynamically. Our automated routing system dispatches API triggers, mobile intercepts, SMS alerts, and secure email campaigns in real-time.
-                  </p>
+
+                  <div className="lg:col-span-7 relative">
+                    <SurveyDistributionPlayground />
+                  </div>
                 </div>
-                <div className="lg:col-span-7">
-                  <SurveyDistributionPlayground />
-                </div>
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
 
             {/* Panel 03: Data Validation */}
-            <Reveal>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                <div className="lg:col-span-5 text-left flex flex-col justify-center">
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
-                    <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
-                    03 — Data Validation
+            <div className="relative z-10">
+              <Reveal>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
+                  <div className="lg:col-span-5 text-left flex flex-col justify-center">
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
+                      03 — Data Validation
+                    </div>
+                    <h3 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-[1000] uppercase tracking-tighter text-zinc-950 leading-[1.05]">
+                      Real-time quality shielding.
+                    </h3>
+                    <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
+                      Neutralize fraudulent entries automatically. Our validator runs device fingerprint checks, geographical verification, behavior patterns, and timing logs to enforce a 99.7% data validation accuracy rate.
+                    </p>
+
+                    {/* Metrics grid */}
+                    <div className="mt-8 pt-6 border-t border-zinc-200/50 grid grid-cols-3 gap-4">
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <DecimalCounter to={99.7} suffix="%" decimals={1} />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Accuracy Rate</span>
+                      </div>
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <DecimalCounter to={0.0} suffix="%" decimals={1} />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Duplicate Rate</span>
+                      </div>
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <Counter to={10} suffix="ms" />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Scan Speed</span>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-3xl sm:text-4xl font-[900] uppercase tracking-tight text-zinc-950 leading-tight">
-                    Real-time quality<br />
-                    <span className="text-transparent [-webkit-text-stroke:1px_#111111] font-black tracking-wide">shielding.</span>
-                  </h3>
-                  <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
-                    Neutralize fraudulent entries automatically. Our validator runs device fingerprint checks, geographical verification, behavior patterns, and timing logs to enforce a 99.7% data validation accuracy rate.
-                  </p>
+
+                  <div className="lg:col-span-7 relative">
+                    <DataValidationPlayground />
+                  </div>
                 </div>
-                <div className="lg:col-span-7">
-                  <DataValidationPlayground />
-                </div>
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
 
             {/* Panel 04: Insight Delivery */}
-            <Reveal>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                <div className="lg:col-span-5 text-left flex flex-col justify-center">
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
-                    <span className="h-1 w-1 rounded-full bg-[#02E8F8] animate-pulse" />
-                    04 — Insight Delivery
+            <div className="relative z-10">
+              <Reveal>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
+                  <div className="lg:col-span-5 text-left flex flex-col justify-center">
+                    <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-2.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-[#5B84FF] shadow-sm mb-4 w-fit">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
+                      04 — Insight Delivery
+                    </div>
+                    <h3 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-[1000] uppercase tracking-tighter text-zinc-950 leading-[1.05]">
+                      Structured analysis readiness.
+                    </h3>
+                    <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
+                      Receive research responses as clean, structured, and validated datasets. Our files integrate immediately into your analytics platforms and database pipelines, saving dozens of manual preparation hours.
+                    </p>
+
+                    {/* Metrics grid */}
+                    <div className="mt-8 pt-6 border-t border-zinc-200/50 grid grid-cols-3 gap-4">
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <DecimalCounter to={1.6} suffix="M+" decimals={1} />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Synced Records</span>
+                      </div>
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">Real-Time</span>
+                        <span className="block text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-0.5">Console Live</span>
+                      </div>
+                      <div>
+                        <span className="block text-xl sm:text-2xl font-[1000] text-[#5B84FF] tracking-tight">
+                          <Counter to={0} suffix="s" />
+                        </span>
+                        <span className="block text-[8px] font-black uppercase text-[#02E8F8] tracking-wider mt-0.5">Prep Time</span>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="text-3xl sm:text-4xl font-[900] uppercase tracking-tight text-zinc-950 leading-tight">
-                    Structured analysis<br />
-                    <span className="text-transparent [-webkit-text-stroke:1px_#111111] font-black tracking-wide">readiness.</span>
-                  </h3>
-                  <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm leading-relaxed max-w-md">
-                    Receive research responses as clean, structured, and validated datasets. Our files integrate immediately into your analytics platforms and database pipelines, saving dozens of manual preparation hours.
-                  </p>
+
+                  <div className="lg:col-span-7 relative">
+                    <InsightDeliveryPlayground />
+                  </div>
                 </div>
-                <div className="lg:col-span-7">
-                  <InsightDeliveryPlayground />
-                </div>
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
 
           </div>
         </div>

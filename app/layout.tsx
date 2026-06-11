@@ -24,8 +24,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} min-h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col" style={{ fontFamily: 'var(--font-inter), Inter, system-ui, sans-serif' }}>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <AudienceProvider>
           <Navbar />
           <main className="flex-1">
