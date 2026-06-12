@@ -11,8 +11,39 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "EvoGlobalInsight - Global Market Research",
+  metadataBase: new URL("https://evoglobalinsight.com"),
+  title: {
+    default: "EvoGlobalInsight | Global Market Research",
+    template: "%s | EvoGlobalInsight",
+  },
   description: "Global market research and audience intelligence helping brands decide with confidence.",
+  keywords: [
+    "market research",
+    "audience intelligence",
+    "consumer insights",
+    "brand strategy",
+    "global panels",
+    "B2B research",
+    "qualitative research",
+    "quantitative research",
+  ],
+  openGraph: {
+    title: "EvoGlobalInsight | Global Market Research",
+    description: "Global market research and audience intelligence helping brands decide with confidence.",
+    url: "https://evoglobalinsight.com",
+    siteName: "EvoGlobalInsight",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "EvoGlobalInsight | Global Market Research",
+    description: "Global market research and audience intelligence helping brands decide with confidence.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

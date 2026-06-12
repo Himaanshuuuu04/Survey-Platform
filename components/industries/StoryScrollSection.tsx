@@ -42,7 +42,7 @@ export function StoryScrollSection() {
       });
 
       // 1. Initial Entry
-      tl.to(wordRefs.current[0], { scale: 1, opacity: 0.05, y: 0, duration: 2 }, 0)
+      tl.to(wordRefs.current[0], { scale: 1, opacity: 1, y: 0, duration: 2 }, 0)
         .to(headlineRef.current, { opacity: 1, y: 0, duration: 2 }, 0)
         .to(columnsRef.current, { opacity: 1, y: 0, duration: 2 }, 0.5)
         .to(ctaRef.current, { opacity: 1, y: 0, duration: 2 }, 0);
@@ -53,14 +53,14 @@ export function StoryScrollSection() {
       // 2. Transitions through words
       for (let i = 1; i < words.length; i++) {
         tl.to(wordRefs.current[i - 1], { opacity: 0, y: -100, duration: 1.5 }, `stage${i}`)
-          .to(wordRefs.current[i], { opacity: 0.05, y: 0, duration: 1.5 }, `stage${i}`);
+          .to(wordRefs.current[i], { opacity: 1, y: 0, duration: 1.5 }, `stage${i}`);
         
         // Pause after each transition
         tl.to({}, { duration: 1 });
       }
 
       // 3. Final State with GROWTH
-      tl.to(wordRefs.current[words.length - 1], { scale: 1.1, opacity: 0.05, duration: 2 }, "final")
+      tl.to(wordRefs.current[words.length - 1], { scale: 1.1, opacity: 1, duration: 2 }, "final")
         .to(headlineRef.current, { scale: 0.95, duration: 2 }, "final");
         
       return () => {
@@ -70,7 +70,7 @@ export function StoryScrollSection() {
 
     mm.add("(max-width: 1023px)", () => {
       // Mobile & small tablet: simplified scroll without pinning
-      gsap.set(wordRefs.current[0], { opacity: 0.05, scale: 1 });
+      gsap.set(wordRefs.current[0], { opacity: 1, scale: 1 });
       gsap.set(wordRefs.current.slice(1), { opacity: 0 }); // Hide other words
       
       const tl = gsap.timeline({
@@ -101,40 +101,40 @@ export function StoryScrollSection() {
       ref={containerRef} 
       className="relative bg-[#FFFFFF] text-[#050505] h-full w-full overflow-hidden font-sans flex items-center py-24"
     >
-      {/* Background Giant Words */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
-        {words.map((word, index) => (
-          <span
-            key={word}
-            ref={(el) => {
-              wordRefs.current[index] = el;
-            }}
-            className="absolute font-black uppercase text-[#050505] tracking-tighter text-center w-full"
-            style={{ 
-              fontSize: "clamp(100px, 20vw, 280px)",
-              lineHeight: 1,
-              opacity: index === 0 ? 0.05 : 0, // default visible class for GSAP to manipulate
-            }}
-          >
-            {word}
-          </span>
-        ))}
-      </div>
-
       {/* Main Content Layout */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-[80px] xl:px-[120px] flex flex-col items-center justify-center text-center gap-12 h-full">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-[80px] xl:px-[120px] flex flex-col items-center justify-center text-center gap-6 h-full">
         
-        {/* Right Side: Editorial Content */}
+        {/* Editorial Content */}
         <div className="w-full flex flex-col items-center justify-center">
           <h2 
             ref={headlineRef}
-            className="font-[900] leading-[0.9] tracking-tight whitespace-pre-wrap text-[#050505]"
-            style={{ fontSize: "clamp(50px, 8vw, 100px) " }}
+            className="font-[900] leading-[1.05] tracking-tight whitespace-pre-wrap text-[#050505]"
+            style={{ fontSize: "clamp(36px, 5.5vw, 56px)" }}
           >
             {`Real opinions.\nReal consumers.\nReal market intelligence.`}
           </h2>
 
-          <div ref={columnsRef} className="flex flex-col sm:flex-row gap-6 sm:gap-12 mt-12 lg:mt-20">
+          {/* Big Grey Words in Center with Margins */}
+          <div className="relative w-full my-12 md:my-16 h-[100px] md:h-[160px] lg:h-[200px] flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
+            {words.map((word, index) => (
+              <span
+                key={word}
+                ref={(el) => {
+                  wordRefs.current[index] = el;
+                }}
+                className="absolute font-black uppercase text-[#5C8EFF] tracking-tighter text-center w-full"
+                style={{ 
+                  fontSize: "clamp(80px, 13vw, 180px)",
+                  lineHeight: 1,
+                  opacity: index === 0 ? 1 : 0, // default visible class for GSAP to manipulate
+                }}
+              >
+                {word}
+              </span>
+            ))}
+          </div>
+
+          <div ref={columnsRef} className="flex flex-col sm:flex-row gap-6 sm:gap-12 mt-6 lg:mt-8">
             <p className="text-lg lg:text-[22px] leading-relaxed text-[#525252] sm:w-1/2 font-medium">
               We connect brands with verified consumers to gather authentic feedback, uncover buying behavior, and validate business decisions with confidence.
             </p>
@@ -143,7 +143,7 @@ export function StoryScrollSection() {
             </p>
           </div>
 
-          <div ref={ctaRef} className="mt-12 lg:mt-20">
+          <div ref={ctaRef} className="mt-8 lg:mt-12">
             <button className="group relative inline-flex items-center gap-4 text-xl lg:text-2xl font-bold hover:tracking-wide transition-all duration-500 py-2 text-[#050505]">
               Start Your Research 
               <ArrowRight className="transition-transform duration-500 group-hover:translate-x-3 w-6 h-6 lg:w-8 lg:h-8" />
