@@ -3,7 +3,11 @@ import { Container, GradientBlob, Reveal, SectionEyebrow } from '../primitives';
 
 export function PageHero({ eyebrow, title, sub, children }: { eyebrow: string; title: ReactNode; sub?: ReactNode; children?: ReactNode }) {
   return (
-    <section className="relative overflow-hidden pt-36 pb-16 sm:pt-44 sm:pb-24">
+    <section className="relative overflow-hidden pt-36 pb-16 sm:pt-44 sm:pb-24 bg-[var(--bg-soft)] text-[var(--ink)]" 
+      style={{
+        backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
+        backgroundSize: '24px 24px',
+      }}>
       <GradientBlob className="-top-32 -left-32 h-96 w-96" />
       <GradientBlob className="-top-32 -right-32 h-96 w-96" from="var(--accent)" to="var(--brand)" />
       <Container>

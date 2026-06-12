@@ -5,7 +5,32 @@ import { Container, Reveal } from '../primitives';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 
-export function FinalCTA() {
+interface FinalCTAProps {
+  headline?: React.ReactNode;
+  subHeadline?: React.ReactNode;
+  buttonText?: string;
+  buttonHref?: string;
+}
+
+export function FinalCTA({
+  headline = (
+    <>
+      Let&apos;s Turn<br />
+      Responses Into<br />
+      <span className="text-transparent [-webkit-text-stroke:1.5px_#ffffff] font-black tracking-wide">
+        Real Decisions.
+      </span>
+    </>
+  ),
+  subHeadline = (
+    <>
+      Talk to our research strategists and receive a tailored proposal within 48 hours.<br className="hidden sm:inline" />
+      Access verified respondents, global audiences, and actionable insights.
+    </>
+  ),
+  buttonText = "Start Your Research Project",
+  buttonHref = "/contact"
+}: FinalCTAProps) {
   return (
     <section className="w-full bg-[#05070F] text-white relative overflow-hidden py-16 lg:py-24 border-t border-zinc-900 z-10">
       {/* Background star-like particles */}
@@ -27,29 +52,24 @@ export function FinalCTA() {
           <div className="text-left flex flex-col justify-center">
             <Reveal>
               <h2 className="text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-[1000] tracking-tight uppercase leading-[1.05] !text-white">
-                Let&apos;s Turn<br />
-                Responses Into<br />
-                <span className="text-transparent [-webkit-text-stroke:1.5px_#ffffff] font-black tracking-wide">
-                  Real Decisions.
-                </span>
+                {headline}
               </h2>
             </Reveal>
 
             <Reveal delay={0.05} className="mt-5">
               <p className="text-zinc-400 text-sm sm:text-base font-medium leading-relaxed max-w-lg">
-                Talk to our research strategists and receive a tailored proposal within 48 hours.<br className="hidden sm:inline" />
-                Access verified respondents, global audiences, and actionable insights.
+                {subHeadline}
               </p>
             </Reveal>
 
             <Reveal delay={0.10} className="mt-8">
               <div className="flex">
                 <Link
-                  href="/contact"
+                  href={buttonHref}
                   className="group relative inline-flex h-12.5 items-center justify-center rounded-xl bg-[#5C8EFF] px-8 text-xs font-black uppercase tracking-widest text-white shadow-[0_8px_30px_rgba(92,142,255,0.25)] border border-[#5C8EFF]/20 transition-all duration-300 hover:bg-[#4a7de6] hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(92,142,255,0.55)] hover:border-[#02E8F8]/40 overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    Start Your Research Project
+                    {buttonText}
                     <ArrowRight size={14} className="stroke-[2.5] transform group-hover:translate-x-0.5 transition-transform duration-300" />
                   </span>
                   {/* Shimmer effect */}

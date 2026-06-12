@@ -12,13 +12,15 @@ export function Section({
   children,
   className = '',
   id,
+  style,
 }: {
   children: ReactNode;
   className?: string;
   id?: string;
+  style?: React.CSSProperties;
 }) {
   return (
-    <section id={id} className={`py-20 sm:py-28 ${className}`}>
+    <section id={id} className={`py-20 sm:py-28 ${className}`} style={style}>
       <Container>{children}</Container>
     </section>
   );

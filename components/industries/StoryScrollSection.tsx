@@ -101,7 +101,12 @@ export function StoryScrollSection() {
     <div ref={triggerRef} className="w-full">
       <section 
         ref={pinRef} 
-        className="relative bg-[#FFFFFF] text-[#050505] h-full w-full overflow-hidden font-sans flex items-center py-24"
+        className="relative bg-[#FFFFFF] text-[#050505] h-full w-full overflow-hidden font-sans flex items-center py-24 bg-[var(--bg-soft)] text-[var(--ink)] relative overflow-hidden" 
+      id="industries"
+      style={{
+        backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
+        backgroundSize: '24px 24px',
+      }}
       >
       {/* Main Content Layout */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-[80px] xl:px-[120px] flex flex-col items-center justify-center text-center gap-6 h-full">
