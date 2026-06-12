@@ -1,262 +1,111 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'motion/react';
-import { ArrowRight, ChevronDown, Check, Loader2 } from 'lucide-react';
+import { motion } from 'motion/react';
+import { 
+  ChevronDown, 
+  Loader2, 
+  Linkedin, 
+  Twitter, 
+  Youtube, 
+  Instagram, 
+  MessageCircle, 
+  Mail, 
+  PhoneCall, 
+  MapPin 
+} from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { Container } from '@/components/primitives';
-import { ContactHeroVisual } from '@/components/contact/ContactHeroVisual';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 type FormValues = {
   name: string;
-  company: string;
   email: string;
-  country: string;
+  phone: string;
   projectType: string;
-  timeline: string;
-  sampleSize: string;
   details: string;
 };
 
-// Custom Floating Label Input Component
-interface FloatingInputProps {
-  label: string;
-  name: keyof FormValues;
-  register: any;
-  required?: string | boolean;
-  type?: string;
-  error?: string;
-}
-
-function FloatingInput({ label, name, register, required, type = 'text', error }: FloatingInputProps) {
-  const [focused, setFocused] = useState(false);
-  const [value, setValue] = useState('');
-
+// Left cartoon outline drawing
+function LeftCartoon() {
   return (
-    <div className="relative w-full mb-6">
-      <input
-        type={type}
-        {...register(name, {
-          required,
-          onChange: (e: any) => setValue(e.target.value)
-        })}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        className="w-full bg-transparent border-b border-zinc-200 px-1 py-3.5 text-zinc-950 text-sm outline-none transition-all duration-300 focus:border-[#5C8EFF] font-medium z-10 relative"
-      />
-      <label
-        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
-          }`}
-      >
-        {label}
-      </label>
-      {/* Bottom border draw animation */}
-      <span className={`absolute bottom-0 left-0 h-[2.5px] bg-[#5C8EFF] transition-all duration-500 origin-left ${focused ? 'w-full scale-x-100' : 'w-0 scale-x-0'}`} />
-      {error && <span className="mt-1.5 text-[10px] font-bold text-rose-500 block pl-1">{error}</span>}
-    </div>
+    <svg width="170" height="230" viewBox="0 0 170 230" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+      {/* Table/Desk */}
+      <path d="M 10,140 L 155,140" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M 60,140 L 45,210" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M 120,140 L 135,210" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M 90,140 L 90,210" stroke="#0B5CFF" strokeWidth="2" strokeLinecap="round" />
+
+      {/* Laptop */}
+      <path d="M 105,140 L 150,140 M 115,140 L 140,118 L 162,118" stroke="#0B5CFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="122" y="123" width="22" height="12" rx="1.5" stroke="#0B5CFF" strokeWidth="1.5" />
+      
+      {/* Stool */}
+      <ellipse cx="65" cy="180" rx="28" ry="7" fill="white" stroke="#0B5CFF" strokeWidth="2.5" />
+      <path d="M 47,184 L 28,230" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M 83,184 L 102,230" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M 65,187 L 65,230" stroke="#0B5CFF" strokeWidth="2" strokeLinecap="round" />
+
+      {/* Character body & arms */}
+      <path d="M 45,180 C 45,150 50,118 70,115" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M 88,180 C 88,150 85,118 70,115" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      
+      {/* Arms leaning on desk */}
+      <path d="M 42,125 Q 65,145 92,125" stroke="#0B5CFF" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <path d="M 52,118 Q 65,136 78,118" stroke="#0B5CFF" strokeWidth="2" fill="none" strokeLinecap="round" />
+
+      {/* Head & Hair */}
+      <circle cx="68" cy="90" r="22" fill="white" stroke="#0B5CFF" strokeWidth="2.5" />
+      <path d="M 47,85 C 47,68 89,68 89,85 C 80,75 56,75 47,85 Z" fill="#0B5CFF" />
+      
+      {/* Face details */}
+      <path d="M 62,95 Q 68,100 74,95" stroke="#0B5CFF" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="62" cy="88" r="1.5" fill="#0B5CFF" />
+      <circle cx="74" cy="88" r="1.5" fill="#0B5CFF" />
+      <path d="M 48,105 Q 43,115 48,125" stroke="#0B5CFF" strokeWidth="2" fill="none" strokeLinecap="round" />
+    </svg>
   );
 }
 
-// Custom Floating Label Select Component
-interface FloatingSelectProps {
-  label: string;
-  name: keyof FormValues;
-  register: any;
-  required?: string | boolean;
-  options: string[];
-  error?: string;
-}
-
-function FloatingSelect({ label, name, register, required, options, error }: FloatingSelectProps) {
-  const [focused, setFocused] = useState(false);
-  const [value, setValue] = useState('');
-
+// Right cartoon outline drawing
+function RightCartoon() {
   return (
-    <div className="relative w-full mb-6">
-      <select
-        {...register(name, {
-          required,
-          onChange: (e: any) => setValue(e.target.value)
-        })}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        className="w-full bg-transparent border-b border-zinc-200 px-1 py-3.5 text-zinc-950 text-sm outline-none transition-all duration-300 focus:border-[#5C8EFF] font-medium z-10 relative appearance-none cursor-pointer"
-      >
-        <option value="" disabled className="text-zinc-400"></option>
-        {options.map((opt) => (
-          <option key={opt} value={opt} className="text-zinc-900 bg-white">
-            {opt}
-          </option>
-        ))}
-      </select>
-      <label
-        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
-          }`}
-      >
-        {label}
-      </label>
-      <span className={`absolute bottom-0 left-0 h-[2.5px] bg-[#5C8EFF] transition-all duration-500 origin-left ${focused ? 'w-full scale-x-100' : 'w-0 scale-x-0'}`} />
-      {/* Select Down Arrow Icon */}
-      <span className="absolute right-2 top-4 pointer-events-none text-zinc-400">
-        <ChevronDown size={16} />
-      </span>
-      {error && <span className="mt-1.5 text-[10px] font-bold text-rose-500 block pl-1">{error}</span>}
-    </div>
-  );
-}
+    <svg width="170" height="230" viewBox="0 0 170 230" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+      {/* Person body legs & torso */}
+      <path d="M 85,215 L 85,145 L 68,110 M 85,145 L 102,110" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 72,215 H 98" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M 72,215 L 72,225 H 80" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M 98,215 L 98,225 H 106" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" />
+      
+      {/* Torso outline */}
+      <path d="M 70,110 L 85,72 L 100,110 Z" fill="white" stroke="#0B5CFF" strokeWidth="2.5" strokeLinejoin="round" />
 
-// Custom Floating Label Textarea Component
-interface FloatingTextareaProps {
-  label: string;
-  name: keyof FormValues;
-  register: any;
-  required?: string | boolean;
-  error?: string;
-}
+      {/* Arms holding keyboard */}
+      <path d="M 75,85 L 60,95 L 70,120" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M 95,85 L 105,95 L 95,120" stroke="#0B5CFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
 
-function FloatingTextarea({ label, name, register, required, error }: FloatingTextareaProps) {
-  const [focused, setFocused] = useState(false);
-  const [value, setValue] = useState('');
+      {/* Keyboard/Tray */}
+      <rect x="42" y="112" width="56" height="10" rx="2" fill="white" stroke="#0B5CFF" strokeWidth="2" />
+      <line x1="50" y1="117" x2="90" y2="117" stroke="#0B5CFF" strokeWidth="2" strokeDasharray="3,3" />
 
-  return (
-    <div className="relative w-full mb-6">
-      <textarea
-        rows={4}
-        {...register(name, {
-          required,
-          onChange: (e: any) => setValue(e.target.value)
-        })}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        className="w-full bg-transparent border-b border-zinc-200 px-1 py-3.5 text-zinc-950 text-sm outline-none transition-all duration-300 focus:border-[#5C8EFF] font-medium z-10 relative resize-none"
-      />
-      <label
-        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
-          }`}
-      >
-        {label}
-      </label>
-      <span className={`absolute bottom-0 left-0 h-[2.5px] bg-[#5C8EFF] transition-all duration-500 origin-left ${focused ? 'w-full scale-x-100' : 'w-0 scale-x-0'}`} />
-      {error && <span className="mt-1.5 text-[10px] font-bold text-rose-500 block pl-1">{error}</span>}
-    </div>
-  );
-}
-
-// ── Magnetic Button Component ──
-function MagneticButton({ children, className, onClick, href, target, rel }: {
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-  href?: string;
-  target?: string;
-  rel?: string;
-}) {
-  const ref = useRef<HTMLElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 150, damping: 15 });
-  const springY = useSpring(y, { stiffness: 150, damping: 15 });
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set((e.clientX - centerX) * 0.15);
-    y.set((e.clientY - centerY) * 0.15);
-  }, [x, y]);
-
-  const handleMouseLeave = useCallback(() => {
-    x.set(0);
-    y.set(0);
-  }, [x, y]);
-
-  const Tag = href ? 'a' : 'button';
-  const linkProps = href ? { href, target, rel } : {};
-
-  return (
-    <motion.div style={{ x: springX, y: springY }}>
-      <Tag
-        ref={ref as any}
-        className={className}
-        onClick={onClick}
-        onMouseMove={handleMouseMove as any}
-        onMouseLeave={handleMouseLeave}
-        {...linkProps}
-      >
-        {children}
-      </Tag>
-    </motion.div>
-  );
-}
-
-// ── Dot Grid Signal Pulse SVG ──
-function DotGridPulses() {
-  return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none z-[1]" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="pulse-grad-1" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#5C8EFF" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="#5C8EFF" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="pulse-grad-2" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#02E8F8" stopOpacity="0.10" />
-          <stop offset="100%" stopColor="#02E8F8" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      {/* Pulse 1 — top-left quadrant */}
-      <circle cx="25%" cy="30%" r="0" fill="url(#pulse-grad-1)">
-        <animate attributeName="r" values="0;120;0" dur="6s" repeatCount="indefinite" begin="0s" />
-        <animate attributeName="opacity" values="0;0.6;0" dur="6s" repeatCount="indefinite" begin="0s" />
-      </circle>
-
-      {/* Pulse 2 — right side */}
-      <circle cx="75%" cy="45%" r="0" fill="url(#pulse-grad-2)">
-        <animate attributeName="r" values="0;100;0" dur="7s" repeatCount="indefinite" begin="2s" />
-        <animate attributeName="opacity" values="0;0.5;0" dur="7s" repeatCount="indefinite" begin="2s" />
-      </circle>
-
-      {/* Pulse 3 — bottom-center */}
-      <circle cx="50%" cy="70%" r="0" fill="url(#pulse-grad-1)">
-        <animate attributeName="r" values="0;90;0" dur="5.5s" repeatCount="indefinite" begin="3.5s" />
-        <animate attributeName="opacity" values="0;0.45;0" dur="5.5s" repeatCount="indefinite" begin="3.5s" />
-      </circle>
-
-      {/* Pulse 4 — left-center */}
-      <circle cx="15%" cy="55%" r="0" fill="url(#pulse-grad-2)">
-        <animate attributeName="r" values="0;80;0" dur="8s" repeatCount="indefinite" begin="1.5s" />
-        <animate attributeName="opacity" values="0;0.4;0" dur="8s" repeatCount="indefinite" begin="1.5s" />
-      </circle>
-
-      {/* Pulse 5 — top-right */}
-      <circle cx="85%" cy="25%" r="0" fill="url(#pulse-grad-1)">
-        <animate attributeName="r" values="0;70;0" dur="6.5s" repeatCount="indefinite" begin="4s" />
-        <animate attributeName="opacity" values="0;0.35;0" dur="6.5s" repeatCount="indefinite" begin="4s" />
-      </circle>
+      {/* Head */}
+      <circle cx="85" cy="46" r="18" fill="white" stroke="#0B5CFF" strokeWidth="2.5" />
+      <path d="M 68,42 C 68,28 102,28 102,42 C 95,34 75,34 68,42 Z" fill="#0B5CFF" />
+      
+      {/* Face details */}
+      <path d="M 79,50 Q 85,55 91,50" stroke="#0B5CFF" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="79" cy="43" r="1.5" fill="#0B5CFF" />
+      <circle cx="91" cy="43" r="1.5" fill="#0B5CFF" />
+      
+      {/* Sparkles / Speed marks */}
+      <line x1="42" y1="98" x2="36" y2="92" stroke="#0B5CFF" strokeWidth="2" strokeLinecap="round" />
+      <line x1="48" y1="90" x2="48" y2="82" stroke="#0B5CFF" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
 }
 
 export default function Contact() {
-  const formSectionRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
-  const [heroRect, setHeroRect] = useState<DOMRect | null>(null);
-
-  // Mouse motion values for parallax
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  // Form setup
+  const [phonePrefix, setPhonePrefix] = useState("+91");
   const {
     register,
     handleSubmit,
@@ -265,411 +114,274 @@ export default function Contact() {
   } = useForm<FormValues>({
     defaultValues: {
       name: '',
-      company: '',
       email: '',
-      country: '',
+      phone: '',
       projectType: '',
-      timeline: '',
-      sampleSize: '',
       details: ''
     }
   });
 
-  // Track cursor position for spotlight overlay + card parallax
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
-
-  // Update heroRect for parallax calculations
-  useEffect(() => {
-    const updateRect = () => {
-      if (heroRef.current) {
-        setHeroRect(heroRef.current.getBoundingClientRect());
-      }
-    };
-    updateRect();
-    window.addEventListener('resize', updateRect);
-    window.addEventListener('scroll', updateRect);
-    return () => {
-      window.removeEventListener('resize', updateRect);
-      window.removeEventListener('scroll', updateRect);
-    };
-  }, []);
-
   const onSubmit = async (values: FormValues) => {
     // Simulate API submission
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    toast.success('Your market research request has been logged successfully! Our team will connect in 1 business day.');
+    toast.success('Your message has been sent successfully! Our team will connect with you shortly.');
     reset();
   };
 
-
-
-  const faqs = [
-    {
-      q: "How does EGI verify its research panel respondents?",
-      a: "We run multi-stage identity verification checks including LinkedIn authentication, corporate email confirmation, digital fingerprinting, and pattern matching. Every respondent undergoes validation checks before being admitted to our core study cohorts."
-    },
-    {
-      q: "What is your typical project turnaround time?",
-      a: "Standard surveys and focus groups are launched within 5 business days. Rapid response polls can be activated in as little as 24 hours, while complex custom international studies typically run over 2 to 3 weeks."
-    },
-    {
-      q: "Do you support international research across multiple languages?",
-      a: "Yes. EGI has an active respondent panel spanning over 50 countries. We handle local translation, cultural localization of survey prompts, and coordinate native-speaking moderators for focus groups and interviews."
-    },
-    {
-      q: "How do you ensure data quality and combat fraud?",
-      a: "Our verification engine uses real-time behavioral analysis to filter out speeders, straight-liners, and automated script bots. Any responses flagged by our quality rules are quarantined and replaced at no extra cost."
-    }
-  ];
-
   return (
-    <div className="relative min-h-screen bg-[#FAFAFA] text-zinc-900 overflow-x-hidden pb-16 selection:bg-[#5C8EFF]/20 font-sans">
+    <div className="relative min-h-screen bg-white text-zinc-900 overflow-x-hidden pb-16 selection:bg-[#5C8EFF]/20 font-sans">
       <Toaster richColors position="top-center" />
 
-      {/* ── Spotlight Cursor Tracking Effect ── */}
-      <div
-        className="pointer-events-none fixed inset-0 z-0 opacity-40 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(circle 380px at ${mousePos.x}px ${mousePos.y}px, rgba(92, 142, 255, 0.08), transparent 80%)`
-        }}
-      />
-
-      {/* ── Blueprint Dot-Grid Canvas Background ── */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          backgroundImage: 'radial-gradient(rgba(24, 24, 27, 0.05) 1.2px, transparent 1.2px)',
-          backgroundSize: '24px 24px',
-        }}
-      />
-
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          SECTION 1: ENHANCED HERO WITH FLOATING CARDS
+          SECTION 1: OSOME-STYLE HERO & FORM
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        ref={heroRef}
-        className="relative min-h-[80vh] flex flex-col justify-center bg-white pt-20 pb-12 z-10 overflow-hidden border-b border-zinc-100"
+      <section 
+        className="relative overflow-hidden min-h-[80vh] flex flex-col justify-center bg-white pt-24 pb-16 px-4 z-10 border-b border-zinc-100"
         style={{
           backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
           backgroundSize: '24px 24px',
         }}
       >
-        {/* ── Dot Grid Signal Pulses ── */}
-        <DotGridPulses />
+        {/* ── Background radial glow centered behind the graphic ── */}
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,rgba(92,142,255,0.04),transparent_55%)] pointer-events-none" />
 
-        {/* ── Background radial glow behind dashboard visual ── */}
-        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_75%_35%,rgba(92,142,255,0.04),transparent_55%)] pointer-events-none" />
+        <Container className="relative z-10 w-full flex-1 flex flex-col items-center max-w-6xl mx-auto">
+          
+          {/* Eyebrow */}
+          <span className="text-[11px] font-extrabold text-zinc-400 uppercase tracking-widest mb-3">
+            EvoGlobalInsight • Contact us
+          </span>
+          
+          {/* Headline */}
+          <h1 className="text-4xl sm:text-5xl lg:text-[4.2rem] font-serif font-normal text-zinc-950 tracking-tight mb-6 text-center leading-tight">
+            Contact us
+          </h1>
+          
+          {/* Subcopy */}
+          <p className="text-zinc-500 text-[13.5px] sm:text-sm font-medium max-w-xl text-center leading-relaxed mb-12">
+            Get in touch and ask us anything. The difference between quantitative surveys and focus groups, can you start a study from Madagascar, which research methodology our team prefers - we answer it all.
+          </p>
 
-        <Container className="relative z-10 w-full flex-1 flex flex-col justify-center">
-          <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
-            
-            {/* ── Left Column: Value Prop + CTAs ── */}
-            <div className="relative py-2 lg:py-6 text-left flex flex-col items-start">
-              {/* Eyebrow badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 py-1.5 text-[9px] font-extrabold tracking-wider uppercase text-zinc-500 shadow-sm"
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-[#5C8EFF] animate-pulse" />
-                EGI Collaboration Hub
-              </motion.div>
-
-              {/* Headline */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="text-4xl sm:text-5xl lg:text-[4.2rem] font-[900] tracking-tight leading-[0.98] text-zinc-950 uppercase mb-6 max-w-2xl text-left"
-              >
-                READY TO LAUNCH YOUR{' '}
-                <span className="text-transparent [-webkit-text-stroke:1.8px_#0A0A0A] font-[900] tracking-tight">
-                  NEXT STUDY?
-                </span>
-              </motion.h1>
-
-              {/* Subcopy */}
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="text-zinc-500 text-sm sm:text-base font-medium max-w-lg mb-10 leading-relaxed text-left"
-              >
-                Tell us about your audience, objectives, timeline, and research requirements. Our team responds with a comprehensive execution proposal within one business day.
-              </motion.p>
-
-              {/* CTA Buttons with Magnetic Effect */}
-              <motion.div
-                initial={{ opacity: 0, y: 15, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-wrap items-center gap-3 justify-start"
-              >
-                <MagneticButton
-                   onClick={() => formSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                   className="px-6 py-3.5 bg-[#5C8EFF] hover:bg-[#4b7ce6] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-[0_8px_24px_rgba(92,142,255,0.25)] hover:shadow-[0_12px_32px_rgba(92,142,255,0.35)] transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-                >
-                  START YOUR PROJECT
-                </MagneticButton>
-                <MagneticButton
-                  href="https://calendly.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3.5 border border-zinc-200 hover:border-zinc-950 bg-white hover:bg-zinc-50/50 text-zinc-800 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 hover:scale-[1.02]"
-                >
-                  SCHEDULE A CALL
-                </MagneticButton>
-              </motion.div>
-            </div>
-
-            {/* ── Right Column: Interactive Pipeline Visualizer ── */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="relative lg:py-6 z-10"
-            >
-              <ContactHeroVisual mouseX={mouseX} mouseY={mouseY} heroRect={heroRect} />
-            </motion.div>
-
+          {/* Form flanking row layout */}
+          <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_2.4fr_1fr] gap-4 items-center justify-items-center relative">
+          
+          {/* Left Illustration */}
+          <div className="hidden lg:block select-none opacity-90 hover:opacity-100 transition-opacity duration-300">
+            <LeftCartoon />
           </div>
-        </Container>
-      </section>
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          SECTION 2: SPLIT CONTACT FORM
-          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section
-        ref={formSectionRef}
-        className="relative py-20 sm:py-28 border-t border-zinc-200/60 bg-white z-10"
-      >
-        <Container>
-          <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-
-            {/* Left Column: Title & Description */}
-            <div className="flex flex-col justify-start">
-              <div className="sticky top-40">
-                <span className="text-xs font-black tracking-widest text-[#5C8EFF] uppercase mb-4 block">
-                  Project Configuration
-                </span>
-                <h2 className="text-4xl sm:text-5xl lg:text-[4rem] font-[900] tracking-tight leading-[0.95] text-zinc-950 uppercase mb-6">
-                  START YOUR<br />
-                  <span className="text-transparent [-webkit-text-stroke:1.5px_#0A0A0A] font-[900]">
-                    PROJECT.
-                  </span>
-                </h2>
-                <p className="text-zinc-500 text-sm sm:text-base font-medium leading-relaxed max-w-md">
-                  Specify your research goals, target audience pool, expected sample size, and timeline constraints. Our research operations panel review team will analyze your project needs and build a custom fielding strategy.
-                </p>
-                <div className="mt-8 pt-8 border-t border-zinc-100 flex flex-col gap-4 max-w-sm">
-                  <div className="flex items-center gap-3">
-                    <span className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 text-[#5C8EFF] flex items-center justify-center flex-shrink-0">
-                      <Check size={12} className="stroke-[3]" />
-                    </span>
-                    <span className="text-xs font-bold text-zinc-800">Operational response under 24 hours</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 text-[#5C8EFF] flex items-center justify-center flex-shrink-0">
-                      <Check size={12} className="stroke-[3]" />
-                    </span>
-                    <span className="text-xs font-bold text-zinc-800">Verified participant sampling models</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 text-[#5C8EFF] flex items-center justify-center flex-shrink-0">
-                      <Check size={12} className="stroke-[3]" />
-                    </span>
-                    <span className="text-xs font-bold text-zinc-800">Secure real-time dashboard tracking</span>
-                  </div>
+          {/* Form wrapper */}
+          <div className="w-full max-w-lg">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
+              
+              {/* Row 1: Name and Email */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    placeholder="Your name *"
+                    {...register("name", { required: "Name is required" })}
+                    className="w-full bg-white border border-zinc-200 focus:border-[#0B5CFF] px-4.5 py-3.5 rounded-xl text-zinc-900 text-sm outline-none transition-all duration-300 font-medium"
+                  />
+                  {errors.name && <span className="mt-1 text-xs text-rose-500 block pl-1 font-semibold">{errors.name.message}</span>}
+                </div>
+                
+                <div className="relative w-full">
+                  <input
+                    type="email"
+                    placeholder="Email address *"
+                    {...register("email", { 
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Invalid email address"
+                      }
+                    })}
+                    className="w-full bg-white border border-zinc-200 focus:border-[#0B5CFF] px-4.5 py-3.5 rounded-xl text-zinc-900 text-sm outline-none transition-all duration-300 font-medium"
+                  />
+                  {errors.email && <span className="mt-1 text-xs text-rose-500 block pl-1 font-semibold">{errors.email.message}</span>}
                 </div>
               </div>
-            </div>
 
-            {/* Right Column: Premium Form */}
-            <div className="bg-zinc-50/50 border border-zinc-200/60 p-8 sm:p-12 rounded-3xl shadow-sm relative overflow-hidden">
-
-              {/* Subtle top bar accent */}
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#5C8EFF]" />
-
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <FloatingInput
-                    label="Full Name"
-                    name="name"
-                    register={register}
-                    required="Name is required"
-                    error={errors.name?.message}
-                  />
-                  <FloatingInput
-                    label="Company Name"
-                    name="company"
-                    register={register}
-                    required="Company is required"
-                    error={errors.company?.message}
-                  />
-                </div>
-
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <FloatingInput
-                    label="Business Email"
-                    name="email"
-                    type="email"
-                    register={register}
-                    required="Email is required"
-                    error={errors.email?.message}
-                  />
-                  <FloatingInput
-                    label="Target Country"
-                    name="country"
-                    register={register}
-                    required="Country is required"
-                    error={errors.country?.message}
-                  />
-                </div>
-
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <FloatingSelect
-                    label="Project Type"
-                    name="projectType"
-                    register={register}
-                    required="Project type is required"
-                    options={[
-                      "Quantitative Surveys",
-                      "Qualitative Focus Groups",
-                      "B2B Expert Interviews",
-                      "B2C Consumer Mapping",
-                      "B2B Enterprise Cohorts"
-                    ]}
-                    error={errors.projectType?.message}
-                  />
-                  <FloatingSelect
-                    label="Timeline Constraint"
-                    name="timeline"
-                    register={register}
-                    required="Timeline is required"
-                    options={[
-                      "Immediate (< 2 weeks)",
-                      "1 Month",
-                      "2-3 Months",
-                      "Ongoing Long-term Research"
-                    ]}
-                    error={errors.timeline?.message}
-                  />
-                </div>
-
-                <FloatingSelect
-                  label="Target Sample Size"
-                  name="sampleSize"
-                  register={register}
-                  required="Sample size is required"
-                  options={[
-                    "Qualitative (Under 50 participants)",
-                    "N = 100 - 500",
-                    "N = 500 - 1,000",
-                    "N = 1,000+",
-                    "Custom Large Cohort"
-                  ]}
-                  error={errors.sampleSize?.message}
-                />
-
-                <FloatingTextarea
-                  label="Project Requirements & Details"
-                  name="details"
-                  register={register}
-                  required="Project details are required"
-                  error={errors.details?.message}
-                />
-
-                <div className="pt-4 text-left">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="group relative inline-flex h-12 items-center justify-center rounded-xl bg-zinc-950 hover:bg-[#5C8EFF] px-8 text-xs font-black uppercase tracking-widest text-white transition-all duration-300 hover:scale-[1.02] cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed select-none"
+              {/* Row 2: Phone with Flag selector & Interested In */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Phone Prefix select + Phone Input wrapper */}
+                <div className="flex bg-white border border-zinc-200 rounded-xl overflow-hidden focus-within:border-[#0B5CFF] transition-all duration-300">
+                  <select 
+                    className="bg-zinc-50 border-r border-zinc-200 px-3 py-3.5 text-sm outline-none text-zinc-700 cursor-pointer font-medium"
+                    onChange={(e) => setPhonePrefix(e.target.value)}
+                    value={phonePrefix}
                   >
-                    <span className="relative z-10 flex items-center gap-2">
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 size={13} className="animate-spin" />
-                          LAUNCHING...
-                        </>
-                      ) : (
-                        <>
-                          LAUNCH REQUEST
-                          <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform duration-300" />
-                        </>
-                      )}
-                    </span>
-                  </button>
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+39">🇮🇹 +39</option>
+                  </select>
+                  <input
+                    type="tel"
+                    placeholder="999 9999999 *"
+                    {...register("phone", { required: "Phone is required" })}
+                    className="w-full px-4 py-3.5 text-zinc-900 text-sm outline-none font-medium"
+                  />
                 </div>
-              </form>
-            </div>
 
+                {/* Dropdown SELECT */}
+                <div className="relative w-full">
+                  <select
+                    {...register("projectType", { required: "Selecting interested category is required" })}
+                    className="w-full bg-white border border-zinc-200 focus:border-[#0B5CFF] px-4.5 py-3.5 rounded-xl text-zinc-900 text-sm outline-none transition-all duration-300 font-medium appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled selected>Interested in *</option>
+                    <option value="Quantitative Surveys">Quantitative Surveys</option>
+                    <option value="Qualitative Focus Groups">Qualitative Focus Groups</option>
+                    <option value="B2B Expert Interviews">B2B Expert Interviews</option>
+                    <option value="B2C Consumer Panels">B2C Consumer Panels</option>
+                    <option value="Panelist Recruitment">Careers / Panelist Join</option>
+                  </select>
+                  <span className="absolute right-4.5 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400">
+                    <ChevronDown size={16} />
+                  </span>
+                  {errors.projectType && <span className="mt-1 text-xs text-rose-500 block pl-1 font-semibold">{errors.projectType.message}</span>}
+                </div>
+              </div>
+
+              {/* Row 3: How can we help? */}
+              <div className="relative w-full">
+                <textarea
+                  rows={4}
+                  placeholder="How can we help? *"
+                  {...register("details", { required: "Please specify your message details" })}
+                  className="w-full bg-white border border-zinc-200 focus:border-[#0B5CFF] px-4.5 py-3.5 rounded-xl text-zinc-900 text-sm outline-none transition-all duration-300 font-medium resize-none"
+                />
+                {errors.details && <span className="mt-1 text-xs text-rose-500 block pl-1 font-semibold">{errors.details.message}</span>}
+              </div>
+
+              {/* Button & terms */}
+              <div className="text-center pt-3 space-y-4">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto px-10 py-3.5 bg-[#0B5CFF] hover:bg-[#004BE6] text-white text-xs font-black uppercase tracking-widest rounded-full transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_12px_rgba(11,92,255,0.15)] flex items-center justify-center mx-auto cursor-pointer disabled:opacity-85 disabled:cursor-not-allowed select-none"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin mr-2" />
+                      SENDING MESSAGE...
+                    </>
+                  ) : (
+                    "Send your message"
+                  )}
+                </button>
+                
+                <p className="text-[10px] text-zinc-400 max-w-sm mx-auto leading-relaxed">
+                  By clicking, you agree to our <a href="#" className="underline hover:text-zinc-600">Terms & Conditions</a>, <a href="#" className="underline hover:text-zinc-600">Privacy and Data Protection Policy</a>.
+                </p>
+              </div>
+
+            </form>
           </div>
-        </Container>
-      </section>
 
+          {/* Right Illustration */}
+          <div className="hidden lg:block select-none opacity-90 hover:opacity-100 transition-opacity duration-300">
+            <RightCartoon />
+          </div>
 
+        </div>
+      </Container>
+    </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          SECTION 4: FAQ
+          SECTION 2: GET IN TOUCH WITH EGI (MAP + CONTACT INFO)
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative py-20 sm:py-28 border-t border-zinc-200/60 bg-white z-10">
-        <Container className="max-w-4xl">
-          <div className="text-center mb-16">
-            <span className="text-xs font-black tracking-widest text-[#5C8EFF] uppercase mb-3 block">
-              Information Desk
+      <section className="bg-zinc-50/50 border-t border-zinc-150 py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          
+          {/* Eyebrow & Subtitle */}
+          <div className="text-center mb-10">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#0B5CFF] block mb-2">
+              GLOBAL OFFICE
             </span>
-            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight leading-tight text-zinc-950 uppercase">
-              FREQUENTLY ASKED QUESTIONS
+            <h2 className="text-3xl sm:text-4xl font-serif text-zinc-950 leading-tight">
+              Get in touch with EGI
             </h2>
           </div>
 
-          <div className="divide-y divide-zinc-200 border-t border-b border-zinc-200">
-            {faqs.map((faq, idx) => (
-              <div key={idx} className="py-6">
-                <button
-                  onClick={() => setOpenFaqIdx(openFaqIdx === idx ? null : idx)}
-                  className="w-full flex justify-between items-center text-left py-2 group cursor-pointer"
-                >
-                  <span className="text-zinc-950 font-black text-sm sm:text-base tracking-tight uppercase group-hover:text-[#5C8EFF] transition-colors duration-300">
-                    {faq.q}
+          {/* Map + card wrapper */}
+          <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr] items-stretch">
+            
+            {/* Map iframe card */}
+            <div className="min-h-[320px] rounded-3xl overflow-hidden border border-zinc-200 bg-white relative shadow-sm">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0664426543415!2d77.62002341482206!3d12.967591690858564!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae13fc546b528b%3A0xe7f9cbdf2e6d60a5!2sBangalore%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1623485749284!5m2!1sen!2sin"
+                className="absolute inset-0 w-full h-full border-0 grayscale hover:grayscale-0 opacity-90 transition-all duration-500"
+                allowFullScreen
+                loading="lazy"
+              />
+            </div>
+
+            {/* Address Details Card */}
+            <div className="bg-[#FAF8F5] p-8 rounded-3xl border border-zinc-200/50 shadow-sm flex flex-col justify-between">
+              
+              <div className="space-y-6">
+                {/* Address block */}
+                <div>
+                  <span className="block text-[9px] font-black uppercase tracking-wider text-zinc-400 mb-1">
+                    Address
                   </span>
-                  <motion.span
-                    animate={{ rotate: openFaqIdx === idx ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-zinc-400 group-hover:text-zinc-950 flex-shrink-0 ml-4"
-                  >
-                    <ChevronDown size={18} />
-                  </motion.span>
-                </button>
-                <motion.div
-                  initial={false}
-                  animate={{
-                    height: openFaqIdx === idx ? 'auto' : 0,
-                    opacity: openFaqIdx === idx ? 1 : 0
-                  }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="overflow-hidden"
-                >
-                  <p className="pt-3 pb-4 text-zinc-500 text-xs sm:text-sm leading-relaxed font-medium">
-                    {faq.a}
-                  </p>
-                </motion.div>
+                  <span className="text-zinc-900 font-bold text-sm leading-relaxed block">
+                    EGI Workspace, Cyber City, Bangalore, India
+                  </span>
+                </div>
+
+                {/* Email block */}
+                <div>
+                  <span className="block text-[9px] font-black uppercase tracking-wider text-zinc-400 mb-1">
+                    Email
+                  </span>
+                  <a href="mailto:hello@evoglobalinsight.com" className="text-zinc-900 font-bold text-sm hover:text-[#0B5CFF] transition-colors">
+                    hello@evoglobalinsight.com
+                  </a>
+                </div>
+
+                {/* Phone block */}
+                <div>
+                  <span className="block text-[9px] font-black uppercase tracking-wider text-zinc-400 mb-1">
+                    Phone
+                  </span>
+                  <a href="tel:+919999999999" className="text-zinc-900 font-bold text-sm hover:text-[#0B5CFF] transition-colors">
+                    +91 99999 99999
+                  </a>
+                </div>
               </div>
-            ))}
+
+              {/* Social icons row */}
+              <div className="mt-8 flex gap-2">
+                {[
+                  { name: 'linkedin', href: '#', icon: Linkedin },
+                  { name: 'twitter', href: '#', icon: Twitter },
+                  { name: 'youtube', href: '#', icon: Youtube },
+                  { name: 'instagram', href: '#', icon: Instagram },
+                  { name: 'chat', href: '#', icon: MessageCircle }
+                ].map((soc) => {
+                  const IconComp = soc.icon;
+                  return (
+                    <a
+                      key={soc.name}
+                      href={soc.href}
+                      className="grid h-9.5 w-9.5 place-items-center rounded-full bg-white border border-zinc-200 text-zinc-600 hover:border-[#0B5CFF] hover:text-[#0B5CFF] shadow-sm transition-all duration-300"
+                    >
+                      <IconComp size={15} />
+                    </a>
+                  );
+                })}
+              </div>
+
+            </div>
+
           </div>
-        </Container>
+
+        </div>
       </section>
-
-
     </div>
   );
 }
