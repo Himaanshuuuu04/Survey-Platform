@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { Play, ArrowRight } from "lucide-react";
 
 export function StoryScrollSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const columnsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
@@ -14,10 +15,10 @@ export function StoryScrollSection() {
   const words = ["INSIGHT", "DATA", "AUDIENCE", "RESEARCH", "GROWTH"];
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    if (!containerRef.current) return;
+    if (!triggerRef.current || !pinRef.current) return;
 
     const mm = gsap.matchMedia();
 
@@ -33,11 +34,11 @@ export function StoryScrollSection() {
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: triggerRef.current,
           start: "top top",
           end: "+=5000",
           scrub: 1,
-          pin: true,
+          pin: pinRef.current,
         },
       });
 
@@ -75,7 +76,7 @@ export function StoryScrollSection() {
       
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: triggerRef.current,
           start: "top 80%",
           end: "bottom center",
           scrub: true,
@@ -97,10 +98,11 @@ export function StoryScrollSection() {
   }, []);
 
   return (
-    <section 
-      ref={containerRef} 
-      className="relative bg-[#FFFFFF] text-[#050505] h-full w-full overflow-hidden font-sans flex items-center py-24"
-    >
+    <div ref={triggerRef} className="w-full">
+      <section 
+        ref={pinRef} 
+        className="relative bg-[#FFFFFF] text-[#050505] h-full w-full overflow-hidden font-sans flex items-center py-24"
+      >
       {/* Main Content Layout */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-[80px] xl:px-[120px] flex flex-col items-center justify-center text-center gap-6 h-full">
         
@@ -154,5 +156,6 @@ export function StoryScrollSection() {
 
       </div>
     </section>
+    </div>
   );
 }

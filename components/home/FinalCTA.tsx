@@ -27,7 +27,7 @@ export function FinalCTA() {
           <div className="text-left flex flex-col justify-center">
             <Reveal>
               <h2 className="text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-[1000] tracking-tight uppercase leading-[1.05] !text-white">
-                Let's Turn<br />
+                Let&apos;s Turn<br />
                 Responses Into<br />
                 <span className="text-transparent [-webkit-text-stroke:1.5px_#ffffff] font-black tracking-wide">
                   Real Decisions.

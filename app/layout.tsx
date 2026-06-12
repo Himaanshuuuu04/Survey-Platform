@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AudienceProvider } from "../components/layout/AudienceContext";
+import { ScrollToTop } from "../components/layout/ScrollToTop";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 
@@ -59,6 +60,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <AudienceProvider>
+          <ScrollToTop />
           <Navbar />
           <main className="flex-1">
             {children}

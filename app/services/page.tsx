@@ -792,7 +792,7 @@ export default function Services() {
   }, []);
 
   // Floating particles local state
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; duration: number; delay: number }>>([]);
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; duration: number; delay: number; driftX: number }>>([]);
   useEffect(() => {
     const generated = Array.from({ length: 15 }).map((_, i) => ({
       id: i,
@@ -800,7 +800,8 @@ export default function Services() {
       y: Math.random() * 80 + 10, // percentage (avoid edge clipping)
       size: Math.random() * 5 + 3, // size in px
       duration: Math.random() * 15 + 15, // seconds
-      delay: Math.random() * 5
+      delay: Math.random() * 5,
+      driftX: Math.random() * 30 - 15
     }));
     setParticles(generated);
   }, []);
@@ -1372,7 +1373,7 @@ export default function Services() {
             }}
             animate={{
               y: [0, -80, 0],
-              x: [0, Math.random() * 30 - 15, 0],
+              x: [0, p.driftX, 0],
               opacity: [0.15, 0.45, 0.15],
             }}
             transition={{
