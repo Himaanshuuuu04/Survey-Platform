@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { ArrowRight, ChevronDown, Check, Loader2 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { Container } from '@/components/primitives';
+import { ContactHeroVisual } from '@/components/contact/ContactHeroVisual';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 type FormValues = {
   name: string;
@@ -45,9 +52,8 @@ function FloatingInput({ label, name, register, required, type = 'text', error }
         className="w-full bg-transparent border-b border-zinc-200 px-1 py-3.5 text-zinc-950 text-sm outline-none transition-all duration-300 focus:border-[#5C8EFF] font-medium z-10 relative"
       />
       <label
-        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${
-          focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
-        }`}
+        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
+          }`}
       >
         {label}
       </label>
@@ -91,9 +97,8 @@ function FloatingSelect({ label, name, register, required, options, error }: Flo
         ))}
       </select>
       <label
-        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${
-          focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
-        }`}
+        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
+          }`}
       >
         {label}
       </label>
@@ -133,9 +138,8 @@ function FloatingTextarea({ label, name, register, required, error }: FloatingTe
         className="w-full bg-transparent border-b border-zinc-200 px-1 py-3.5 text-zinc-950 text-sm outline-none transition-all duration-300 focus:border-[#5C8EFF] font-medium z-10 relative resize-none"
       />
       <label
-        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${
-          focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
-        }`}
+        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
+          }`}
       >
         {label}
       </label>
@@ -145,10 +149,112 @@ function FloatingTextarea({ label, name, register, required, error }: FloatingTe
   );
 }
 
+// ── Magnetic Button Component ──
+function MagneticButton({ children, className, onClick, href, target, rel }: {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  href?: string;
+  target?: string;
+  rel?: string;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 150, damping: 15 });
+  const springY = useSpring(y, { stiffness: 150, damping: 15 });
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set((e.clientX - centerX) * 0.15);
+    y.set((e.clientY - centerY) * 0.15);
+  }, [x, y]);
+
+  const handleMouseLeave = useCallback(() => {
+    x.set(0);
+    y.set(0);
+  }, [x, y]);
+
+  const Tag = href ? 'a' : 'button';
+  const linkProps = href ? { href, target, rel } : {};
+
+  return (
+    <motion.div style={{ x: springX, y: springY }}>
+      <Tag
+        ref={ref as any}
+        className={className}
+        onClick={onClick}
+        onMouseMove={handleMouseMove as any}
+        onMouseLeave={handleMouseLeave}
+        {...linkProps}
+      >
+        {children}
+      </Tag>
+    </motion.div>
+  );
+}
+
+// ── Dot Grid Signal Pulse SVG ──
+function DotGridPulses() {
+  return (
+    <svg className="absolute inset-0 w-full h-full pointer-events-none z-[1]" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="pulse-grad-1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#5C8EFF" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="#5C8EFF" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="pulse-grad-2" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#02E8F8" stopOpacity="0.10" />
+          <stop offset="100%" stopColor="#02E8F8" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Pulse 1 — top-left quadrant */}
+      <circle cx="25%" cy="30%" r="0" fill="url(#pulse-grad-1)">
+        <animate attributeName="r" values="0;120;0" dur="6s" repeatCount="indefinite" begin="0s" />
+        <animate attributeName="opacity" values="0;0.6;0" dur="6s" repeatCount="indefinite" begin="0s" />
+      </circle>
+
+      {/* Pulse 2 — right side */}
+      <circle cx="75%" cy="45%" r="0" fill="url(#pulse-grad-2)">
+        <animate attributeName="r" values="0;100;0" dur="7s" repeatCount="indefinite" begin="2s" />
+        <animate attributeName="opacity" values="0;0.5;0" dur="7s" repeatCount="indefinite" begin="2s" />
+      </circle>
+
+      {/* Pulse 3 — bottom-center */}
+      <circle cx="50%" cy="70%" r="0" fill="url(#pulse-grad-1)">
+        <animate attributeName="r" values="0;90;0" dur="5.5s" repeatCount="indefinite" begin="3.5s" />
+        <animate attributeName="opacity" values="0;0.45;0" dur="5.5s" repeatCount="indefinite" begin="3.5s" />
+      </circle>
+
+      {/* Pulse 4 — left-center */}
+      <circle cx="15%" cy="55%" r="0" fill="url(#pulse-grad-2)">
+        <animate attributeName="r" values="0;80;0" dur="8s" repeatCount="indefinite" begin="1.5s" />
+        <animate attributeName="opacity" values="0;0.4;0" dur="8s" repeatCount="indefinite" begin="1.5s" />
+      </circle>
+
+      {/* Pulse 5 — top-right */}
+      <circle cx="85%" cy="25%" r="0" fill="url(#pulse-grad-1)">
+        <animate attributeName="r" values="0;70;0" dur="6.5s" repeatCount="indefinite" begin="4s" />
+        <animate attributeName="opacity" values="0;0.35;0" dur="6.5s" repeatCount="indefinite" begin="4s" />
+      </circle>
+    </svg>
+  );
+}
+
 export default function Contact() {
   const formSectionRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
+  const [heroRect, setHeroRect] = useState<DOMRect | null>(null);
+
+  // Mouse motion values for parallax
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
   // Form setup
   const {
@@ -169,13 +275,31 @@ export default function Contact() {
     }
   });
 
-  // Track cursor position for the spotlight overlay
+  // Track cursor position for spotlight overlay + card parallax
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  // Update heroRect for parallax calculations
+  useEffect(() => {
+    const updateRect = () => {
+      if (heroRef.current) {
+        setHeroRect(heroRef.current.getBoundingClientRect());
+      }
+    };
+    updateRect();
+    window.addEventListener('resize', updateRect);
+    window.addEventListener('scroll', updateRect);
+    return () => {
+      window.removeEventListener('resize', updateRect);
+      window.removeEventListener('scroll', updateRect);
+    };
   }, []);
 
   const onSubmit = async (values: FormValues) => {
@@ -185,51 +309,7 @@ export default function Contact() {
     reset();
   };
 
-  // Floating Cards Configuration
-  const floatingCards = [
-    {
-      url: "https://images.unsplash.com/photo-1542744094-3a31f103e35f?q=80&w=260&auto=format&fit=crop",
-      title: "Focus Groups",
-      desc: "Moderated discussions",
-      className: "left-[4%] top-[12%] rotate-[-4deg] hidden xl:flex",
-      delay: 0
-    },
-    {
-      url: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=260&auto=format&fit=crop",
-      title: "In-depth Interviews",
-      desc: "Executive conversations",
-      className: "left-[2%] top-[45%] rotate-[3deg] hidden lg:flex",
-      delay: 1.2
-    },
-    {
-      url: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=260&auto=format&fit=crop",
-      title: "Data Integrity",
-      desc: "AI scrubbing checks",
-      className: "left-[5%] bottom-[15%] rotate-[-2deg] hidden xl:flex",
-      delay: 0.6
-    },
-    {
-      url: "https://images.unsplash.com/photo-1580894732444-8fecef2271ff?q=80&w=260&auto=format&fit=crop",
-      title: "B2B Executives",
-      desc: "Niche cohort target",
-      className: "right-[5%] bottom-[15%] rotate-[2deg] hidden xl:flex",
-      delay: 0.8
-    },
-    {
-      url: "https://images.unsplash.com/photo-1531538606174-0f90ff5dce83?q=80&w=260&auto=format&fit=crop",
-      title: "Consumer Panels",
-      desc: "Global insights pool",
-      className: "right-[2%] top-[45%] rotate-[-3deg] hidden lg:flex",
-      delay: 1.8
-    },
-    {
-      url: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=260&auto=format&fit=crop",
-      title: "Analysts Alignment",
-      desc: "Study launch setup",
-      className: "right-[4%] top-[12%] rotate-[4deg] hidden xl:flex",
-      delay: 0.4
-    }
-  ];
+
 
   const faqs = [
     {
@@ -251,7 +331,7 @@ export default function Contact() {
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#FAFAFA] text-zinc-900 overflow-x-hidden pt-32 pb-16 selection:bg-[#5C8EFF]/20 font-sans">
+    <div className="relative min-h-screen bg-[#FAFAFA] text-zinc-900 overflow-x-hidden pb-16 selection:bg-[#5C8EFF]/20 font-sans">
       <Toaster richColors position="top-center" />
 
       {/* ── Spotlight Cursor Tracking Effect ── */}
@@ -263,8 +343,8 @@ export default function Contact() {
       />
 
       {/* ── Blueprint Dot-Grid Canvas Background ── */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-0" 
+      <div
+        className="absolute inset-0 pointer-events-none z-0"
         style={{
           backgroundImage: 'radial-gradient(rgba(24, 24, 27, 0.05) 1.2px, transparent 1.2px)',
           backgroundSize: '24px 24px',
@@ -272,101 +352,96 @@ export default function Contact() {
       />
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-          SECTION 1: FULL SCREEN HERO & FLOATING CARDS
+          SECTION 1: ENHANCED HERO WITH FLOATING CARDS
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative min-h-[85vh] flex flex-col justify-center items-center py-12 z-10">
-        
-        {/* Floating Perimeter Cards */}
-        {floatingCards.map((card, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1,
-              y: [0, -10, 0],
-            }}
-            transition={{
-              opacity: { duration: 0.8, delay: card.delay },
-              scale: { duration: 0.8, delay: card.delay },
-              y: {
-                duration: 5,
-                repeat: Infinity,
-                repeatType: "mirror",
-                ease: "easeInOut",
-                delay: card.delay
-              }
-            }}
-            className={`absolute w-[180px] bg-white border border-zinc-200/70 p-2.5 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(92,142,255,0.05)] transition-all duration-300 hover:scale-[1.03] z-10 flex-col items-stretch ${card.className}`}
-          >
-            <div className="w-full h-[110px] rounded-xl overflow-hidden mb-2.5 bg-zinc-100">
-              <img src={card.url} alt={card.title} className="w-full h-full object-cover select-none" />
+      <section
+        ref={heroRef}
+        className="relative min-h-[80vh] flex flex-col justify-center bg-white pt-20 pb-12 z-10 overflow-hidden border-b border-zinc-100"
+        style={{
+          backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
+          backgroundSize: '24px 24px',
+        }}
+      >
+        {/* ── Dot Grid Signal Pulses ── */}
+        <DotGridPulses />
+
+        {/* ── Background radial glow behind dashboard visual ── */}
+        <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_75%_35%,rgba(92,142,255,0.04),transparent_55%)] pointer-events-none" />
+
+        <Container className="relative z-10 w-full flex-1 flex flex-col justify-center">
+          <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+            
+            {/* ── Left Column: Value Prop + CTAs ── */}
+            <div className="relative py-2 lg:py-6 text-left flex flex-col items-start">
+              {/* Eyebrow badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 py-1.5 text-[9px] font-extrabold tracking-wider uppercase text-zinc-500 shadow-sm"
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-[#5C8EFF] animate-pulse" />
+                EGI Collaboration Hub
+              </motion.div>
+
+              {/* Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="text-4xl sm:text-5xl lg:text-[4.2rem] font-[900] tracking-tight leading-[0.98] text-zinc-950 uppercase mb-6 max-w-2xl text-left"
+              >
+                READY TO LAUNCH YOUR{' '}
+                <span className="text-transparent [-webkit-text-stroke:1.8px_#0A0A0A] font-[900] tracking-tight">
+                  NEXT STUDY?
+                </span>
+              </motion.h1>
+
+              {/* Subcopy */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="text-zinc-500 text-sm sm:text-base font-medium max-w-lg mb-10 leading-relaxed text-left"
+              >
+                Tell us about your audience, objectives, timeline, and research requirements. Our team responds with a comprehensive execution proposal within one business day.
+              </motion.p>
+
+              {/* CTA Buttons with Magnetic Effect */}
+              <motion.div
+                initial={{ opacity: 0, y: 15, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-wrap items-center gap-3 justify-start"
+              >
+                <MagneticButton
+                   onClick={() => formSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                   className="px-6 py-3.5 bg-[#5C8EFF] hover:bg-[#4b7ce6] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-[0_8px_24px_rgba(92,142,255,0.25)] hover:shadow-[0_12px_32px_rgba(92,142,255,0.35)] transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                >
+                  START YOUR PROJECT
+                </MagneticButton>
+                <MagneticButton
+                  href="https://calendly.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3.5 border border-zinc-200 hover:border-zinc-950 bg-white hover:bg-zinc-50/50 text-zinc-800 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 hover:scale-[1.02]"
+                >
+                  SCHEDULE A CALL
+                </MagneticButton>
+              </motion.div>
             </div>
-            <div className="px-1 pb-1">
-              <h4 className="text-[10px] font-black uppercase tracking-wider text-zinc-950 leading-tight">{card.title}</h4>
-              <p className="text-[8.5px] text-zinc-500 font-medium leading-normal mt-0.5">{card.desc}</p>
-            </div>
-          </motion.div>
-        ))}
 
-        <Container className="text-center relative z-10 flex flex-col items-center">
-          {/* Eyebrow badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 py-1.5 text-[9px] font-extrabold tracking-wider uppercase text-zinc-500 shadow-sm"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#5C8EFF]" />
-            EGI Collaboration Hub
-          </motion.div>
-
-          {/* Central Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-6xl lg:text-[5.5rem] font-[900] tracking-tight leading-[0.95] text-zinc-950 uppercase mb-8 max-w-4xl text-center select-none"
-          >
-            READY TO<br />
-            LAUNCH YOUR<br />
-            <span className="text-transparent [-webkit-text-stroke:1.8px_#0A0A0A] font-[900] tracking-tight">
-              NEXT STUDY?
-            </span>
-          </motion.h1>
-
-          {/* Subcopy */}
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-zinc-500 text-sm sm:text-base font-medium max-w-xl mb-10 leading-relaxed text-center"
-          >
-            Tell us about your audience, objectives, timeline, and research requirements. Our team responds with a comprehensive execution proposal within one business day.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-3"
-          >
-            <button
-              onClick={() => formSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-6 py-3.5 bg-[#5C8EFF] hover:bg-[#4b7ce6] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+            {/* ── Right Column: Interactive Pipeline Visualizer ── */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="relative lg:py-6 z-10"
             >
-              START YOUR PROJECT
-            </button>
-            <a
-              href="https://calendly.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3.5 border border-zinc-200 hover:border-zinc-950 bg-white hover:bg-zinc-50/50 text-zinc-800 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 hover:scale-[1.02]"
-            >
-              SCHEDULE A CALL
-            </a>
-          </motion.div>
+              <ContactHeroVisual mouseX={mouseX} mouseY={mouseY} heroRect={heroRect} />
+            </motion.div>
+
+          </div>
         </Container>
       </section>
 
@@ -379,7 +454,7 @@ export default function Contact() {
       >
         <Container>
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-            
+
             {/* Left Column: Title & Description */}
             <div className="flex flex-col justify-start">
               <div className="sticky top-40">
@@ -420,10 +495,10 @@ export default function Contact() {
 
             {/* Right Column: Premium Form */}
             <div className="bg-zinc-50/50 border border-zinc-200/60 p-8 sm:p-12 rounded-3xl shadow-sm relative overflow-hidden">
-              
+
               {/* Subtle top bar accent */}
               <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#5C8EFF]" />
-              
+
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid gap-6 sm:grid-cols-2">
                   <FloatingInput
@@ -541,6 +616,8 @@ export default function Contact() {
         </Container>
       </section>
 
+
+
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           SECTION 4: FAQ
           ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -591,6 +668,8 @@ export default function Contact() {
           </div>
         </Container>
       </section>
+
+
     </div>
   );
 }
