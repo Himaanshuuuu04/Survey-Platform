@@ -1,4 +1,3 @@
-"use client";
 import { Hero } from '@/components/home/Hero';
 import { TrustMetrics } from '@/components/home/TrustMetrics';
 import { WhatWeDo } from '@/components/home/WhatWeDo';

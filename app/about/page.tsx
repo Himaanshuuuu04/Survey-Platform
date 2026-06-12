@@ -1,4 +1,3 @@
-"use client";
 import { ShieldCheck, Target, Sparkles, HeartHandshake } from 'lucide-react';
 import { PageHero } from '@/components/common/PageHero';
 import { Reveal, Section, SectionEyebrow } from '@/components/primitives';

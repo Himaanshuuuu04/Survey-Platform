@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef } from 'react';
 import { Target, Users, LineChart } from 'lucide-react';
 import { Reveal, Section, SectionEyebrow, TimelineProgress } from '../primitives';
