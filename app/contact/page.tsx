@@ -1,13 +1,11 @@
 "use client";
+
 import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { motion, AnimatePresence, useInView, useMotionValue, animate } from 'motion/react';
-import { 
-  Mail, Phone, MapPin, ChevronDown, ArrowRight, Check, ShieldCheck, 
-  Clock, Rocket, Globe, Sparkles 
-} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowRight, ChevronDown, Check, Loader2 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
-import { Button, Container, Reveal, Counter } from '@/components/primitives';
+import { Container } from '@/components/primitives';
 
 type FormValues = {
   name: string;
@@ -15,465 +13,584 @@ type FormValues = {
   email: string;
   country: string;
   projectType: string;
-  message: string;
+  timeline: string;
+  sampleSize: string;
+  details: string;
 };
 
-// Custom decimal counter helper for percentages
-function DecimalCounter({ to, suffix = '', decimals = 0, duration = 1.6 }: { to: number; suffix?: string; decimals?: number; duration?: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-40px' });
-  const mv = useMotionValue(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    const controls = animate(mv, to, {
-      duration,
-      ease: 'easeOut',
-      onUpdate: (v) => {
-        if (ref.current) {
-          ref.current.textContent = v.toFixed(decimals) + suffix;
-        }
-      },
-    });
-    return controls.stop;
-  }, [inView, to, suffix, decimals, duration, mv]);
-
-  return <span ref={ref}>0.0{suffix}</span>;
+// Custom Floating Label Input Component
+interface FloatingInputProps {
+  label: string;
+  name: keyof FormValues;
+  register: any;
+  required?: string | boolean;
+  type?: string;
+  error?: string;
 }
 
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: React.ReactNode;
-}) {
+function FloatingInput({ label, name, register, required, type = 'text', error }: FloatingInputProps) {
+  const [focused, setFocused] = useState(false);
+  const [value, setValue] = useState('');
+
   return (
-    <div className="relative block text-left">
-      <div className="mb-2 text-[9px] font-black uppercase tracking-widest text-zinc-400">{label}</div>
-      {children}
-      {error && <div className="mt-1.5 text-[10px] font-bold text-[#EF4444]">{error}</div>}
+    <div className="relative w-full mb-6">
+      <input
+        type={type}
+        {...register(name, {
+          required,
+          onChange: (e: any) => setValue(e.target.value)
+        })}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className="w-full bg-transparent border-b border-zinc-200 px-1 py-3.5 text-zinc-950 text-sm outline-none transition-all duration-300 focus:border-[#5C8EFF] font-medium z-10 relative"
+      />
+      <label
+        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${
+          focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
+        }`}
+      >
+        {label}
+      </label>
+      {/* Bottom border draw animation */}
+      <span className={`absolute bottom-0 left-0 h-[2.5px] bg-[#5C8EFF] transition-all duration-500 origin-left ${focused ? 'w-full scale-x-100' : 'w-0 scale-x-0'}`} />
+      {error && <span className="mt-1.5 text-[10px] font-bold text-rose-500 block pl-1">{error}</span>}
     </div>
   );
 }
 
-const inputCls =
-  'w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 text-sm outline-none transition-all duration-300 placeholder:text-zinc-400 focus:border-[#5C8EFF] focus:ring-4 focus:ring-[#5C8EFF]/8 focus:shadow-[0_4px_20px_rgba(92,142,255,0.08)] hover:border-zinc-300 text-zinc-900 font-medium';
+// Custom Floating Label Select Component
+interface FloatingSelectProps {
+  label: string;
+  name: keyof FormValues;
+  register: any;
+  required?: string | boolean;
+  options: string[];
+  error?: string;
+}
 
-const faqs = [
-  { q: 'How quickly can a project be fielded?', a: 'Most quantitative studies launch within 5 business days; qualitative within 7-10 depending on recruit difficulty.' },
-  { q: 'Do you handle international panels?', a: 'Yes — we maintain active, verified panels in 50+ countries across 30+ languages.' },
-  { q: 'What does a typical engagement cost?', a: 'Pricing depends on sample size, methodology, and markets. Most projects fall between $15K–$120K.' },
-  { q: 'Can we white-label deliverables?', a: 'Absolutely. Many enterprise clients embed our research into their own dashboards and brand templates.' },
-  { q: 'How do you ensure data quality?', a: 'Triple-verification on respondents, real-time bot detection, and a dedicated QC team that hand-checks every dataset.' },
-];
+function FloatingSelect({ label, name, register, required, options, error }: FloatingSelectProps) {
+  const [focused, setFocused] = useState(false);
+  const [value, setValue] = useState('');
 
-function FAQ() {
-  const [open, setOpen] = useState<number | null>(0);
   return (
-    <div className="space-y-3">
-      {faqs.map((f, i) => {
-        const isOpen = open === i;
-        return (
-          <div 
-            key={f.q} 
-            className={`overflow-hidden rounded-2xl border transition-all duration-300 ${
-              isOpen 
-                ? 'bg-slate-50/70 border-[#5C8EFF]/20 shadow-[0_4px_16px_rgba(92,142,255,0.02)] scale-[1.01]' 
-                : 'border-zinc-200/60 bg-white hover:bg-zinc-50/40 hover:border-zinc-300 opacity-80 hover:opacity-100'
-            }`}
-          >
-            <button
-              onClick={() => setOpen(isOpen ? null : i)}
-              className="flex w-full items-center justify-between px-5 py-4 text-left font-bold text-sm tracking-tight text-zinc-900 group"
-            >
-              <span className={`transition-colors duration-300 ${isOpen ? 'text-zinc-950 font-black' : 'text-zinc-800'}`}>
-                {f.q}
-              </span>
-              <ChevronDown 
-                size={16} 
-                className={`transition-transform duration-300 text-zinc-400 group-hover:text-zinc-800 ${isOpen ? 'rotate-180 text-zinc-800' : ''}`} 
-              />
-            </button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                >
-                  <p className="px-5 pb-5 text-zinc-500 text-xs sm:text-[12.5px] font-medium leading-relaxed border-t border-zinc-100/50 pt-3">
-                    {f.a}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        );
-      })}
+    <div className="relative w-full mb-6">
+      <select
+        {...register(name, {
+          required,
+          onChange: (e: any) => setValue(e.target.value)
+        })}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className="w-full bg-transparent border-b border-zinc-200 px-1 py-3.5 text-zinc-950 text-sm outline-none transition-all duration-300 focus:border-[#5C8EFF] font-medium z-10 relative appearance-none cursor-pointer"
+      >
+        <option value="" disabled className="text-zinc-400"></option>
+        {options.map((opt) => (
+          <option key={opt} value={opt} className="text-zinc-900 bg-white">
+            {opt}
+          </option>
+        ))}
+      </select>
+      <label
+        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${
+          focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
+        }`}
+      >
+        {label}
+      </label>
+      <span className={`absolute bottom-0 left-0 h-[2.5px] bg-[#5C8EFF] transition-all duration-500 origin-left ${focused ? 'w-full scale-x-100' : 'w-0 scale-x-0'}`} />
+      {/* Select Down Arrow Icon */}
+      <span className="absolute right-2 top-4 pointer-events-none text-zinc-400">
+        <ChevronDown size={16} />
+      </span>
+      {error && <span className="mt-1.5 text-[10px] font-bold text-rose-500 block pl-1">{error}</span>}
+    </div>
+  );
+}
+
+// Custom Floating Label Textarea Component
+interface FloatingTextareaProps {
+  label: string;
+  name: keyof FormValues;
+  register: any;
+  required?: string | boolean;
+  error?: string;
+}
+
+function FloatingTextarea({ label, name, register, required, error }: FloatingTextareaProps) {
+  const [focused, setFocused] = useState(false);
+  const [value, setValue] = useState('');
+
+  return (
+    <div className="relative w-full mb-6">
+      <textarea
+        rows={4}
+        {...register(name, {
+          required,
+          onChange: (e: any) => setValue(e.target.value)
+        })}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className="w-full bg-transparent border-b border-zinc-200 px-1 py-3.5 text-zinc-950 text-sm outline-none transition-all duration-300 focus:border-[#5C8EFF] font-medium z-10 relative resize-none"
+      />
+      <label
+        className={`absolute left-1 transition-all duration-300 pointer-events-none text-xs font-bold uppercase tracking-wider ${
+          focused || value ? 'top-[-8px] text-[10px] text-[#5C8EFF]' : 'top-4 text-zinc-400'
+        }`}
+      >
+        {label}
+      </label>
+      <span className={`absolute bottom-0 left-0 h-[2.5px] bg-[#5C8EFF] transition-all duration-500 origin-left ${focused ? 'w-full scale-x-100' : 'w-0 scale-x-0'}`} />
+      {error && <span className="mt-1.5 text-[10px] font-bold text-rose-500 block pl-1">{error}</span>}
     </div>
   );
 }
 
 export default function Contact() {
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormValues>();
-  const formRef = useRef<HTMLFormElement>(null);
+  const formSectionRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [openFaqIdx, setOpenFaqIdx] = useState<number | null>(null);
+
+  // Form setup
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm<FormValues>({
+    defaultValues: {
+      name: '',
+      company: '',
+      email: '',
+      country: '',
+      projectType: '',
+      timeline: '',
+      sampleSize: '',
+      details: ''
+    }
+  });
+
+  // Track cursor position for the spotlight overlay
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const onSubmit = async (values: FormValues) => {
-    await new Promise((r) => setTimeout(r, 700));
-    toast.success(`Thanks ${values.name.split(' ')[0]} — we'll be in touch within 24 hours.`);
+    // Simulate API submission
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    toast.success('Your market research request has been logged successfully! Our team will connect in 1 business day.');
     reset();
   };
 
-  const scrollToForm = () => {
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      const nameInput = formRef.current.querySelector('input[name="name"]') as HTMLInputElement;
-      if (nameInput) {
-        setTimeout(() => nameInput.focus(), 600);
-      }
+  // Floating Cards Configuration
+  const floatingCards = [
+    {
+      url: "https://images.unsplash.com/photo-1542744094-3a31f103e35f?q=80&w=260&auto=format&fit=crop",
+      title: "Focus Groups",
+      desc: "Moderated discussions",
+      className: "left-[4%] top-[12%] rotate-[-4deg] hidden xl:flex",
+      delay: 0
+    },
+    {
+      url: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=260&auto=format&fit=crop",
+      title: "In-depth Interviews",
+      desc: "Executive conversations",
+      className: "left-[2%] top-[45%] rotate-[3deg] hidden lg:flex",
+      delay: 1.2
+    },
+    {
+      url: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=260&auto=format&fit=crop",
+      title: "Data Integrity",
+      desc: "AI scrubbing checks",
+      className: "left-[5%] bottom-[15%] rotate-[-2deg] hidden xl:flex",
+      delay: 0.6
+    },
+    {
+      url: "https://images.unsplash.com/photo-1580894732444-8fecef2271ff?q=80&w=260&auto=format&fit=crop",
+      title: "B2B Executives",
+      desc: "Niche cohort target",
+      className: "right-[5%] bottom-[15%] rotate-[2deg] hidden xl:flex",
+      delay: 0.8
+    },
+    {
+      url: "https://images.unsplash.com/photo-1531538606174-0f90ff5dce83?q=80&w=260&auto=format&fit=crop",
+      title: "Consumer Panels",
+      desc: "Global insights pool",
+      className: "right-[2%] top-[45%] rotate-[-3deg] hidden lg:flex",
+      delay: 1.8
+    },
+    {
+      url: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=260&auto=format&fit=crop",
+      title: "Analysts Alignment",
+      desc: "Study launch setup",
+      className: "right-[4%] top-[12%] rotate-[4deg] hidden xl:flex",
+      delay: 0.4
     }
-  };
+  ];
+
+  const faqs = [
+    {
+      q: "How does EGI verify its research panel respondents?",
+      a: "We run multi-stage identity verification checks including LinkedIn authentication, corporate email confirmation, digital fingerprinting, and pattern matching. Every respondent undergoes validation checks before being admitted to our core study cohorts."
+    },
+    {
+      q: "What is your typical project turnaround time?",
+      a: "Standard surveys and focus groups are launched within 5 business days. Rapid response polls can be activated in as little as 24 hours, while complex custom international studies typically run over 2 to 3 weeks."
+    },
+    {
+      q: "Do you support international research across multiple languages?",
+      a: "Yes. EGI has an active respondent panel spanning over 50 countries. We handle local translation, cultural localization of survey prompts, and coordinate native-speaking moderators for focus groups and interviews."
+    },
+    {
+      q: "How do you ensure data quality and combat fraud?",
+      a: "Our verification engine uses real-time behavioral analysis to filter out speeders, straight-liners, and automated script bots. Any responses flagged by our quality rules are quarantined and replaced at no extra cost."
+    }
+  ];
 
   return (
-    <>
+    <div className="relative min-h-screen bg-[#FAFAFA] text-zinc-900 overflow-x-hidden pt-32 pb-16 selection:bg-[#5C8EFF]/20 font-sans">
       <Toaster richColors position="top-center" />
-      
-      {/* ── REDESIGNED HERO SECTION ── */}
-      <section className="relative overflow-hidden pt-28 pb-12 sm:pt-36 sm:pb-20 bg-[#FAFAFA] border-b border-zinc-200 z-10">
+
+      {/* ── Spotlight Cursor Tracking Effect ── */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-40 transition-opacity duration-300"
+        style={{
+          background: `radial-gradient(circle 380px at ${mousePos.x}px ${mousePos.y}px, rgba(92, 142, 255, 0.08), transparent 80%)`
+        }}
+      />
+
+      {/* ── Blueprint Dot-Grid Canvas Background ── */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-0" 
+        style={{
+          backgroundImage: 'radial-gradient(rgba(24, 24, 27, 0.05) 1.2px, transparent 1.2px)',
+          backgroundSize: '24px 24px',
+        }}
+      />
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 1: FULL SCREEN HERO & FLOATING CARDS
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="relative min-h-[85vh] flex flex-col justify-center items-center py-12 z-10">
         
-        {/* Dynamic Data-Inspired Visualization behind typography */}
-        <div className="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden flex items-center justify-center opacity-85">
-          <svg viewBox="0 0 1000 400" fill="none" className="w-full h-full max-w-[1200px] overflow-visible">
-            <defs>
-              <radialGradient id="cyan-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#02E8F8" stopOpacity="0.32" />
-                <stop offset="60%" stopColor="#5C8EFF" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#FAFAFA" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient id="blue-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#5C8EFF" stopOpacity="0.22" />
-                <stop offset="100%" stopColor="#FAFAFA" stopOpacity="0" />
-              </radialGradient>
-              <linearGradient id="curve-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#5C8EFF" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#02E8F8" stopOpacity="0.08" />
-              </linearGradient>
-            </defs>
+        {/* Floating Perimeter Cards */}
+        {floatingCards.map((card, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1,
+              y: [0, -10, 0],
+            }}
+            transition={{
+              opacity: { duration: 0.8, delay: card.delay },
+              scale: { duration: 0.8, delay: card.delay },
+              y: {
+                duration: 5,
+                repeat: Infinity,
+                repeatType: "mirror",
+                ease: "easeInOut",
+                delay: card.delay
+              }
+            }}
+            className={`absolute w-[180px] bg-white border border-zinc-200/70 p-2.5 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(92,142,255,0.05)] transition-all duration-300 hover:scale-[1.03] z-10 flex-col items-stretch ${card.className}`}
+          >
+            <div className="w-full h-[110px] rounded-xl overflow-hidden mb-2.5 bg-zinc-100">
+              <img src={card.url} alt={card.title} className="w-full h-full object-cover select-none" />
+            </div>
+            <div className="px-1 pb-1">
+              <h4 className="text-[10px] font-black uppercase tracking-wider text-zinc-950 leading-tight">{card.title}</h4>
+              <p className="text-[8.5px] text-zinc-500 font-medium leading-normal mt-0.5">{card.desc}</p>
+            </div>
+          </motion.div>
+        ))}
 
-            {/* Glowing background shapes */}
-            <circle cx="500" cy="200" r="220" fill="url(#cyan-glow)" filter="blur(20px)" />
-            <circle cx="320" cy="180" r="160" fill="url(#blue-glow)" filter="blur(15px)" />
-            <circle cx="680" cy="220" r="160" fill="url(#blue-glow)" filter="blur(15px)" />
-          </svg>
-        </div>
+        <Container className="text-center relative z-10 flex flex-col items-center">
+          {/* Eyebrow badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 py-1.5 text-[9px] font-extrabold tracking-wider uppercase text-zinc-500 shadow-sm"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-[#5C8EFF]" />
+            EGI Collaboration Hub
+          </motion.div>
 
-        {/* Hero Copy */}
-        <Container className="relative z-10">
-          <div className="mx-auto max-w-3xl text-center">
-            
-            {/* Eyebrow badge */}
-            <Reveal>
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1 text-[9px] font-black tracking-widest uppercase text-[#5B84FF] shadow-[0_2px_8px_rgba(0,0,0,0.01)] mb-5">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
-                RESEARCH PLATFORM &bull; SLA DIRECTORY
-              </div>
-            </Reveal>
+          {/* Central Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="text-4xl sm:text-6xl lg:text-[5.5rem] font-[900] tracking-tight leading-[0.95] text-zinc-950 uppercase mb-8 max-w-4xl text-center select-none"
+          >
+            READY TO<br />
+            LAUNCH YOUR<br />
+            <span className="text-transparent [-webkit-text-stroke:1.8px_#0A0A0A] font-[900] tracking-tight">
+              NEXT STUDY?
+            </span>
+          </motion.h1>
 
-            {/* Premium Headline */}
-            <Reveal delay={0.05}>
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-[1000] tracking-tight uppercase leading-[1.05] text-zinc-950">
-                BUILD YOUR NEXT<br />
-                STUDY WITH<br />
-                <span className="text-transparent [-webkit-text-stroke:1.3px_#111111] font-black tracking-wide">
-                  CONFIDENCE.
-                </span>
-              </h1>
-            </Reveal>
+          {/* Subcopy */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-zinc-500 text-sm sm:text-base font-medium max-w-xl mb-10 leading-relaxed text-center"
+          >
+            Tell us about your audience, objectives, timeline, and research requirements. Our team responds with a comprehensive execution proposal within one business day.
+          </motion.p>
 
-            {/* Sub copy */}
-            <Reveal delay={0.1}>
-              <p className="mx-auto mt-6 max-w-lg text-zinc-550 font-medium text-sm sm:text-base leading-relaxed text-zinc-550">
-                Turn your quantitative and qualitative questions into verified insights. Connect directly with our dispatch engineering team below.
-              </p>
-            </Reveal>
-            
-          </div>
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-wrap items-center justify-center gap-3"
+          >
+            <button
+              onClick={() => formSectionRef.current?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-6 py-3.5 bg-[#5C8EFF] hover:bg-[#4b7ce6] text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+            >
+              START YOUR PROJECT
+            </button>
+            <a
+              href="https://calendly.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3.5 border border-zinc-200 hover:border-zinc-950 bg-white hover:bg-zinc-50/50 text-zinc-800 rounded-xl text-xs font-black uppercase tracking-widest transition-all duration-300 hover:scale-[1.02]"
+            >
+              SCHEDULE A CALL
+            </a>
+          </motion.div>
         </Container>
       </section>
 
-      {/* ── TRUST METRICS SECTION ── */}
-      <section className="relative z-20 -mt-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-5 sm:px-8">
-          {[
-            { label: "Verified Respondents", count: 250, suffix: "K+", desc: "Pre-screened active panel", color: "text-[#5C8EFF]" },
-            { label: "Global Scope", count: 50, suffix: "+", desc: "Representative markets", color: "text-[#7C3AED]" },
-            { label: "Validation Accuracy", count: 99.7, suffix: "%", desc: "Device & fingerprint screening", color: "text-[#2563EB]", decimal: true },
-            { label: "Completion Rate", count: 92, suffix: "%", desc: "High engagement retention", color: "text-[#02E8F8]" }
-          ].map((stat, sIdx) => (
-            <Reveal key={stat.label} delay={sIdx * 0.06}>
-              <div className="p-6 bg-white border border-zinc-200/70 rounded-3xl relative overflow-hidden group hover:translate-y-[-2px] hover:shadow-[0_12px_24px_rgba(92,142,255,0.03)] transition-all duration-300 text-left">
-                {/* Visual top border accent */}
-                <div className="absolute top-0 left-0 right-0 h-[3px] bg-zinc-100 group-hover:bg-[#5C8EFF] transition-colors duration-300" />
-                
-                {/* Value counter */}
-                <div className="text-2xl sm:text-3xl font-[1000] text-zinc-950 tracking-tight font-sans leading-none">
-                  {stat.decimal ? (
-                    <DecimalCounter to={stat.count} suffix={stat.suffix} decimals={1} />
-                  ) : (
-                    <Counter to={stat.count} suffix={stat.suffix} />
-                  )}
-                </div>
-
-                {/* Info labels */}
-                <span className="block text-[8.5px] font-black uppercase text-[#5C8EFF] tracking-wider mt-2.5">
-                  {stat.label}
-                </span>
-                <p className="text-[11px] text-zinc-400 font-semibold mt-1 leading-snug">
-                  {stat.desc}
-                </p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ── CORE FORM & CREDIBILITY SECTION ── */}
-      <section className="py-16 sm:py-24 bg-white relative z-10" id="contact-core-content">
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 2: SPLIT CONTACT FORM
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section
+        ref={formSectionRef}
+        className="relative py-20 sm:py-28 border-t border-zinc-200/60 bg-white z-10"
+      >
         <Container>
-          <div className="grid gap-12 lg:grid-cols-[1.26fr_1fr] items-start">
+          <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             
-            {/* LEFT COLUMN: Minimal Enterprise Form */}
-            <Reveal>
-              <form 
-                ref={formRef}
-                onSubmit={handleSubmit(onSubmit)} 
-                className="rounded-3xl border border-zinc-200/80 bg-[#FAFAFA]/40 p-8 sm:p-10 shadow-[0_8px_32px_rgba(0,0,0,0.005)]"
-              >
-                <div className="flex flex-col text-left mb-8 pb-4 border-b border-zinc-150">
-                  <span className="text-[9px] font-black uppercase tracking-wider text-[#5C8EFF]">STUDY BUILDER DISPATCH</span>
-                  <h3 className="text-xl sm:text-2xl font-[900] uppercase text-zinc-950 tracking-tight mt-1">Study Specifications</h3>
+            {/* Left Column: Title & Description */}
+            <div className="flex flex-col justify-start">
+              <div className="sticky top-40">
+                <span className="text-xs font-black tracking-widest text-[#5C8EFF] uppercase mb-4 block">
+                  Project Configuration
+                </span>
+                <h2 className="text-4xl sm:text-5xl lg:text-[4rem] font-[900] tracking-tight leading-[0.95] text-zinc-950 uppercase mb-6">
+                  START YOUR<br />
+                  <span className="text-transparent [-webkit-text-stroke:1.5px_#0A0A0A] font-[900]">
+                    PROJECT.
+                  </span>
+                </h2>
+                <p className="text-zinc-500 text-sm sm:text-base font-medium leading-relaxed max-w-md">
+                  Specify your research goals, target audience pool, expected sample size, and timeline constraints. Our research operations panel review team will analyze your project needs and build a custom fielding strategy.
+                </p>
+                <div className="mt-8 pt-8 border-t border-zinc-100 flex flex-col gap-4 max-w-sm">
+                  <div className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 text-[#5C8EFF] flex items-center justify-center flex-shrink-0">
+                      <Check size={12} className="stroke-[3]" />
+                    </span>
+                    <span className="text-xs font-bold text-zinc-800">Operational response under 24 hours</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 text-[#5C8EFF] flex items-center justify-center flex-shrink-0">
+                      <Check size={12} className="stroke-[3]" />
+                    </span>
+                    <span className="text-xs font-bold text-zinc-800">Verified participant sampling models</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 text-[#5C8EFF] flex items-center justify-center flex-shrink-0">
+                      <Check size={12} className="stroke-[3]" />
+                    </span>
+                    <span className="text-xs font-bold text-zinc-800">Secure real-time dashboard tracking</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Premium Form */}
+            <div className="bg-zinc-50/50 border border-zinc-200/60 p-8 sm:p-12 rounded-3xl shadow-sm relative overflow-hidden">
+              
+              {/* Subtle top bar accent */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#5C8EFF]" />
+              
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <FloatingInput
+                    label="Full Name"
+                    name="name"
+                    register={register}
+                    required="Name is required"
+                    error={errors.name?.message}
+                  />
+                  <FloatingInput
+                    label="Company Name"
+                    name="company"
+                    register={register}
+                    required="Company is required"
+                    error={errors.company?.message}
+                  />
                 </div>
 
                 <div className="grid gap-6 sm:grid-cols-2">
-                  <Field label="Name" error={errors.name?.message}>
-                    <input 
-                      {...register('name', { required: 'Required' })} 
-                      className={inputCls} 
-                      placeholder="Jane Doe" 
-                    />
-                  </Field>
-                  
-                  <Field label="Company" error={errors.company?.message}>
-                    <input 
-                      {...register('company', { required: 'Required' })} 
-                      className={inputCls} 
-                      placeholder="Acme Inc." 
-                    />
-                  </Field>
-                  
-                  <Field label="Email Address" error={errors.email?.message}>
-                    <input 
-                      type="email" 
-                      {...register('email', { required: 'Required' })} 
-                      className={inputCls} 
-                      placeholder="jane@acme.com" 
-                    />
-                  </Field>
-                  
-                  <Field label="Target Country" error={errors.country?.message}>
-                    <input 
-                      {...register('country', { required: 'Required' })} 
-                      className={inputCls} 
-                      placeholder="United States" 
-                    />
-                  </Field>
-                  
-                  <div className="sm:col-span-2">
-                    <Field label="Project Focus" error={errors.projectType?.message}>
-                      <div className="relative">
-                        <select 
-                          {...register('projectType', { required: 'Required' })} 
-                          className={`${inputCls} appearance-none pr-10`}
-                        >
-                          <option value="">Choose focus…</option>
-                          <option>Quantitative Research</option>
-                          <option>Qualitative Research</option>
-                          <option>B2B Cohort Recruit</option>
-                          <option>Market Intelligence & Audit</option>
-                          <option>Not sure yet</option>
-                        </select>
-                        <ChevronDown size={15} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400" />
-                      </div>
-                    </Field>
-                  </div>
-                  
-                  <div className="sm:col-span-2">
-                    <Field label="Research objectives & audience details" error={errors.message?.message}>
-                      <textarea
-                        {...register('message', { required: 'Required' })}
-                        rows={5}
-                        className={`${inputCls} resize-none`}
-                        placeholder="Detail your research goals, target participant profile, sample size constraints, and study timeline..."
-                      />
-                    </Field>
-                  </div>
+                  <FloatingInput
+                    label="Business Email"
+                    name="email"
+                    type="email"
+                    register={register}
+                    required="Email is required"
+                    error={errors.email?.message}
+                  />
+                  <FloatingInput
+                    label="Target Country"
+                    name="country"
+                    register={register}
+                    required="Country is required"
+                    error={errors.country?.message}
+                  />
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-zinc-150 flex flex-wrap items-center justify-between gap-4 text-left">
-                  <p className="text-[11px] text-zinc-400 font-semibold max-w-xs leading-normal">
-                    Lead strategist responds within 24 hours. Fully GDPR, CCPA, and ISO 20252 compliant operations.
-                  </p>
-                  <Button 
-                    type="submit" 
-                    size="lg" 
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <FloatingSelect
+                    label="Project Type"
+                    name="projectType"
+                    register={register}
+                    required="Project type is required"
+                    options={[
+                      "Quantitative Surveys",
+                      "Qualitative Focus Groups",
+                      "B2B Expert Interviews",
+                      "B2C Consumer Mapping",
+                      "B2B Enterprise Cohorts"
+                    ]}
+                    error={errors.projectType?.message}
+                  />
+                  <FloatingSelect
+                    label="Timeline Constraint"
+                    name="timeline"
+                    register={register}
+                    required="Timeline is required"
+                    options={[
+                      "Immediate (< 2 weeks)",
+                      "1 Month",
+                      "2-3 Months",
+                      "Ongoing Long-term Research"
+                    ]}
+                    error={errors.timeline?.message}
+                  />
+                </div>
+
+                <FloatingSelect
+                  label="Target Sample Size"
+                  name="sampleSize"
+                  register={register}
+                  required="Sample size is required"
+                  options={[
+                    "Qualitative (Under 50 participants)",
+                    "N = 100 - 500",
+                    "N = 500 - 1,000",
+                    "N = 1,000+",
+                    "Custom Large Cohort"
+                  ]}
+                  error={errors.sampleSize?.message}
+                />
+
+                <FloatingTextarea
+                  label="Project Requirements & Details"
+                  name="details"
+                  register={register}
+                  required="Project details are required"
+                  error={errors.details?.message}
+                />
+
+                <div className="pt-4 text-left">
+                  <button
+                    type="submit"
                     disabled={isSubmitting}
-                    className="shadow-[0_8px_20px_-8px_rgba(92,142,255,0.4)]"
+                    className="group relative inline-flex h-12 items-center justify-center rounded-xl bg-zinc-950 hover:bg-[#5C8EFF] px-8 text-xs font-black uppercase tracking-widest text-white transition-all duration-300 hover:scale-[1.02] cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed select-none"
                   >
-                    {isSubmitting ? 'Dispatching...' : 'Dispatch Study'} <ArrowRight size={15} className="ml-1.5 inline-block" />
-                  </Button>
+                    <span className="relative z-10 flex items-center gap-2">
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 size={13} className="animate-spin" />
+                          LAUNCHING...
+                        </>
+                      ) : (
+                        <>
+                          LAUNCH REQUEST
+                          <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform duration-300" />
+                        </>
+                      )}
+                    </span>
+                  </button>
                 </div>
               </form>
-            </Reveal>
-
-            {/* RIGHT COLUMN: Credibility SLA Dashboard & SaaS FAQs */}
-            <div className="space-y-8 text-left">
-              
-              {/* Credibility SLA Panel */}
-              <Reveal>
-                <div className="rounded-3xl border border-zinc-200/80 bg-white p-7 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.005)] relative overflow-hidden group">
-                  
-                  {/* Glowing Top line indicator */}
-                  <div className="absolute top-0 left-0 right-0 h-[3.5px] bg-[#5C8EFF]" />
-
-                  {/* Panel Header */}
-                  <div className="flex justify-between items-start pb-4 border-b border-zinc-150 mb-6">
-                    <div>
-                      <span className="text-[9px] font-black uppercase text-[#5C8EFF] tracking-wider">PLATFORM PERFORMANCE PROFILE</span>
-                      <h4 className="text-zinc-950 font-[900] text-lg uppercase tracking-tight mt-0.5">Operational Benchmarks</h4>
-                    </div>
-                    <div className="flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full text-emerald-600 text-[8.5px] font-black uppercase tracking-wider font-mono">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      ONLINE
-                    </div>
-                  </div>
-
-                  {/* Operational SLAs Stats Grid */}
-                  <div className="grid grid-cols-2 gap-4">
-                    {[
-                      { label: "SLA Response", value: "<24 Hours", desc: "Guaranteed initial review", icon: Clock, color: "text-[#5C8EFF]" },
-                      { label: "Average Launch", value: "5 Days", desc: "Typical quant fielding speed", icon: Rocket, color: "text-[#7C3AED]" },
-                      { label: "Active Scope", value: "50+ Markets", desc: "Global representative coverage", icon: Globe, color: "text-[#2563EB]" },
-                      { label: "Validation SLA", value: "99.7%", desc: "Data validation accuracy", icon: ShieldCheck, color: "text-[#02E8F8]" }
-                    ].map((sla, idx) => {
-                      const SlaIcon = sla.icon;
-                      return (
-                        <div 
-                          key={sla.label} 
-                          className="p-4 rounded-2xl border border-zinc-150 bg-[#FAFAFA]/40 hover:bg-[#FAFAFA] transition-all duration-300 flex flex-col items-start text-left"
-                        >
-                          <div className={`p-1.5 rounded-xl bg-white border border-zinc-100 ${sla.color}`}>
-                            <SlaIcon size={14} />
-                          </div>
-                          <span className="text-[8px] font-black uppercase text-zinc-400 tracking-wider mt-3">{sla.label}</span>
-                          <span className="text-base font-black text-zinc-950 mt-0.5">{sla.value}</span>
-                          <span className="text-[10px] text-zinc-400 font-semibold mt-0.5 leading-snug">{sla.desc}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Direct Contact Links drawer */}
-                  <div className="mt-8 pt-6 border-t border-zinc-150 flex flex-col gap-3">
-                    <span className="text-[8.5px] font-black uppercase text-zinc-400 tracking-widest">Communications Hub</span>
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      {[
-                        { icon: Mail, label: 'Email', val: 'hello@evoglobalinsight.com', href: 'mailto:hello@evoglobalinsight.com' },
-                        { icon: Phone, label: 'Phone', val: '+1 (415) 555-0142', href: 'tel:+14155550142' },
-                        { icon: MapPin, label: 'Office', val: 'San Francisco, CA', href: 'https://maps.google.com' }
-                      ].map((item) => {
-                        const ItemIcon = item.icon;
-                        return (
-                          <a 
-                            key={item.label}
-                            href={item.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-3 bg-zinc-50 border border-zinc-100 rounded-xl hover:bg-[#5C8EFF]/5 hover:border-[#5C8EFF]/20 flex items-center gap-2 group/link transition-all duration-300"
-                          >
-                            <div className="text-[#5C8EFF] group-hover/link:scale-105 transition-transform duration-300">
-                              <ItemIcon size={12} />
-                            </div>
-                            <div className="text-left leading-none">
-                              <span className="block text-[7.5px] font-black uppercase text-zinc-400 tracking-wide">{item.label}</span>
-                              <span className="text-[9.5px] font-bold text-zinc-800 block mt-0.5 truncate max-w-[80px]">{item.val}</span>
-                            </div>
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                </div>
-              </Reveal>
-
-              {/* SaaS Accordion FAQ */}
-              <Reveal>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-1.5 px-1 text-[10px] font-black uppercase tracking-widest text-[#5C8EFF]">
-                    <Sparkles size={11} /> Platform FAQ
-                  </div>
-                  <FAQ />
-                </div>
-              </Reveal>
-
             </div>
 
           </div>
         </Container>
       </section>
 
-      {/* ── FINAL CTA SECTION ── */}
-      <section className="bg-white border-t border-zinc-200 relative overflow-hidden py-20 sm:py-24 z-10 text-center">
-        {/* Subtle grid pattern overlay matching hero */}
-        <div
-          className="absolute inset-0 z-0 opacity-[0.25] pointer-events-none"
-          style={{
-            backgroundImage: 'radial-gradient(rgba(24,24,27,0.08) 1.2px, transparent 1.2px)',
-            backgroundSize: '24px 24px',
-          }}
-        />
-        {/* Subtle radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(92,142,255,0.02),transparent_70%)] pointer-events-none" />
-
-        <Container className="relative z-10 flex flex-col items-center">
-          <Reveal>
-            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-[1000] tracking-tight uppercase leading-[1.08] text-zinc-950">
-              READY TO LAUNCH<br />
-              <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">
-                YOUR NEXT STUDY?
-              </span>
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          SECTION 4: FAQ
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <section className="relative py-20 sm:py-28 border-t border-zinc-200/60 bg-white z-10">
+        <Container className="max-w-4xl">
+          <div className="text-center mb-16">
+            <span className="text-xs font-black tracking-widest text-[#5C8EFF] uppercase mb-3 block">
+              Information Desk
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-[900] tracking-tight leading-tight text-zinc-950 uppercase">
+              FREQUENTLY ASKED QUESTIONS
             </h2>
-            
-            <p className="mt-4 text-zinc-500 font-medium text-xs sm:text-sm max-w-md leading-relaxed mx-auto font-medium">
-              Partner with EvoGlobalInsight to dispatch surveys, verify cohorts, and deliver clean research data on schedule.
-            </p>
+          </div>
 
-            <div className="mt-8 flex justify-center">
-              <Button 
-                onClick={scrollToForm} 
-                size="lg" 
-                className="shadow-[0_8px_24px_-8px_rgba(92,142,255,0.35)]"
-              >
-                Launch Study Now <ArrowRight size={15} className="ml-1.5" />
-              </Button>
-            </div>
-          </Reveal>
+          <div className="divide-y divide-zinc-200 border-t border-b border-zinc-200">
+            {faqs.map((faq, idx) => (
+              <div key={idx} className="py-6">
+                <button
+                  onClick={() => setOpenFaqIdx(openFaqIdx === idx ? null : idx)}
+                  className="w-full flex justify-between items-center text-left py-2 group cursor-pointer"
+                >
+                  <span className="text-zinc-950 font-black text-sm sm:text-base tracking-tight uppercase group-hover:text-[#5C8EFF] transition-colors duration-300">
+                    {faq.q}
+                  </span>
+                  <motion.span
+                    animate={{ rotate: openFaqIdx === idx ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-zinc-400 group-hover:text-zinc-950 flex-shrink-0 ml-4"
+                  >
+                    <ChevronDown size={18} />
+                  </motion.span>
+                </button>
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: openFaqIdx === idx ? 'auto' : 0,
+                    opacity: openFaqIdx === idx ? 1 : 0
+                  }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className="overflow-hidden"
+                >
+                  <p className="pt-3 pb-4 text-zinc-500 text-xs sm:text-sm leading-relaxed font-medium">
+                    {faq.a}
+                  </p>
+                </motion.div>
+              </div>
+            ))}
+          </div>
         </Container>
       </section>
-    </>
+    </div>
   );
 }
