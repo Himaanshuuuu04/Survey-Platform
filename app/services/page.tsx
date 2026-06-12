@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { ServicesHero } from '@/components/services/ServicesHero';
 import { Button, Reveal, Section, Container, Counter } from '@/components/primitives';
+import { FinalCTA } from '@/components/home/FinalCTA';
 
 // PLAYGROUND 1: AUDIENCE RECRUITMENT
 function AudienceRecruitmentPlayground() {
@@ -1643,50 +1644,7 @@ export default function Services() {
         </div>
       </section>
 
-      {/* SECTION 5: CTA (Dark Section matching new footer) */}
-      <section className="bg-[#05070F] text-white relative overflow-hidden py-24 sm:py-32 border-t border-zinc-800/60 z-10">
-        {/* Subtle radial glow backing */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(92,142,255,0.06),transparent_60%)] pointer-events-none" />
-
-        {/* Subtle grid pattern overlay */}
-        <div
-          className="absolute inset-0 z-0 opacity-15 pointer-events-none"
-          style={{
-            backgroundImage: 'radial-gradient(rgba(228,228,231,0.15) 1.2px, transparent 1.2px)',
-            backgroundSize: '24px 24px',
-          }}
-        />
-
-        <Container className="relative z-10 text-center flex flex-col items-center">
-          <Reveal>
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/60 px-3 py-1 text-[9px] font-black tracking-widest uppercase text-[#5B84FF] shadow-sm mb-6">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
-              GET STARTED TODAY
-            </div>
-
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white leading-tight max-w-3xl">
-              READY TO REACH<br />
-              <span className="text-transparent [-webkit-text-stroke:1px_#ffffff] font-black tracking-wide">
-                THE RIGHT AUDIENCE?
-              </span>
-            </h2>
-
-            <p className="mt-6 text-zinc-400 font-medium text-sm sm:text-base max-w-xl leading-relaxed">
-              Launch your next survey with verified respondents across global markets. Collect reliable insight data with 99.7% accuracy.
-            </p>
-
-            <div className="mt-10 flex flex-wrap justify-center gap-4">
-              <Button
-                href="/contact"
-                size="lg"
-                className="shadow-[0_8px_24px_-8px_rgba(92,142,255,0.4)] bg-[#5B84FF] text-white hover:bg-white hover:text-zinc-950 transition-all duration-300"
-              >
-                Launch Your Survey <ArrowRight size={16} className="ml-1.5 inline-block" />
-              </Button>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
+      <FinalCTA />
     </>
   );
 }

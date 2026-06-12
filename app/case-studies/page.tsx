@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import { PageHero } from '@/components/common/PageHero';
 import { Reveal, Section } from '@/components/primitives';
+import { FinalCTA } from '@/components/home/FinalCTA';
 
 const studies = [
   {
@@ -101,6 +102,7 @@ export default function CaseStudies() {
           ))}
         </div>
       </Section>
+      <FinalCTA />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { ArrowUpRight, Clock } from 'lucide-react';
 import { PageHero } from '@/components/common/PageHero';
 import { Container, Reveal } from '@/components/primitives';
+import { FinalCTA } from '@/components/home/FinalCTA';
 
 const categories = ['All', 'Market Research', 'Consumer Behavior', 'Brand Strategy', 'Industry Trends'] as const;
 
@@ -73,6 +74,7 @@ export default function Insights() {
           ))}
         </div>
       </Container>
+      <FinalCTA />
     </>
   );
 }
