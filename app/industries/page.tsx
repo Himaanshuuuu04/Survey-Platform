@@ -1,4 +1,4 @@
-import { PageHero } from '@/components/common/PageHero';
+import { IndustriesHero } from '@/components/industries/IndustriesHero';
 import { StoryScrollSection } from '@/components/industries/StoryScrollSection';
 import { IndustriesWeServe } from '@/components/industries/IndustriesWeServe';
 import { FinalCTA } from '@/components/home/FinalCTA';
@@ -6,11 +6,7 @@ import { FinalCTA } from '@/components/home/FinalCTA';
 export default function Industries() {
   return (
     <>
-      <PageHero
-        eyebrow="Industries"
-        title={<>Research expertise across <span className="brand-gradient-text">industries</span>.</>}
-        sub="Category specialists who know your customer, your competitors, and the questions worth asking."
-      />
+      <IndustriesHero />
       <StoryScrollSection />
       <IndustriesWeServe />
       <FinalCTA 
