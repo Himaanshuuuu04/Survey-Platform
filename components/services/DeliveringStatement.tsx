@@ -63,7 +63,7 @@ export function DeliveringStatement() {
             </motion.span>
           ))}
         </div>
-        <div className="flex justify-center items-center gap-[0.03em] text-transparent [-webkit-text-stroke:1.3px_#111111] sm:[-webkit-text-stroke:2px_#111111] tracking-wide mt-2">
+        <div className="flex justify-center items-center gap-[0.03em] font-fenwick text-[#111111] tracking-wide mt-2">
           {line2.map((letter, index) => (
             <motion.span
               key={index}
@@ -73,7 +73,7 @@ export function DeliveringStatement() {
               }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ scale: 1.12, y: -5 }}
-              className="inline-block origin-bottom cursor-default hover:[-webkit-text-stroke-color:#5B84FF] transition-colors duration-200"
+              className="inline-block origin-bottom cursor-default hover:text-[#5B84FF] transition-colors duration-200"
             >
               {letter === " " ? (
                 "\u00A0"

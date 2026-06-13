@@ -10,7 +10,7 @@ export default function Industries() {
       <StoryScrollSection />
       <IndustriesWeServe />
       <FinalCTA 
-        headline={<>Let&apos;s Turn<br/>Responses Into<br/><span className="text-transparent [-webkit-text-stroke:1.5px_#ffffff] font-black tracking-wide">Real Decisions.</span></>}
+        headline={<>Let&apos;s Turn<br/>Responses Into<br/><span className="font-fenwick text-[#ffffff] tracking-wide">Real Decisions.</span></>}
         buttonText="Start Your Research Project"
       />
     </>

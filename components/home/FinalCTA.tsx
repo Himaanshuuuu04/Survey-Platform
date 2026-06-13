@@ -17,7 +17,7 @@ export function FinalCTA({
     <>
       Let&apos;s Turn<br />
       Responses Into<br />
-      <span className="text-transparent [-webkit-text-stroke:1.5px_#ffffff] font-black tracking-wide">
+      <span className="font-fenwick text-[#ffffff] tracking-wide">
         Real Decisions.
       </span>
     </>

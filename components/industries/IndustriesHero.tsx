@@ -94,7 +94,7 @@ export function IndustriesHero() {
               <motion.div variants={itemVariants}>
                 <h1 className="text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-[3.5rem] font-[1000] tracking-tight uppercase leading-[1.05] text-[#0A0A0A]">
                   WE DECODE THE<br />
-                  <span className="text-transparent [-webkit-text-stroke:1.3px_#111111] font-black tracking-wide">
+                  <span className="font-fenwick text-[#111111] tracking-wide">
                     MARKET SEGMENTS
                   </span><br />
                   THAT DRIVE{' '}

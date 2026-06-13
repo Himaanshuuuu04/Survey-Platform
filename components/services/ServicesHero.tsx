@@ -77,7 +77,7 @@ export function ServicesHero() {
                 REACH VERIFIED<br />
                 AUDIENCES FOR<br />
                 BETTER<br />
-                <span className="text-transparent [-webkit-text-stroke:1.3px_#111111] font-black tracking-wide">
+                <span className="font-fenwick text-[#111111] tracking-wide">
                   DECISIONS.
                 </span>
               </h1>

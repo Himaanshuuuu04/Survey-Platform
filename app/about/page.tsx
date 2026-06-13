@@ -609,7 +609,7 @@ function TeamSection() {
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-zinc-950 leading-tight">
                 THE PEOPLE<br />
                 BEHIND THE<br />
-                <span className="text-transparent [-webkit-text-stroke:1px_#18181b] font-black tracking-wide">
+                <span className="font-fenwick text-[#18181b] tracking-wide">
                   INSIGHTS.
                 </span>
               </h2>

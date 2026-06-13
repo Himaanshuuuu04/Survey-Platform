@@ -60,7 +60,7 @@ export function Testimonials() {
           <Reveal delay={0.05} className="mt-5">
             <h2 className="text-4xl sm:text-5xl lg:text-[2.75rem] font-[1000] tracking-tight uppercase leading-[1.05] text-zinc-950">
               Data-Driven Proof.<br />
-              <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">
+              <span className="font-fenwick text-[#111111] tracking-wide">
                 Verified Results.
               </span>
             </h2>

@@ -50,7 +50,7 @@ style={{
       <Container>
         <Reveal><SectionEyebrow>How we work</SectionEyebrow></Reveal>
         <Reveal delay={0.05}>
-          <h2 className="max-w-2xl">From Survey Brief To Actionable Data — <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide text-swoosh">In Three Moves</span>.</h2>
+          <h2 className="max-w-2xl">From Survey Brief To Actionable Data — <span className="font-fenwick text-[#111111] tracking-wide text-swoosh">In Three Moves</span>.</h2>
         </Reveal>
 
         <div ref={ref} className="relative mt-14 max-w-3xl mx-auto">

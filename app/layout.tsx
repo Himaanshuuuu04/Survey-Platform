@@ -1,14 +1,40 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { AudienceProvider } from "../components/layout/AudienceContext";
 import { ScrollToTop } from "../components/layout/ScrollToTop";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
+const calSans = localFont({
+  src: [
+    {
+      path: "../public/fonts/calsans-static-ui/CalSansUI-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/calsans-static-ui/CalSansUI-Medium.ttf",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/calsans-static-ui/CalSansUI-SemiBold.ttf",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/calsans-static-ui/CalSansUI-Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-cal-sans",
+});
+
+const fenwick = localFont({
+  src: "../public/fonts/Fenwick-outline/Fenwick Outline.otf",
+  variable: "--font-fenwick",
 });
 
 export const metadata: Metadata = {
@@ -55,10 +81,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} min-h-full antialiased`}
+      className={`${calSans.variable} ${fenwick.variable} min-h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-white " suppressHydrationWarning  style={{
+      <body className="min-h-full flex flex-col bg-white " suppressHydrationWarning style={{
         backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',
       }}>

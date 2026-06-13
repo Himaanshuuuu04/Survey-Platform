@@ -163,7 +163,7 @@ export function WhyChooseUs() {
             <Reveal delay={0.05}>
               <h2 className="text-6xl sm:text-7xl lg:text-8xl font-[1000] tracking-tight uppercase leading-[0.95] text-zinc-950">
                 THE<br />
-                <span className="text-transparent [-webkit-text-stroke:1.5px_#111111] font-black tracking-wider">
+                <span className="font-fenwick text-[#111111] tracking-wider">
                   PROCESS.
                 </span>
               </h2>

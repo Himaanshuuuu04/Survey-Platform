@@ -296,7 +296,7 @@ export function HowItWorksSection() {
               <Reveal delay={0.05} className="mt-2">
                 <h2 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-[900] tracking-tight uppercase leading-[1.08] text-zinc-950">
                   SURVEY<br />
-                  <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">
+                  <span className="font-fenwick text-[#111111] tracking-wide">
                     LIFECYCLE.
                   </span>
                 </h2>

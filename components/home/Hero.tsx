@@ -199,7 +199,7 @@ export function Hero() {
                       />
                     </span>
                     <br />
-                    Collect <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">Better Insights.</span>
+                    Collect <span className="font-fenwick text-[#111111] tracking-wide">Better Insights.</span>
                   </>
                 ) : (
                   <>
@@ -221,7 +221,7 @@ export function Hero() {
                         loop
                       />
                     </span><br />
-                    Products. <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">Get Rewarded.</span>
+                    Products. <span className="font-fenwick text-[#111111] tracking-wide">Get Rewarded.</span>
                   </>
                 )}
               </h1>

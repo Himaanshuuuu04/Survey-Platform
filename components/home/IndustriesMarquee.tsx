@@ -39,7 +39,7 @@ export function IndustriesMarquee() {
           <h2 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-[900] tracking-tight uppercase leading-[1.08] text-zinc-950">
             DEEP EXPERTISE ACROSS<br />
             THE CATEGORIES THAT<br />
-            <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide text-swoosh">MOVE THE WORLD</span>.
+            <span className="font-fenwick text-[#111111] tracking-wide text-swoosh">MOVE THE WORLD</span>.
           </h2>
         </div>
       </Container>
@@ -140,16 +140,8 @@ export function IndustriesMarquee() {
                    
                     {/* Giant Typography */}
                     <span
-                      className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter lowercase text-nowrap ${
-                        item.outlined 
-                          ? "text-transparent" 
-                          : "text-brand dark:text-zinc-50"
-                      }`}
-                      style={
-                        item.outlined
-                          ? { WebkitTextStroke: "1.67px black" }
-                          : {}
-                      }
+                      className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter lowercase text-nowrap ${item.outlined ? "font-fenwick text-[#111111] dark:text-white" : "text-brand dark:text-zinc-50"}`}
+                      
                     >
                       {item.label}
                     </span>
