@@ -58,7 +58,8 @@ export function IndustriesHero() {
     <div className="w-full">
       {/* ── PART 1: TOP HERO COLUMN GRID ── */}
       <section
-        className="relative overflow-hidden pt-10 pb-16 sm:pt-20 sm:pb-24 border-b border-[#E5E7EB] bg-white z-10"
+        className="relative overflow-hidden lg:pt-10 lg:pb-0
+         sm:pt-20 sm:pb-24  bg-white z-10"
         style={{
           backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
           backgroundSize: '24px 24px',
@@ -102,11 +103,7 @@ export function IndustriesHero() {
               </motion.div>
 
               {/* Sub-headline */}
-              <motion.div variants={itemVariants} className="mt-6">
-                <h3 className="text-lg sm:text-xl font-extrabold text-[#0A0A0A] leading-snug tracking-tight">
-                  We understand the unique business challenges within each industry sector.
-                </h3>
-              </motion.div>
+             
 
               {/* Supporting Copy */}
               <motion.div variants={itemVariants}>
@@ -283,7 +280,7 @@ export function IndustriesHero() {
 
       {/* ── PART 2: DISCOVER THE IMPACT OF INSIGHTS (METRICS SECTION) ── */}
       <section
-        className="border-b border-[#E5E7EB] py-14 sm:py-20 relative bg-zinc-50"
+        className="border-b border-[#E5E7EB] py-14 sm:py-20 relative bg-white"
         style={{
           backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
           backgroundSize: '24px 24px',
@@ -374,92 +371,6 @@ export function IndustriesHero() {
                 );
               })}
             </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* ── PART 3: HOW OUR APPROACH HELPS YOU? (APPROACH SECTION) ── */}
-      <section
-        id="approach"
-        className="border-b border-[#E5E7EB] py-20 sm:py-28 relative bg-white"
-        style={{
-          backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
-          backgroundSize: '24px 24px',
-        }}
-      >
-        <Container>
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <Reveal>
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1 text-[9px] font-black tracking-widest uppercase text-[#5B84FF] shadow-[0_1px_4px_rgba(0,0,0,0.01)]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#02E8F8]" />
-                How We Help
-              </div>
-            </Reveal>
-            <Reveal delay={0.05}>
-              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight mt-6 mb-6">
-                How Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5B84FF] to-[#02E8F8]">Approach</span> Helps You
-              </h2>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <p className="text-sm sm:text-base text-zinc-500 font-medium leading-relaxed max-w-2xl mx-auto">
-                At GMS, we weave scientific rigor, practical empathy, and collaborative action together to illuminate your business goals.
-              </p>
-            </Reveal>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              {
-                title: "Innovative & Intuitive",
-                desc: "At GMS, we blend creativity with scientific rigor, providing profound insights into the dynamic lives of your audience – whether they're customers, employees, or partners.",
-                icon: Brain,
-                orbColor: "from-[#5B84FF] to-[#02E8F8]"
-              },
-              {
-                title: "People-Centric",
-                desc: "Our core mission is to illuminate the human aspect of insights, unveiling the rich tapestry of behaviors, beliefs, and decisions. We drive innovation by understanding real needs of individuals.",
-                icon: Users,
-                orbColor: "from-[#7C3AED] to-[#5B84FF]"
-              },
-              {
-                title: "Practical & Purposeful",
-                desc: "We meticulously chart actionable paths forward, keeping your business goals and aspirations in clear focus. Grounded in practicality, our insights empower your teams to navigate confidently and drive measurable impact.",
-                icon: Target,
-                orbColor: "from-[#2563EB] to-[#7C3AED]"
-              },
-              {
-                title: "Collaborative & Connective",
-                desc: "Through collaborative partnerships, we foster meaningful connections between data and decision-making. Our approach transcends mere numbers, weaving compelling narratives that resonate deeply, fostering trust, and nurturing sustainable growth.",
-                icon: Handshake,
-                orbColor: "from-[#02E8F8] to-[#2563EB]"
-              }
-            ].map((pillar, idx) => {
-              const IconComponent = pillar.icon;
-              return (
-                <Reveal key={pillar.title} delay={idx * 0.05}>
-                  <GlassCard className="flex flex-col h-full justify-between items-start text-left p-8">
-                    <div>
-                      {/* Accent orb */}
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${pillar.orbColor} shadow-md flex items-center justify-center text-white mb-6`}>
-                        <IconComponent size={18} strokeWidth={2.5} />
-                      </div>
-                      
-                      <h3 className="text-xl font-extrabold text-zinc-950 mt-2 tracking-tight">
-                        {pillar.title}
-                      </h3>
-                      
-                      <p className="text-sm text-zinc-500 font-medium leading-relaxed mt-4">
-                        {pillar.desc}
-                      </p>
-                    </div>
-
-                    <div className="mt-8 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-[#5B84FF] group-hover:translate-x-1.5 transition-transform duration-300">
-                      Learn More <ArrowRight size={12} strokeWidth={3} />
-                    </div>
-                  </GlassCard>
-                </Reveal>
-              );
-            })}
           </div>
         </Container>
       </section>

@@ -99,10 +99,10 @@ function AboutHero() {
           <div className="about-hero-title-wrap">
             <h1 className="about-hero-title">
               <span className="about-hero-title__line" style={{ display: 'block', overflow: 'hidden', width: 'max-content' }}>
-                <span ref={wordAboutRef} className="about-hero-title__word" style={{ display: 'block' }}>ABOUT</span>
+                <span ref={wordAboutRef} className="about-hero-title__word  pr-[0.08em]" style={{ display: 'block' }}>ABOUT</span>
               </span>
               <span className="about-hero-title__line" style={{ display: 'block', overflow: 'hidden', width: 'max-content' }}>
-                <span ref={wordUsRef} className="about-hero-title__word about-hero-title--us" style={{ display: 'block' }}>US</span>
+                <span ref={wordUsRef} className="about-hero-title__word about-hero-title--us  pr-[0.08em]" style={{ display: 'block' }}>US</span>
               </span>
             </h1>
           </div>

@@ -311,6 +311,14 @@ body,
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  ::-webkit-scrollbar {
+    display: none !important; /* Chrome, Safari, Opera */
+    width: 0 !important;
+    height: 0 !important;
   }
 
   body {
@@ -321,6 +329,7 @@ body,
     @apply font-sans;
   }
 }
+
 
 /* ═══════════════════════════════════════════
    MASCOT TRACK & LEFT-TO-RIGHT MARQUEE ANIMATIONS

@@ -101,12 +101,9 @@ export function StoryScrollSection() {
     <div ref={triggerRef} className="w-full">
       <section 
         ref={pinRef} 
-        className="relative bg-[#FFFFFF] text-[#050505] h-full w-full overflow-hidden font-sans flex items-center py-24 bg-[var(--bg-soft)] text-[var(--ink)] relative overflow-hidden" 
+        className="relative bg-white   text-[#050505] h-full w-full overflow-hidden font-sans flex items-center py-24 bg-[var(--bg-soft)] text-[var(--ink)] relative overflow-hidden" 
       id="industries"
-      style={{
-        backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
-        backgroundSize: '24px 24px',
-      }}
+     
       >
       {/* Main Content Layout */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 md:px-[80px] xl:px-[120px] flex flex-col items-center justify-center text-center gap-6 h-full">
@@ -129,7 +126,7 @@ export function StoryScrollSection() {
                 ref={(el) => {
                   wordRefs.current[index] = el;
                 }}
-                className="absolute font-black uppercase text-[#5C8EFF] tracking-tighter text-center w-full"
+                className="absolute font-black uppercase  bg-gradient-to-br from-[#3b82f6] to-[#02e8f8] bg-clip-text text-transparent tracking-tighter text-center w-full"
                 style={{ 
                   fontSize: "clamp(80px, 13vw, 180px)",
                   lineHeight: 1,
@@ -142,19 +139,19 @@ export function StoryScrollSection() {
           </div>
 
           <div ref={columnsRef} className="flex flex-col sm:flex-row gap-6 sm:gap-12 mt-6 lg:mt-8">
-            <p className="text-lg lg:text-[22px] leading-relaxed text-[#525252] sm:w-1/2 font-medium">
+            <p className="text-lg lg:text-[15px] leading-relaxed text-[#525252] sm:w-1/2 font-medium">
               We connect brands with verified consumers to gather authentic feedback, uncover buying behavior, and validate business decisions with confidence.
             </p>
-            <p className="text-lg lg:text-[22px] leading-relaxed text-[#525252] sm:w-1/2 font-medium">
+            <p className="text-lg lg:text-[15px] leading-relaxed text-[#525252] sm:w-1/2 font-medium">
               Our research methodology combines targeted audiences, advanced screening, and actionable insights to help organizations make smarter strategic decisions.
             </p>
           </div>
 
           <div ref={ctaRef} className="mt-8 lg:mt-12">
-            <button className="group relative inline-flex items-center gap-4 text-xl lg:text-2xl font-bold hover:tracking-wide transition-all duration-500 py-2 text-[#050505]">
+            <button className="group relative inline-flex items-center gap-4 text-xl lg:text-2xl  hover:tracking-wide transition-all duration-500 py-2 rounded-full p-4  border-1 border-black  text-black hover:bg-gradient-to-br from-[#3b82f6] to-[#02e8f8] ">
               Start Your Research 
               <ArrowRight className="transition-transform duration-500 group-hover:translate-x-3 w-6 h-6 lg:w-8 lg:h-8" />
-              <div className="absolute bottom-0 left-0 h-[2px] bg-[#5A31FF] w-0 group-hover:w-full transition-all duration-500 ease-out"></div>
+             
             </button>
           </div>
         </div>
