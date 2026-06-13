@@ -5,7 +5,7 @@ import { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, HelpCircle, AlertCircle, Cpu, ShieldCheck, ChevronLeft, ChevronRight, Target, Brain, ShieldAlert, Globe } from 'lucide-react';
+import { ArrowRight, HelpCircle, AlertCircle, Cpu, ShieldCheck, ChevronLeft, ChevronRight, Target, Brain, ShieldAlert, Globe, ChevronDown, Clock, Users, Zap, Database } from 'lucide-react';
 import { FinalCTA } from '@/components/home/FinalCTA';
 
 if (typeof window !== 'undefined') {
@@ -667,11 +667,18 @@ function TeamSection() {
 }
 
 /* ─── FAQ Section ─── */
+interface FAQSpec {
+  label: string;
+  value: string;
+  icon: any;
+}
+
 interface FAQItem {
   num: string;
   category: string;
   question: string;
   answer: string;
+  specs: FAQSpec[];
 }
 
 const faqItems: FAQItem[] = [
@@ -679,155 +686,264 @@ const faqItems: FAQItem[] = [
     num: "01",
     category: "TIMELINE & LAUNCH",
     question: "How quickly can a study launch?",
-    answer: "Most consumer research projects can launch within 24 hours of final questionnaire approval. For complex, highly targeted B2B cohorts or custom international panels, initial feasibility matching and verification checks typically require 48 to 72 hours."
+    answer: "Most consumer research projects can launch within 24 hours of final questionnaire approval. For complex, highly targeted B2B cohorts or custom international panels, initial feasibility matching and verification checks typically require 48 to 72 hours.",
+    specs: [
+      { label: "Launch Window", value: "< 24 Hours", icon: Zap },
+      { label: "B2B / Custom Feasibility", value: "48 - 72 Hours", icon: Clock }
+    ]
   },
   {
     num: "02",
     category: "AUDIENCE & TARGETING",
     question: "What audiences can be targeted?",
-    answer: "We support targeting across 50+ countries. Our segments range from general consumer demographics to highly specialized cohorts, including C-suite B2B decision-makers, software developers, medical professionals, and niche buyer personas."
+    answer: "We support targeting across 50+ countries. Our segments range from general consumer demographics to highly specialized cohorts, including C-suite B2B decision-makers, software developers, medical professionals, and niche buyer personas.",
+    specs: [
+      { label: "Global Reach", value: "50+ Countries", icon: Globe },
+      { label: "Target Segments", value: "B2B & Consumers", icon: Users }
+    ]
   },
   {
     num: "03",
     category: "DATA INTEGRITY",
     question: "How is response quality validated?",
-    answer: "Every response runs through our multi-layered validation suite. This includes checking for duplicate fingerprints, testing IP addresses for VPN/proxy usage, monitoring answer speed-running, tracking keystroke dynamics, and auditing qualitative inputs for coherence."
+    answer: "Every response runs through our multi-layered validation suite. This includes checking for duplicate fingerprints, testing IP addresses for VPN/proxy usage, monitoring answer speed-running, tracking keystroke dynamics, and auditing qualitative inputs for coherence.",
+    specs: [
+      { label: "Validation Engine", value: "Multi-layered", icon: ShieldCheck },
+      { label: "Identity Integrity", value: "100% Verified", icon: Brain }
+    ]
   },
   {
     num: "04",
     category: "GLOBAL CAPABILITIES",
     question: "Do you support international research?",
-    answer: "Yes, our capabilities span North America, Europe, APAC, and Latin America. We provide native translation services, localized survey interfaces, and coordinate with regional study managers to maintain cultural relevance and data alignment."
+    answer: "Yes, our capabilities span North America, Europe, APAC, and Latin America. We provide native translation services, localized survey interfaces, and coordinate with regional study managers to maintain cultural relevance and data alignment.",
+    specs: [
+      { label: "Regional Panels", value: "4 Major Continents", icon: Globe },
+      { label: "Localization Support", value: "Native Translation", icon: Cpu }
+    ]
   },
   {
     num: "05",
     category: "DELIVERY & INTEGRATION",
     question: "Can datasets be white-labelled?",
-    answer: "Absolutely. We supply datasets in all standard structures, including SPSS, CSV, and JSON. Visual report deliverables, presentation decks, and dashboard reporting views can be fully white-labelled to reflect your brand's style guide."
+    answer: "Absolutely. We supply datasets in all standard structures, including SPSS, CSV, and JSON. Visual report deliverables, presentation decks, and dashboard reporting views can be fully white-labelled to reflect your brand's style guide.",
+    specs: [
+      { label: "Dataset Formats", value: "SPSS, CSV, JSON", icon: Database },
+      { label: "Brand Control", value: "Full White-label", icon: Target }
+    ]
   }
 ];
 
-function FAQSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const progressBarRef = useRef<HTMLDivElement>(null);
+function FAQAccordionItem({
+  item,
+  isOpen,
+  onClick
+}: {
+  item: FAQItem;
+  isOpen: boolean;
+  onClick: () => void;
+}) {
+  const itemRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    // Reset and animate progress bar at top of FAQ card when question changes
-    if (progressBarRef.current) {
-      gsap.fromTo(progressBarRef.current,
-        { width: '0%' },
-        { width: '100%', duration: 0.6, ease: 'power2.out' }
-      );
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!itemRef.current) return;
+    const rect = itemRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    if (isOpen) {
+      itemRef.current.style.background = `radial-gradient(220px circle at ${x}px ${y}px, rgba(11, 92, 255, 0.04), transparent 85%), rgba(11, 92, 255, 0.01)`;
+      itemRef.current.style.borderColor = 'rgba(11, 92, 255, 0.3)';
+    } else {
+      itemRef.current.style.background = `radial-gradient(180px circle at ${x}px ${y}px, rgba(11, 92, 255, 0.05), transparent 80%), rgba(255, 255, 255, 0.5)`;
+      itemRef.current.style.borderColor = 'rgba(212, 212, 216, 0.8)';
     }
-  }, [activeIndex]);
+  };
+
+  const handleMouseLeave = () => {
+    if (!itemRef.current) return;
+    if (isOpen) {
+      itemRef.current.style.background = 'rgba(11, 92, 255, 0.01)';
+      itemRef.current.style.borderColor = 'rgba(11, 92, 255, 0.15)';
+    } else {
+      itemRef.current.style.background = 'rgba(255, 255, 255, 0.5)';
+      itemRef.current.style.borderColor = 'rgba(228, 228, 231, 0.6)';
+    }
+  };
 
   return (
-    <section
-      className="py-20 sm:py-28 bg-white relative overflow-hidden z-10"
+    <div
+      ref={itemRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`rounded-2xl border transition-all duration-300 overflow-hidden text-left ${
+        isOpen
+          ? 'border-[#0B5CFF]/15 bg-[#0B5CFF]/[0.01] shadow-[0_8px_30px_rgba(11,92,255,0.03)]'
+          : 'border-zinc-200/60 bg-white/50 hover:bg-white hover:shadow-sm'
+      }`}
     >
+      <button
+        onClick={onClick}
+        className="w-full flex items-center justify-between py-5 px-6 sm:px-8 text-left cursor-pointer focus:outline-none"
+      >
+        <div className="flex items-center gap-4 sm:gap-5 pr-4">
+          <span className={`text-xs font-mono font-bold tracking-wider shrink-0 transition-colors duration-300 ${
+            isOpen ? 'text-[#0B5CFF]' : 'text-zinc-400'
+          }`}>
+            {item.num}
+          </span>
+          <span className={`text-base font-bold transition-colors duration-300 ${
+            isOpen ? 'text-zinc-950 font-black' : 'text-zinc-800'
+          }`}>
+            {item.question}
+          </span>
+        </div>
+        
+        {/* Toggle Icon */}
+        <div className={`w-8 h-8 rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${
+          isOpen 
+            ? 'border-[#0B5CFF]/25 bg-[#0B5CFF]/5 text-[#0B5CFF] rotate-180' 
+            : 'border-zinc-200 bg-white text-zinc-400'
+        }`}>
+          <ChevronDown size={16} className="stroke-[2.5]" />
+        </div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{
+              height: 'auto',
+              opacity: 1,
+              transition: {
+                height: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.25, ease: 'linear' }
+              }
+            }}
+            exit={{
+              height: 0,
+              opacity: 0,
+              transition: {
+                height: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.15, ease: 'linear' }
+              }
+            }}
+            className="overflow-hidden"
+          >
+            <div className="pt-1 pb-6 px-6 sm:px-8 border-t border-zinc-100/80">
+              <p className="text-zinc-500 font-medium leading-relaxed text-sm sm:text-base mb-5">
+                {item.answer}
+              </p>
+
+              {/* Nested Spec/Metric Tags */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-2">
+                {item.specs.map((spec, specIdx) => {
+                  const SpecIcon = spec.icon;
+                  return (
+                    <div
+                      key={specIdx}
+                      className="flex items-center gap-3.5 p-3.5 rounded-xl border border-zinc-150/70 bg-zinc-50/50 backdrop-blur-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)]"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-[#0B5CFF]/10 text-[#0B5CFF] flex items-center justify-center shrink-0">
+                        <SpecIcon size={15} className="stroke-[2.5]" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold tracking-wider text-zinc-400 uppercase block leading-none mb-1">
+                          {spec.label}
+                        </span>
+                        <span className="text-xs sm:text-sm font-black text-zinc-800 uppercase tracking-wide leading-none">
+                          {spec.value}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function FAQSection() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(0);
+
+  const toggleIndex = (index: number) => {
+    setActiveIndex(prev => (prev === index ? null : index));
+  };
+
+  return (
+    <section className="py-20 sm:py-28 bg-white relative overflow-hidden z-10 border-t border-zinc-100">
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
-
-        {/* Section Header */}
-        <div className="text-left mb-16">
-          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase text-zinc-500 w-fit">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#0B5CFF]" />
-            FAQ
-          </div>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-[1000] uppercase tracking-tight text-zinc-950 font-sans leading-none mt-4">
-            COMMON<br />
-            QUESTIONS.
-          </h2>
-        </div>
-
-        {/* FAQ Grid */}
-        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-20 items-start">
-
-          {/* LEFT: Questions list */}
-          <div className="flex flex-col gap-2.5 w-full">
-            {faqItems.map((item, idx) => {
-              const isActive = activeIndex === idx;
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setActiveIndex(idx)}
-                  className={`group relative text-left py-5 px-6 rounded-2xl border transition-all duration-300 flex items-center justify-between cursor-pointer select-none ${isActive
-                    ? 'border-[#0B5CFF]/20 bg-[#0B5CFF]/5 text-[#0B5CFF] shadow-[0_4px_20px_rgba(11,92,255,0.04)]'
-                    : 'border-zinc-150 bg-white text-zinc-800 hover:border-zinc-300 hover:bg-zinc-50/50'
-                    }`}
-                >
-                  <div className="flex items-center gap-4">
-                    <span className={`text-[10px] font-mono font-bold tracking-wider transition-colors duration-300 ${isActive ? 'text-[#0B5CFF]' : 'text-zinc-400 group-hover:text-zinc-600'
-                      }`}>
-                      [{item.num}]
-                    </span>
-                    <span className={`text-sm sm:text-base font-bold transition-colors duration-300 ${isActive ? 'text-[#0B5CFF]' : 'text-zinc-900 group-hover:text-[#0B5CFF]'
-                      }`}>
-                      {item.question}
-                    </span>
-                  </div>
-
-                  {/* Indicator Dot */}
-                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${isActive
-                    ? 'bg-[#0B5CFF] scale-100 shadow-[0_0_8px_rgba(11,92,255,0.6)]'
-                    : 'bg-zinc-200 group-hover:bg-zinc-400 group-hover:scale-105'
-                    }`} />
-                </button>
-              );
-            })}
-          </div>
-
-          {/* RIGHT: Answer Panel Viewer */}
-          <div className="relative rounded-3xl border border-zinc-150 bg-white p-8 lg:p-10 shadow-sm min-h-[320px] flex flex-col justify-between overflow-hidden">
-            {/* Moving Indicator bar at the top */}
-            <div className="absolute top-0 inset-x-0 h-[3px] bg-zinc-100">
-              <div ref={progressBarRef} className="h-full bg-[#0B5CFF] w-0" />
-            </div>
-
-            {/* Answer Content Viewer */}
-            <div className="flex-grow flex flex-col justify-center py-4">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeIndex}
-                  initial={{ opacity: 0, x: 15 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -15 }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
-                  className="flex flex-col text-left gap-4"
-                >
-                  <span className="text-[10px] font-black tracking-widest text-zinc-400 uppercase">
-                    {faqItems[activeIndex].category}
-                  </span>
-
-                  <h3 className="text-xl sm:text-2xl font-[900] text-zinc-950 uppercase tracking-tight leading-snug">
-                    {faqItems[activeIndex].question}
-                  </h3>
-
-                  <p className="text-zinc-500 text-sm sm:text-base font-medium leading-relaxed mt-2">
-                    {faqItems[activeIndex].answer}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Help / Callout Footer info */}
-            <div className="mt-8 pt-6 border-t border-zinc-100 flex items-center gap-3 text-left">
-              <div className="w-8 h-8 rounded-full bg-[#0B5CFF]/10 text-[#0B5CFF] flex items-center justify-center">
-                <HelpCircle size={14} className="stroke-[2.5]" />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-20 items-start">
+          
+          {/* LEFT: Sticky Header & Callout */}
+          <div className="lg:sticky lg:top-32 flex flex-col gap-6 text-left">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase text-zinc-500 w-fit">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#0B5CFF] animate-pulse" />
+                FAQ
               </div>
-              <div>
-                <span className="text-[9.5px] font-black tracking-widest text-zinc-400 uppercase block">
-                  Still have questions?
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-[1000] uppercase tracking-tight text-zinc-950 font-sans leading-none mt-4">
+                COMMON<br />
+                QUESTIONS.
+              </h2>
+              <p className="text-zinc-500 text-sm sm:text-base font-medium leading-relaxed mt-5 max-w-md">
+                Have questions about our process, audience panels, data validation, or custom integrations? Find direct answers here, or connect with a research specialist.
+              </p>
+            </div>
+
+            {/* Floating Callout Panel for Support Status */}
+            <div className="relative rounded-2xl border border-zinc-150 bg-white/80 backdrop-blur-md p-6 shadow-sm overflow-hidden flex flex-col gap-4 mt-2 max-w-md group/status">
+              {/* Soft pulse glow background */}
+              <div className="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-emerald-500/10 blur-2xl group-hover/status:bg-emerald-500/15 transition-colors duration-500" />
+              
+              <div className="flex items-center gap-3">
+                {/* Pulsing indicator dot */}
+                <div className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </div>
+                <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest leading-none">
+                  Specialists Online
                 </span>
-                <a href="/contact" className="text-xs font-black text-[#0B5CFF] uppercase tracking-wider hover:underline flex items-center gap-1 mt-0.5">
-                  Connect with a research strategist <ArrowRight size={10} strokeWidth={3} />
-                </a>
               </div>
-            </div>
 
+              <div className="flex flex-col gap-1">
+                <h4 className="text-sm font-black text-zinc-900 uppercase tracking-wide">
+                  Real-time Support Active
+                </h4>
+                <p className="text-zinc-500 text-xs font-medium leading-relaxed">
+                  Our research strategists are currently active. Get expert guidance for custom sample targets, pricing configurations, or complex study feasibility checks.
+                </p>
+              </div>
+
+              <a
+                href="/contact"
+                className="inline-flex items-center gap-2 text-xs font-black text-[#0B5CFF] uppercase tracking-wider hover:underline w-fit pt-2 group/link"
+              >
+                Connect with a strategist
+                <ArrowRight size={12} className="stroke-[2.5] transition-transform duration-300 group-hover/link:translate-x-1" />
+              </a>
+            </div>
+          </div>
+
+          {/* RIGHT: Accordion list */}
+          <div className="flex flex-col gap-4 w-full">
+            {faqItems.map((item, idx) => (
+              <FAQAccordionItem
+                key={idx}
+                item={item}
+                isOpen={activeIndex === idx}
+                onClick={() => toggleIndex(idx)}
+              />
+            ))}
           </div>
 
         </div>
-
       </div>
     </section>
   );
