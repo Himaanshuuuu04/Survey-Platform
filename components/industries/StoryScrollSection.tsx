@@ -98,7 +98,7 @@ export function StoryScrollSection() {
   }, []);
 
   return (
-    <div ref={triggerRef} className="w-full">
+    <div ref={triggerRef} className="w-full ">
       <section 
         ref={pinRef} 
         className="relative bg-white   text-[#050505] h-full w-full overflow-hidden font-sans flex items-center py-24 bg-[var(--bg-soft)] text-[var(--ink)] relative overflow-hidden" 

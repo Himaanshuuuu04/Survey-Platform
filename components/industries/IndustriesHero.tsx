@@ -14,6 +14,8 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { Container, Reveal, Button, GlassCard, Counter, GradientBlob } from '../primitives';
+import CardSwap, { Card } from '@/components/CardSwap';
+import Image from 'next/image';
 
 export function IndustriesHero() {
   const [mounted, setMounted] = useState(false);
@@ -58,7 +60,7 @@ export function IndustriesHero() {
     <div className="w-full">
       {/* ── PART 1: TOP HERO COLUMN GRID ── */}
       <section
-        className="relative overflow-hidden lg:pt-10 lg:pb-0
+        className="relative overflow-y-visible lg:pt-10 lg:pb-0
          sm:pt-20 sm:pb-24  bg-white z-10"
         style={{
           backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
@@ -134,143 +136,84 @@ export function IndustriesHero() {
 
             </div>
 
-            {/* RIGHT COLUMN: Interactive Segment Orbit map */}
+            {/* RIGHT COLUMN: Interactive Segment CardSwap Stack */}
             <motion.div
               variants={itemVariants}
-              className="relative flex items-center justify-center lg:justify-end py-6"
+              className="relative flex items-center justify-center lg:justify-end py-4"
             >
               <div className="absolute inset-0 rounded-[3rem] bg-[radial-gradient(circle_at_50%_50%,rgba(92,142,255,0.06),transparent_50%)] opacity-95 blur-3xl pointer-events-none" />
 
-              {/* Interactive Segment SVG Canvas */}
-              <div className="w-[380px] h-[380px] sm:w-[440px] sm:h-[440px] lg:w-[480px] lg:h-[480px] relative select-none will-change-transform">
-                <svg viewBox="0 0 500 500" fill="none" className="w-full h-full overflow-visible">
-                  <defs>
-                    <radialGradient id="hub-glow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="#02E8F8" stopOpacity="0.8" />
-                      <stop offset="50%" stopColor="#5C8EFF" stopOpacity="0.4" />
-                      <stop offset="100%" stopColor="#FAFAFA" stopOpacity="0" />
-                    </radialGradient>
-                    <linearGradient id="orbit-line" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#5C8EFF" stopOpacity="0.3" />
-                      <stop offset="100%" stopColor="#02E8F8" stopOpacity="0.1" />
-                    </linearGradient>
-                    <filter id="glow-effect" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="6" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                  </defs>
-
-                  {/* Orbit Background Rings */}
-                  <circle cx="250" cy="250" r="165" stroke="url(#orbit-line)" strokeWidth="1.5" strokeDasharray="3 3" />
-                  <circle cx="250" cy="250" r="110" stroke="url(#orbit-line)" strokeWidth="1" opacity="0.4" />
-                  
-                  {/* Outer Orbit Rotation animation */}
-                  <motion.g
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                    style={{ transformOrigin: "250px 250px" }}
-                  >
-                    {/* Ring Accents */}
-                    <circle cx="250" cy="85" r="3" fill="#5C8EFF" />
-                    <circle cx="415" cy="250" r="3" fill="#02E8F8" />
-                    <circle cx="250" cy="415" r="3" fill="#5C8EFF" />
-                    <circle cx="85" cy="250" r="3" fill="#02E8F8" />
-                  </motion.g>
-
-                  {/* Core hub glow */}
-                  <circle cx="250" cy="250" r="70" fill="url(#hub-glow)" filter="url(#glow-effect)" opacity="0.85" />
-                  
-                  {/* Solid central node */}
-                  <circle cx="250" cy="250" r="32" fill="#FFFFFF" stroke="#5C8EFF" strokeWidth="8" />
-                  <circle cx="250" cy="250" r="12" fill="#02E8F8" />
-                  <text x="250" y="300" textAnchor="middle" className="text-[10px] font-black uppercase tracking-[0.2em] fill-zinc-950 font-sans">GMS HUB</text>
-
-                  {/* Nodes & Connected Lines */}
+              <div className="w-[300px] h-[380px] sm:w-[330px] sm:h-[420px] lg:w-[500px] lg:h-[450px] relative mr-8">
+                <CardSwap
+                  width="100%"
+                  height="100%"
+                  cardDistance={24}
+                  verticalDistance={24}
+                  delay={4000}
+                  skewAmount={4}
+                  easing="elastic"
+                >
                   {floatingSegments.map((seg, idx) => {
-                    const rad = (seg.angle * Math.PI) / 180;
-                    const x = Number((250 + seg.r * Math.cos(rad)).toFixed(4));
-                    const y = Number((250 + seg.r * Math.sin(rad)).toFixed(4));
+                    const imgMap: Record<string, string> = {
+                      "Consumer Durables": "/industry_consumer_durables.png",
+                      "Financial Services": "/industry_financial_services.png",
+                      "Healthcare": "/industry_healthcare.png",
+                      "Tech, Media & Telecom": "/industry_tech_telecom.png",
+                      "Food & Beverage": "/industry_food_beverage.png",
+                      "Retail & Commerce": "/industry_retail_commerce.png",
+                    };
+                    const imgPath = imgMap[seg.text] || "/about_hero_main.png";
 
                     return (
-                      <g key={idx}>
-                        {/* Line to center */}
-                        <line x1="250" y1="250" x2={x} y2={y} stroke="#E5E7EB" strokeWidth="1.5" strokeDasharray="2 2" opacity="0.6" />
-                        
-                        {/* Node handle */}
-                        <motion.circle
-                          cx={x}
-                          cy={y}
-                          r="6"
-                          fill="#5C8EFF"
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 3, delay: idx * 0.4, repeat: Infinity }}
-                        />
-                      </g>
+                      <Card
+                        key={idx}
+                        className="!bg-white !border-zinc-200/60 w-full h-full rounded-[2rem] shadow-[0_16px_40px_rgba(0,0,0,0.08)] flex flex-col p-4 overflow-hidden"
+                      >
+                        {/* Image section */}
+                        <div className="relative w-full flex-1 rounded-2xl overflow-hidden bg-zinc-50 border border-zinc-100">
+                          <Image
+                            src={imgPath}
+                            alt={seg.text}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, 360px"
+                            priority={idx === 0}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-zinc-950/20 to-transparent" />
+                          <span className="absolute top-3 right-3 rounded-full bg-white/20 px-2.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-white backdrop-blur-md border border-white/10">
+                            0{idx + 1}
+                          </span>
+                        </div>
+
+                        {/* Text and branding info */}
+                        <div className="pt-4 pb-2 px-1 flex flex-col justify-between items-start text-left h-[100px]">
+                          <div>
+                            <span className="text-[8.5px] font-black uppercase tracking-widest text-[#5C8EFF]">
+                              Market Segment
+                            </span>
+                            <h3 className="text-lg sm:text-xl font-black uppercase tracking-tight text-zinc-950 mt-1 leading-tight">
+                              {seg.text}
+                            </h3>
+                          </div>
+                          <div className="w-full flex items-center justify-between pt-2.5 border-t border-zinc-100">
+                            <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">
+                              Audience Intelligence
+                            </span>
+                            <span className="text-[9px] font-black uppercase tracking-wider text-[#5C8EFF] flex items-center gap-1">
+                              Discover <ArrowRight size={10} strokeWidth={3} />
+                            </span>
+                          </div>
+                        </div>
+                      </Card>
                     );
                   })}
-                </svg>
-
-                {/* Overlaid HTML labels positioned absolutely using math matching the SVG angles */}
-                {floatingSegments.map((seg, idx) => {
-                  const rad = (seg.angle * Math.PI) / 180;
-                  // Map center 250px to percentage: (x / 500) * 100
-                  const xPct = (((250 + seg.r * Math.cos(rad)) / 500) * 100).toFixed(4);
-                  const yPct = (((250 + seg.r * Math.sin(rad)) / 500) * 100).toFixed(4);
-
-                  return (
-                    <motion.div
-                      key={idx}
-                      style={{ 
-                        left: `${xPct}%`, 
-                        top: `${yPct}%`,
-                        transform: 'translate(-50%, -50%)' 
-                      }}
-                      animate={{
-                        y: [0, -4, 0],
-                      }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        delay: idx * 0.6,
-                        ease: "easeInOut"
-                      }}
-                      className={`absolute px-2.5 py-1.5 rounded-xl border bg-white/95 backdrop-blur-md text-[9px] font-extrabold uppercase tracking-wider shadow-[0_4px_16px_rgba(0,0,0,0.03)] flex items-center gap-1.5 select-none ${seg.color}`}
-                    >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#02E8F8]" />
-                      {seg.text}
-                    </motion.div>
-                  );
-                })}
+                </CardSwap>
 
                 {/* Floating Metrics Badge 1 */}
-                <motion.div
-                  animate={{ y: [0, -6, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                  className="absolute top-[3%] left-[-5%] bg-white/95 backdrop-blur-sm border border-zinc-200 shadow-sm px-3 py-2 rounded-[1.25rem] flex items-center gap-2"
-                >
-                  <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 flex items-center justify-center text-[#5C8EFF]">
-                    <Award size={10} strokeWidth={2.5} />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-[10px] font-black text-zinc-950 leading-none">96%</span>
-                    <span className="text-[6.5px] font-bold text-zinc-400 uppercase tracking-wider mt-0.5 whitespace-nowrap">Repeated Business</span>
-                  </div>
-                </motion.div>
+               
 
                 {/* Floating Metrics Badge 2 */}
-                <motion.div
-                  animate={{ y: [0, 6, 0] }}
-                  transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-                  className="absolute bottom-[3%] right-[-5%] bg-white/95 backdrop-blur-sm border border-zinc-200 shadow-sm px-3 py-2 rounded-[1.25rem] flex items-center gap-2"
-                >
-                  <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 flex items-center justify-center text-[#5C8EFF]">
-                    <Globe2 size={10} strokeWidth={2.5} />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-[10px] font-black text-zinc-950 leading-none">97+</span>
-                    <span className="text-[6.5px] font-bold text-zinc-400 uppercase tracking-wider mt-0.5 whitespace-nowrap">Industries Spanned</span>
-                  </div>
-                </motion.div>
+               
 
               </div>
             </motion.div>
