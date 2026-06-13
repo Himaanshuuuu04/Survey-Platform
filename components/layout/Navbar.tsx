@@ -106,8 +106,32 @@ export function Navbar() {
               })}
             </nav>
 
-            {/* Desktop CTA (Contact Button) */}
-            <div className="relative z-10 flex items-center">
+            {/* Desktop CTA (Toggle + Contact Button) */}
+            <div className="relative z-10 flex items-center gap-4.5">
+              <div className="relative flex rounded-full border border-zinc-950/10 dark:border-white/10 bg-zinc-950/5 dark:bg-white/5 p-0.5 text-[9.5px] font-black uppercase tracking-wider">
+                {(['brands', 'participants'] as const).map((a) => (
+                  <button
+                    key={a}
+                    onClick={() => setAudience(a)}
+                    className={`relative rounded-full px-3 py-1 transition-colors duration-300 cursor-pointer ${
+                      audience === a 
+                        ? 'text-white dark:text-zinc-950 font-black' 
+                        : 'text-zinc-550 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white'
+                    }`}
+                  >
+                    <span className="relative z-20">{a === 'brands' ? 'Brands' : 'Participants'}</span>
+                    {audience === a && (
+                      <motion.div
+                        layoutId="audiencePill"
+                        className="absolute inset-0 rounded-full z-10"
+                        style={{ background: 'var(--brand)' }}
+                        transition={{ type: 'spring', stiffness: 350, damping: 26 }}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] px-4.5 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-[0_4px_16px_rgba(92,142,255,0.25)] hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_6px_22px_rgba(92,142,255,0.4)] transition-all duration-300"
