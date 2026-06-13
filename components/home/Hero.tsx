@@ -1,6 +1,6 @@
 "use client";
 import RotatingText from './RotatingText'
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Container } from '../primitives';
 import { useAudience } from '../layout/AudienceContext';
@@ -8,11 +8,68 @@ import { HeroVisual } from './HeroVisual';
 import Link from 'next/link';
 import { BarChart3, Target, CheckCircle2, ShieldCheck, Star } from 'lucide-react';
 import CountUp from '../CountUp';
+import LogoLoop from '../LogoLoop';
 
 export function Hero() {
   const { audience } = useAudience();
   const isBrands = audience === 'brands';
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const logoItems = useMemo(() => [
+    {
+      node: (
+        <div className="flex items-center gap-2 select-none">
+          <span className="text-lg font-black tracking-tighter text-[#0A0A0A] shrink-0">nglcc</span>
+          <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
+            National LGBT<br />Chamber of Commerce
+          </span>
+        </div>
+      )
+    },
+    {
+      node: (
+        <div className="flex items-center gap-1.5 select-none">
+          <div className="border border-[#0A0A0A] px-1 py-0.5 text-xs font-black tracking-tight text-[#0A0A0A] leading-none shrink-0">
+            IAC
+          </div>
+          <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
+            Internet Advertising<br />Competition
+          </span>
+        </div>
+      )
+    },
+    {
+      node: (
+        <div className="flex items-center gap-2 select-none">
+          <span className="text-sm font-extrabold tracking-widest text-[#0A0A0A] shrink-0">VEGA</span>
+          <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
+            Digital Awards<br />2025 Gold Winner
+          </span>
+        </div>
+      )
+    },
+    {
+      node: (
+        <div className="flex items-center gap-2 select-none">
+          <span className="text-sm font-black tracking-wider text-[#0A0A0A] shrink-0">NYX</span>
+          <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
+            Grand Winner<br />Awards
+          </span>
+        </div>
+      )
+    },
+    {
+      node: (
+        <div className="flex items-center gap-2 select-none">
+          <div className="w-3.5 h-3.5 rounded-full bg-[#0A0A0A] flex items-center justify-center text-[8px] text-white font-extrabold shrink-0">M</div>
+          <span className="text-sm font-bold tracking-wider text-[#0A0A0A] shrink-0">MUSE</span>
+          <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
+            Creative Awards<br />Official Winner
+          </span>
+        </div>
+      )
+    }
+  ], []);
 
   // Mounted state prevents Next.js SSR layout flash and coordinates animation timing
   const [mounted, setMounted] = useState(false);
@@ -236,53 +293,18 @@ export function Hero() {
       {/* ── Bottom Section: Aligned Grayscale Trust Logos ── */}
       <Container className="relative z-10 w-full">
         <div className="border-t border-zinc-100 pt-12 w-full z-10">
-          <p className="text-center text-lg  font-black uppercase tracking-[0.25em] text-zinc-400">
+          <p className="text-center text-lg font-black uppercase tracking-[0.25em] text-zinc-400 mb-8">
             Trusted by Leading Brands & Organizations
           </p>
-          <div className="mt-8 grid grid-cols-2 md:flex md:flex-wrap md:justify-center justify-items-center items-center gap-x-8 gap-y-6 md:gap-x-12 lg:gap-x-16 opacity-50 grayscale contrast-125 transition-all duration-300 hover:opacity-75">
-            {/* nglcc */}
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-black tracking-tighter text-[#0A0A0A] shrink-0">nglcc</span>
-              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
-                National LGBT<br />Chamber of Commerce
-              </span>
-            </div>
-
-            {/* IAC */}
-            <div className="flex items-center gap-1.5">
-              <div className="border border-[#0A0A0A] px-1 py-0.5 text-xs font-black tracking-tight text-[#0A0A0A] leading-none shrink-0">
-                IAC
-              </div>
-              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
-                Internet Advertising<br />Competition
-              </span>
-            </div>
-
-            {/* VEGA */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-extrabold tracking-widest text-[#0A0A0A] shrink-0">VEGA</span>
-              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
-                Digital Awards<br />2025 Gold Winner
-              </span>
-            </div>
-
-            {/* NYX */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-black tracking-wider text-[#0A0A0A] shrink-0">NYX</span>
-              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
-                Grand Winner<br />Awards
-              </span>
-            </div>
-
-            {/* MUSE */}
-            <div className="flex items-center gap-2 col-span-2 md:col-span-1">
-              <div className="w-3.5 h-3.5 rounded-full bg-[#0A0A0A] flex items-center justify-center text-[8px] text-white font-extrabold shrink-0">M</div>
-              <span className="text-sm font-bold tracking-wider text-[#0A0A0A] shrink-0">MUSE</span>
-              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
-                Creative Awards<br />Official Winner
-              </span>
-            </div>
-          </div>
+          <LogoLoop
+            logos={logoItems}
+            speed={40}
+            logoHeight={32}
+            gap={64}
+            fadeOut={true}
+            pauseOnHover={true}
+            className="opacity-50 grayscale contrast-125 transition-all duration-300 hover:opacity-75"
+          />
         </div>
       </Container>
 
