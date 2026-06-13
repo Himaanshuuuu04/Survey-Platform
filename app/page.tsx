@@ -5,14 +5,15 @@ import { WhyChooseUs } from '@/components/home/WhyChooseUs';
 import { IndustriesMarquee } from '@/components/home/IndustriesMarquee';
 import { Testimonials } from '@/components/home/Testimonials';
 import { FinalCTA } from '@/components/home/FinalCTA';
+import Stats from '@/components/home/Stats';
 
 export default function Home() {
   return (
     <>
       <Hero />
-      
       <WhatWeDo />
       <HowWeWork />
+      <Stats />
       <WhyChooseUs />
       <IndustriesMarquee />
       <Testimonials />
