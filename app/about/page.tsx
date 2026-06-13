@@ -283,42 +283,46 @@ function OurStorySection() {
 
   useEffect(() => {
     // Scroll text highlight interaction
-    if (sectionRef.current) {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 60%",
-          end: "center 30%",
-          scrub: 0.8,
-        }
-      });
+    if (!sectionRef.current) return;
 
-      // Animate "assumptions" striking out
-      tl.to(assumptionsRef.current, {
-        color: '#a1a1aa', // zinc-400
-        duration: 1,
-      }, 0);
-      tl.fromTo(assumptionsLineRef.current,
-        { width: '0%' },
-        { width: '100%', duration: 0.8 },
-        0
-      );
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 60%",
+        end: "center 30%",
+        scrub: 0.8,
+      }
+    });
 
-      // Animate "evidence" lighting up and growing underline
-      tl.to(evidenceRef.current,
-        { opacity: 0, duration: 0.5 },
-        0.4
-      );
-      tl.to(evidenceGradientRef.current,
-        { opacity: 1, duration: 0.5 },
-        0.4
-      );
-      tl.fromTo(evidenceUnderlineRef.current,
-        { width: '0%' },
-        { width: '100%', duration: 0.8 },
-        0.4
-      );
-    }
+    // Animate "assumptions" striking out
+    tl.to(assumptionsRef.current, {
+      color: '#a1a1aa', // zinc-400
+      duration: 1,
+    }, 0);
+    tl.fromTo(assumptionsLineRef.current,
+      { width: '0%' },
+      { width: '100%', duration: 0.8 },
+      0
+    );
+
+    // Animate "evidence" lighting up and growing underline
+    tl.to(evidenceRef.current,
+      { opacity: 0, duration: 0.5 },
+      0.4
+    );
+    tl.to(evidenceGradientRef.current,
+      { opacity: 1, duration: 0.5 },
+      0.4
+    );
+    tl.fromTo(evidenceUnderlineRef.current,
+      { width: '0%' },
+      { width: '100%', duration: 0.8 },
+      0.4
+    );
+
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   return (
