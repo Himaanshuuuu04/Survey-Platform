@@ -130,58 +130,7 @@ export function IndustriesMarquee() {
         </div>
       </div>
 
-      {/* SECTION 3.5: Trusted Companies Row (Grayscale, elegant spacing) */}
-      <div className="w-full pt-6 pb-10 bg-white relative z-20">
-        <Container>
-          <p className="text-center text-[8.5px] font-black uppercase tracking-[0.25em] text-zinc-400 mb-6">
-            TRUSTED BY RESEARCH LEADERS AT
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 opacity-35 grayscale contrast-125 transition-all duration-300 hover:opacity-55">
-            {/* nglcc */}
-            <div className="flex items-center gap-2">
-              <span className="text-base font-black tracking-tighter text-[#0A0A0A]">nglcc</span>
-              <span className="text-[6.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
-                National LGBT<br />Chamber of Commerce
-              </span>
-            </div>
-
-            {/* IAC */}
-            <div className="flex items-center gap-1.5">
-              <div className="border border-[#0A0A0A] px-1 py-0.5 text-[9px] font-black tracking-tight text-[#0A0A0A] leading-none">
-                IAC
-              </div>
-              <span className="text-[6.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
-                Internet Advertising<br />Competition
-              </span>
-            </div>
-
-            {/* VEGA */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-extrabold tracking-widest text-[#0A0A0A]">VEGA</span>
-              <span className="text-[6.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
-                Digital Awards<br />2025 Gold Winner
-              </span>
-            </div>
-
-            {/* NYX */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black tracking-wider text-[#0A0A0A]">NYX</span>
-              <span className="text-[6.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
-                Grand Winner<br />Awards
-              </span>
-            </div>
-
-            {/* MUSE */}
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-[#0A0A0A] flex items-center justify-center text-[7px] text-white font-extrabold">M</div>
-              <span className="text-xs font-bold tracking-wider text-[#0A0A0A]">MUSE</span>
-              <span className="text-[6.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
-                Creative Awards<br />Official Winner
-              </span>
-            </div>
-          </div>
-        </Container>
-      </div>
+      
 
       {/* SECTION 4: Elegant Compact Statistics Banner (py-14 sm:py-20) */}
      

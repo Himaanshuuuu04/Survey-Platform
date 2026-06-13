@@ -133,12 +133,12 @@ export function WhyChooseUs() {
   }, []);
 
   return (
-    <section 
+    <section
       ref={containerRef}
-      id="how-it-works" 
-      className="border-t border-[#E5E7EB] bg-[#FAFAFA] relative overflow-hidden py-20 sm:py-28"
+      id="how-it-works"
+      className=" bg-white relative overflow-hidden py-20 sm:py-28"
       style={{
-        backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
+       backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',
       }}
     >
@@ -146,7 +146,7 @@ export function WhyChooseUs() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_35%,rgba(92,142,255,0.03),transparent_55%)] pointer-events-none" />
 
       {/* Giant faded step number in background */}
-      <div className="absolute top-0 right-10 text-[20rem] sm:text-[28rem] lg:text-[36rem] font-[1000] text-zinc-950/2 tracking-tighter select-none pointer-events-none leading-none transition-all duration-1000 ease-in-out">
+      <div className="absolute top-0 right-10 text-[20rem] sm:text-[28rem] lg:text-[36rem] font-[1000] text-zinc-950/10 tracking-tighter select-none pointer-events-none leading-none transition-all duration-1000 ease-in-out">
         0{activeStep || 1}
       </div>
 
@@ -177,29 +177,29 @@ export function WhyChooseUs() {
         </div>
 
         {/* ANIMATED PATH & ROCKET (Hidden on mobile for better scaling, layout defaults to stack) */}
-        <div className="relative w-full hidden lg:block overflow-visible mb-6 z-10 px-4">
+        <div className="relative w-full hidden lg:block overflow-visible mb-6 z-10 px-4 mt-30">
           <svg viewBox="0 0 1000 120" fill="none" className="w-full overflow-visible">
             {/* Curved background line */}
-            <path 
+            <path
               ref={pathRef}
-              d="M 125,70 C 200,95 300,45 375,70 C 450,95 550,45 625,70 C 700,95 800,45 875,70" 
-              stroke="#E4E4E7" 
-              strokeWidth="2.5" 
+              d="M 125,70 C 200,95 300,45 375,70 C 450,95 550,45 625,70 C 700,95 800,45 875,70"
+              stroke="#E4E4E7"
+              strokeWidth="2.5"
               strokeLinecap="round"
               strokeDasharray="4 4"
             />
-            
+
             {/* Step Indicators (Milestone Dots) */}
-            <circle cx="125" cy="70" r={activeStep >= 1 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 1 ? 'fill-[#29D5FF]' : 'fill-zinc-300'}`} style={activeStep >= 1 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
-            <circle cx="375" cy="70" r={activeStep >= 2 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 2 ? 'fill-[#29D5FF]' : 'fill-zinc-300'}`} style={activeStep >= 2 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
-            <circle cx="625" cy="70" r={activeStep >= 3 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 3 ? 'fill-[#29D5FF]' : 'fill-zinc-300'}`} style={activeStep >= 3 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
-            <circle cx="875" cy="70" r={activeStep >= 4 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 4 ? 'fill-[#29D5FF]' : 'fill-zinc-300'}`} style={activeStep >= 4 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
+            <circle cx="125" cy="70" r={activeStep >= 1 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 1 ? 'fill-[#29D5FF]' : 'fill-zinc-950/20'}`} style={activeStep >= 1 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
+            <circle cx="375" cy="70" r={activeStep >= 2 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 2 ? 'fill-[#29D5FF]' : 'fill-zinc-950/20'}`} style={activeStep >= 2 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
+            <circle cx="625" cy="70" r={activeStep >= 3 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 3 ? 'fill-[#29D5FF]' : 'fill-zinc-950/20'}`} style={activeStep >= 3 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
+            <circle cx="875" cy="70" r={activeStep >= 4 ? 6 : 4} className={`transition-all duration-500 ${activeStep >= 4 ? 'fill-[#29D5FF]' : 'fill-zinc-950/20'}`} style={activeStep >= 4 ? { filter: 'drop-shadow(0 0 4px #29D5FF)' } : {}} />
 
             {/* Custom SVG Rocket */}
             <g ref={rocketRef} style={{ opacity: 0 }}>
               {/* Rocket Nose Points Forward (Positive X direction) */}
               {/* Flame */}
-              <path d="M -12,0 L -22,4 L -18,0 L -22,-4 Z" fill="#29D5FF" />
+              <path d="M -12,0 L -22,6 L -18,0 L -22,-6 Z" fill="orange" />
               {/* Fins */}
               <path d="M -8,5 L -14,10 L -4,5 Z" fill="#5B84FF" />
               <path d="M -8,-5 L -14,-10 L -4,-5 Z" fill="#5B84FF" />
@@ -219,23 +219,20 @@ export function WhyChooseUs() {
             return (
               <Reveal key={step.n} delay={idx * 0.08}>
                 <div
-                  className={`relative flex flex-col h-full bg-white border rounded-[2rem] p-8 transition-all duration-500 ease-out group ${
-                    isActive 
-                      ? 'border-[#5B84FF]/60 shadow-[0_20px_45px_rgba(91,132,255,0.12)] scale-[1.03] -translate-y-2' 
+                  className={`relative flex flex-col h-full bg-white border rounded-[2rem] p-8 transition-all duration-500 ease-out group ${isActive
+                      ? 'border-[#5B84FF]/60 shadow-[0_20px_45px_rgba(91,132,255,0.12)] scale-[1.03] -translate-y-2'
                       : 'border-zinc-200/80 shadow-sm hover:-translate-y-1 hover:shadow-md'
-                  }`}
+                    }`}
                 >
                   {/* Large faded step number in background */}
-                  <div className={`absolute top-4 right-6 text-7xl font-[1000] select-none pointer-events-none transition-colors duration-500 ${
-                    isActive ? 'text-blue-50/70' : 'text-zinc-100'
-                  }`}>
+                  <div className={`absolute top-4 right-6 text-7xl font-[1000] select-none pointer-events-none transition-colors duration-500 ${isActive ? 'text-blue-50/70' : 'text-zinc-100'
+                    }`}>
                     0{step.n}
                   </div>
 
                   {/* Gradient Orb */}
-                  <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${step.orbGrad} shadow-lg mb-8 transition-transform duration-500 ${
-                    isActive ? 'scale-110' : ''
-                  }`} />
+                  <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${step.orbGrad} shadow-lg mb-8 transition-transform duration-500 ${isActive ? 'scale-110' : ''
+                    }`} />
 
                   {/* Step Label */}
                   <span className="text-[10px] font-black uppercase tracking-widest text-[#5B84FF] font-sans">

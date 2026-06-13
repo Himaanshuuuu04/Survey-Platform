@@ -117,32 +117,32 @@ export function Hero() {
       {/* ── Background radial glow centered behind the graphic ── */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_75%_35%,rgba(92,142,255,0.04),transparent_55%)] pointer-events-none" />
 
-     <motion.svg
-  style={{ y: svgY }}
-  className="absolute right-0 top-0 bottom-0 h-full w-[40%] hidden lg:block pointer-events-none z-0 opacity-25"
-  viewBox="0 0 420 1000"
-  preserveAspectRatio="none"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <defs>
-    <linearGradient
-      id="heroGradient"
-      x1="0%"
-      y1="0%"
-      x2="100%"
-      y2="100%"
-    >
-      <stop offset="0%" stopColor="#3b82f6" />
-      <stop offset="100%" stopColor="#02e8f8" />
-    </linearGradient>
-  </defs>
+      <motion.svg
+        style={{ y: svgY }}
+        className="absolute right-0 top-0 bottom-0 h-full w-[40%] hidden lg:block pointer-events-none z-0 opacity-25"
+        viewBox="0 0 420 1000"
+        preserveAspectRatio="none"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient
+            id="heroGradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#02e8f8" />
+          </linearGradient>
+        </defs>
 
-  <path
-    d="M 420 0 L 120 0 C 80 120 40 240 40 360 C 40 500 120 620 200 700 C 280 780 420 840 420 900 V 0 Z"
-    fill="url(#heroGradient)"
-  />
-</motion.svg>
+        <path
+          d="M 420 0 L 120 0 C 80 120 40 240 40 360 C 40 500 120 620 200 700 C 280 780 420 840 420 900 V 0 Z"
+          fill="url(#heroGradient)"
+        />
+      </motion.svg>
 
       <Container className="relative z-10 w-full flex-1 flex flex-col justify-center">
         <motion.div
@@ -174,7 +174,7 @@ export function Hero() {
             {/* Headline */}
             <motion.div variants={itemVariants}>
               <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem] font-[900] tracking-tight uppercase leading-[1.05] text-zinc-950">
-                      
+
                 {isBrands ? (
                   <>
                     Reach Verified<br />
@@ -200,7 +200,7 @@ export function Hero() {
                   </>
                 ) : (
                   <>
-                    Your Voice Shapes<br/>
+                    Your Voice Shapes<br />
                     <span className="text-[var(--brand,#BE123C)] inline-flex overflow-hidden vertical-align-middle pb-1">
                       <RotatingText
                         texts={['Global', 'Future', "Tomorrow's", 'Everyday', 'Leading']}
@@ -217,7 +217,7 @@ export function Hero() {
                         auto
                         loop
                       />
-                    </span><br/>
+                    </span><br />
                     Products. <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">Get Rewarded.</span>
                   </>
                 )}

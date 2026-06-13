@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'motion/react';
-import { Reveal, Section, SectionEyebrow } from '../primitives';
+import { Reveal, SectionEyebrow, Container } from '../primitives';
 
 interface CardItem {
   value: string;
@@ -45,11 +45,13 @@ const items: CardItem[] = [
 
 export function WhatWeDo() {
   return (
-    <Section id="what-we-do" className="bg-[#FAFAFA] overflow-visible relative">
+    <section id="what-we-do" className="bg-[#FAFAFA] overflow-visible relative py-10 sm:py-16">
       {/* Subtle background radial glow to create depth */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(91,132,255,0.03)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(91,132,255,0.03)_0%,transparent_70%)] pointer-events-none " />
+      <Container>
 
       {/* Heading Area */}
+      
       <div className="text-center max-w-3xl mx-auto mb-16 relative z-10">
         <Reveal>
           <SectionEyebrow>What we do</SectionEyebrow>
@@ -173,6 +175,7 @@ export function WhatWeDo() {
           );
         })}
       </div>
-    </Section>
+      </Container>
+    </section>
   );
 }
