@@ -1,9 +1,16 @@
 "use client";
 
 import Image from 'next/image';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowRight, HelpCircle, AlertCircle, Cpu, ShieldCheck, ChevronLeft, ChevronRight, Target, Brain, ShieldAlert, Globe } from 'lucide-react';
 import { FinalCTA } from '@/components/home/FinalCTA';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 /* ─── About Hero ─── */
 function AboutHero() {
@@ -162,10 +169,678 @@ function AboutHero() {
   );
 }
 
+
+/* ─── Story Pillar Cards Info ─── */
+const storyPillars = [
+  {
+    num: "01",
+    icon: AlertCircle,
+    badge: "The Dilution of Truth",
+    title: "Why Traditional Research is Failing",
+    text: "The market research industry was built on a simple promise: to connect decision-makers with the voice of their customer. But over the last decade, that promise has been diluted by automated templates, synthetic data, and unverified panels. Fast results replaced rigorous methodology, leaving brands to navigate critical investments with flawed data."
+  },
+  {
+    num: "02",
+    icon: Cpu,
+    badge: "The Restoration",
+    title: "Precision Rebuilt From Scratch",
+    text: "We founded EGI to restore precision. We rebuilt the research pipeline from the ground up—investing in direct API integrations with certified B2B cohorts, deploying active validation filters, and refusing to use automated shortcuts. Our focus is not on compiling sheer volume, but on ensuring that every single response is authenticated."
+  },
+  {
+    num: "03",
+    icon: ShieldCheck,
+    badge: "Empirical Foundation",
+    title: "Empowering Strategic Certainty",
+    text: "Today, we partner with leading enterprises and consultancies who cannot afford to be wrong. By treating audience intelligence as a high-fidelity scientific pursuit rather than a high-volume commodity, we empower organizations to build strategy on empirical truth."
+  }
+];
+
+function StoryCard({ item, index }: { item: typeof storyPillars[0]; index: number }) {
+  const Icon = item.icon;
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rx = -((y - rect.height / 2) / (rect.height / 2)) * 6;
+    const ry = ((x - rect.width / 2) / (rect.width / 2)) * 6;
+    
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-8px) scale(1.025)`;
+    cardRef.current.style.background = `radial-gradient(280px circle at ${x}px ${y}px, rgba(92, 142, 255, 0.15), transparent 85%), rgba(255, 255, 255, 0.85)`;
+    cardRef.current.style.boxShadow = '0 30px 60px rgba(92, 142, 255, 0.12)';
+    cardRef.current.style.borderColor = 'rgba(92, 142, 255, 0.45)';
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)';
+    cardRef.current.style.background = 'rgba(255, 255, 255, 0.7)';
+    cardRef.current.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.02)';
+    cardRef.current.style.borderColor = 'rgba(228, 228, 231, 0.6)'; // border-zinc-200/60
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
+      className="group relative flex flex-col p-8 rounded-3xl border border-zinc-200/60 bg-white/70 backdrop-blur-md transition-all duration-300 ease-out select-none shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+    >
+      {/* Decorative top corner highlight */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand-light/10 to-transparent rounded-tr-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      {/* Card Header */}
+      <div className="flex items-start justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200/50 flex items-center justify-center text-zinc-600 group-hover:bg-brand-soft group-hover:text-brand-dark group-hover:border-brand-light/30 transition-all duration-300 shadow-sm">
+            <Icon size={18} strokeWidth={2.2} />
+          </div>
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400 group-hover:text-brand-dark transition-colors duration-300">
+              {item.badge}
+            </span>
+            <span className="text-[10px] font-mono text-zinc-400 font-bold block">
+              [{item.num}]
+            </span>
+          </div>
+        </div>
+        
+        {/* Pulsing Active indicator */}
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-50 border border-zinc-100 group-hover:bg-brand-soft group-hover:border-brand-light/20 transition-all duration-300">
+          <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 group-hover:bg-brand-light animate-pulse transition-colors duration-300" />
+          <span className="text-[9px] font-bold text-zinc-400 group-hover:text-brand-dark uppercase tracking-wider transition-colors duration-300">
+            Active
+          </span>
+        </div>
+      </div>
+
+      {/* Card Body */}
+      <h3 className="text-xl font-extrabold text-zinc-950 uppercase tracking-tight leading-snug mb-3.5 group-hover:text-brand-dark transition-colors duration-300">
+        {item.title}
+      </h3>
+      <p className="text-sm sm:text-base text-zinc-500 font-medium leading-relaxed">
+        {item.text}
+      </p>
+    </motion.div>
+  );
+}
+
+/* ─── Our Story Section ─── */
+function OurStorySection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  const assumptionsRef = useRef<HTMLSpanElement>(null);
+  const assumptionsLineRef = useRef<HTMLSpanElement>(null);
+  const evidenceRef = useRef<HTMLSpanElement>(null);
+  const evidenceGradientRef = useRef<HTMLSpanElement>(null);
+  const evidenceUnderlineRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    // Scroll text highlight interaction
+    if (sectionRef.current) {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 60%",
+          end: "center 30%",
+          scrub: 0.8,
+        }
+      });
+
+      // Animate "assumptions" striking out
+      tl.to(assumptionsRef.current, {
+        color: '#a1a1aa', // zinc-400
+        duration: 1,
+      }, 0);
+      tl.fromTo(assumptionsLineRef.current,
+        { width: '0%' },
+        { width: '100%', duration: 0.8 },
+        0
+      );
+
+      // Animate "evidence" lighting up and growing underline
+      tl.to(evidenceRef.current,
+        { opacity: 0, duration: 0.5 },
+        0.4
+      );
+      tl.to(evidenceGradientRef.current,
+        { opacity: 1, duration: 0.5 },
+        0.4
+      );
+      tl.fromTo(evidenceUnderlineRef.current,
+        { width: '0%' },
+        { width: '100%', duration: 0.8 },
+        0.4
+      );
+    }
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="py-20 sm:py-28 border-t border-zinc-100 bg-[#FAF9F6]/30 relative overflow-hidden z-10"
+      style={{
+        backgroundImage: 'radial-gradient(rgba(92,142,255,0.02) 1.2px, transparent 1.2px)',
+        backgroundSize: '32px 32px',
+      }}
+    >
+      {/* Soft radial backdrop glowing effect */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_40%,rgba(92,142,255,0.03),transparent_50%)] pointer-events-none" />
+
+      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+          
+          {/* Row 0 Cell 0: Eyebrow + Large editorial heading + statement (No border/bg, centered) */}
+          <div className="flex flex-col justify-center items-center text-center p-6 h-full">
+            <div className="flex flex-col items-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50/80 backdrop-blur-sm px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase text-zinc-500 w-fit">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
+                OUR STORY
+              </div>
+
+              <h2 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-[1000] uppercase tracking-tight text-zinc-950 font-sans leading-[0.95] mt-4">
+                BUILT FOR<br />
+                BETTER<br />
+                DECISIONS.
+              </h2>
+            </div>
+
+            <p className="mt-8 text-xl sm:text-2xl font-serif text-zinc-800 leading-relaxed max-w-md">
+              We help organizations replace{' '}
+              <span ref={assumptionsRef} className="relative inline-block font-semibold transition-colors duration-300">
+                assumptions
+                <span ref={assumptionsLineRef} className="absolute top-1/2 left-0 h-[2px] bg-[#a1a1aa] w-0" />
+              </span>{' '}
+              with{' '}
+              <span className="relative inline-block font-bold">
+                <span ref={evidenceRef} className="transition-colors duration-300">evidence</span>
+                <span ref={evidenceGradientRef} className="absolute inset-0 bg-gradient-to-r from-brand-dark to-brand-light bg-clip-text text-transparent opacity-0 font-bold font-serif">evidence</span>
+                <span ref={evidenceUnderlineRef} className="absolute bottom-0 left-0 h-[3px] bg-gradient-to-r from-brand-dark to-brand-light w-0" />
+              </span>
+              .
+            </p>
+          </div>
+
+          {/* Remaining three cells: Card 1, Card 2, Card 3 */}
+          {storyPillars.map((item, idx) => (
+            <StoryCard key={idx} item={item} index={idx} />
+          ))}
+
+        </div>
+
+
+      </div>
+    </section>
+  );
+}
+
+/* ─── Team Card Component ─── */
+interface TeamMember {
+  name: string;
+  role: string;
+  expertise: string;
+  initials: string;
+  gradColor: string;
+  icon: any;
+  kpi: string;
+  skills: string[];
+}
+
+const teamMembers: TeamMember[] = [
+  {
+    name: "Marcus Chen",
+    role: "Audience Strategy",
+    expertise: "Panel profiling, B2B cohort matching, target group design.",
+    initials: "MC",
+    gradColor: "#5B84FF",
+    icon: Target,
+    kpi: "98.2% Match Rate",
+    skills: ["Panel Matching", "Segment Sourcing", "B2B Cohorts"]
+  },
+  {
+    name: "Dr. Sarah Jenkins",
+    role: "Behavioral Research",
+    expertise: "Cognitive biases, customer choice modeling, focus studies.",
+    initials: "SJ",
+    gradColor: "#7C3AED",
+    icon: Brain,
+    kpi: "150+ Focus Groups",
+    skills: ["Choice Modeling", "Cognitive Bias", "UX Panels"]
+  },
+  {
+    name: "Elena Rostova",
+    role: "Data Validation",
+    expertise: "Validation algorithms, device integrity auditing, fraud block.",
+    initials: "ER",
+    gradColor: "#2563EB",
+    icon: ShieldAlert,
+    kpi: "0% Fraud Threshold",
+    skills: ["Validation Algorithms", "Device Audits", "IP Checks"]
+  },
+  {
+    name: "David Kojo",
+    role: "Panel Operations",
+    expertise: "Global recruitment, panelist retention, quality assurance.",
+    initials: "DK",
+    gradColor: "#02E8F8",
+    icon: Globe,
+    kpi: "50+ Regions Active",
+    skills: ["Global Sourcing", "Panelist Sourcing", "QA Audits"]
+  }
+];
+
+function TeamCard({ member, offset, isActive }: { member: TeamMember; offset: number; isActive: boolean }) {
+  const Icon = member.icon;
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isActive || !cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rx = -((y - rect.height / 2) / (rect.height / 2)) * 6;
+    const ry = ((x - rect.width / 2) / (rect.width / 2)) * 6;
+
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+    cardRef.current.style.background = `radial-gradient(280px circle at ${x}px ${y}px, rgba(92, 142, 255, 0.10), transparent 85%), rgba(255, 255, 255, 0.9)`;
+    cardRef.current.style.boxShadow = `0 30px 60px rgba(92, 142, 255, 0.08)`;
+    cardRef.current.style.borderColor = `rgba(92, 142, 255, 0.35)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+    cardRef.current.style.background = 'rgba(255, 255, 255, 0.7)';
+    cardRef.current.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.02)';
+    cardRef.current.style.borderColor = 'rgba(228, 228, 231, 0.6)'; // border-zinc-200
+  };
+
+  // Stack styling based on offset (responsive support)
+  const isTransitioningBack = offset === teamMembers.length - 1;
+  const xVal = isTransitioningBack ? [-240, 80] : offset * 35;
+  const yVal = isTransitioningBack ? [0, 40] : offset * 15;
+  const rotateVal = isTransitioningBack ? [-12, 8] : offset * 3;
+  const scaleVal = isTransitioningBack ? [0.95, 0.76] : 1 - offset * 0.08;
+  const opacityVal = isTransitioningBack ? [0.5, 0.3] : 1 - offset * 0.25;
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ zIndex: 30 - offset * 10 }}
+      animate={{
+        x: xVal,
+        y: yVal,
+        scale: scaleVal,
+        rotate: rotateVal,
+        opacity: opacityVal,
+      }}
+      transition={{
+        duration: 0.5,
+        ease: "easeOut",
+      }}
+      className="absolute inset-0 w-full h-full rounded-3xl border border-zinc-200 bg-white/70 backdrop-blur-md select-none flex flex-col justify-between p-8 overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
+    >
+      {/* Glow Mesh Background */}
+      <div className="absolute inset-0 z-0 bg-[#FAF9F6] overflow-hidden">
+        {/* Animated grid lines pattern */}
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(rgba(9,9,11,0.04) 1.2px, transparent 1.2px)',
+            backgroundSize: '20px 20px',
+          }}
+        />
+        {/* Color Gradient mesh overlay */}
+        <div
+          className="absolute inset-0 opacity-15 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at 50% 30%, ${member.gradColor}, transparent 65%)`
+          }}
+        />
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-white via-white/90 to-transparent z-10" />
+
+        {/* Initials avatar in center */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
+          <span className="text-[7rem] font-[1000] tracking-tighter text-zinc-950/[0.02] transition-all duration-500">
+            {member.initials}
+          </span>
+        </div>
+      </div>
+
+      {/* Card Header Info */}
+      <div className="relative z-20 flex items-start justify-between">
+        <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200/50 flex items-center justify-center text-zinc-600 shadow-sm">
+          <Icon size={18} strokeWidth={2.2} />
+        </div>
+        
+        {/* KPI Badge */}
+        <div className="px-3 py-1 rounded-full border border-zinc-200 bg-white/80 backdrop-blur-sm shadow-sm">
+          <span className="text-[10px] font-black tracking-widest text-[#0B5CFF] uppercase block">
+            {member.kpi}
+          </span>
+        </div>
+      </div>
+
+      {/* Card Body & Details */}
+      <div className="relative z-20 flex flex-col text-left mt-auto">
+        <span className="text-[10px] font-black tracking-widest text-[#0B5CFF] uppercase block mb-1">
+          {member.role}
+        </span>
+        <h3 className="text-2xl font-black text-zinc-950 tracking-tight uppercase leading-none mb-3">
+          {member.name}
+        </h3>
+        
+        <p className="text-zinc-500 text-xs font-semibold leading-relaxed mb-6">
+          {member.expertise}
+        </p>
+
+        {/* Skill tags */}
+        <div className="flex flex-wrap gap-2">
+          {member.skills.map((skill, sIdx) => (
+            <span
+              key={sIdx}
+              className="px-2.5 py-0.5 rounded-full border border-zinc-200 bg-zinc-50 text-[9px] font-bold text-zinc-500 uppercase tracking-wider"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Team Showcase Section ─── */
+function TeamSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % teamMembers.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + teamMembers.length) % teamMembers.length);
+  };
+
+  const getCardIndexOffset = (index: number) => {
+    const diff = index - activeIndex;
+    if (diff < 0) {
+      return diff + teamMembers.length;
+    }
+    return diff;
+  };
+
+  return (
+    <div className="w-full">
+      <section
+        ref={sectionRef}
+        className="w-full bg-[#FAF9F6]/30 text-zinc-950 relative overflow-hidden py-20 border-t border-zinc-100 z-10"
+        style={{
+          backgroundImage: 'radial-gradient(rgba(92,142,255,0.02) 1.2px, transparent 1.2px)',
+          backgroundSize: '32px 32px',
+        }}
+      >
+        {/* Background radial soft light overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(92,142,255,0.02),transparent_60%)] pointer-events-none" />
+
+        <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 relative z-10">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-16 lg:gap-24 items-center min-h-[60vh]">
+            
+            {/* Left Column: Title + Controls */}
+            <div className="flex flex-col text-left max-w-xl">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50/80 backdrop-blur-sm px-3 py-1.5 text-[10px] font-black tracking-widest uppercase text-[#0B5CFF] shadow-sm mb-5 w-fit">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#0B5CFF] animate-pulse" />
+                OUR TEAM &middot; LEADERSHIP
+              </div>
+              
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-zinc-950 leading-tight">
+                THE PEOPLE<br />
+                BEHIND THE<br />
+                <span className="text-transparent [-webkit-text-stroke:1px_#18181b] font-black tracking-wide">
+                  INSIGHTS.
+                </span>
+              </h2>
+
+              <p className="text-zinc-500 text-base sm:text-lg leading-relaxed mt-6 max-w-md">
+                Meet the architects of EvoGlobalInsight. Our strategists, validation engineers, and global operational managers treat audience intelligence as a high-fidelity scientific pursuit.
+              </p>
+
+              {/* Navigation Controls */}
+              <div className="flex items-center gap-4 mt-10">
+                <button
+                  onClick={handlePrev}
+                  className="w-12 h-12 rounded-full border border-zinc-200 bg-white hover:bg-zinc-50 hover:text-zinc-950 hover:border-[#0B5CFF]/30 transition-all duration-300 flex items-center justify-center text-zinc-500 shadow-sm cursor-pointer"
+                >
+                  <ChevronLeft size={20} strokeWidth={2.5} />
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="w-12 h-12 rounded-full border border-zinc-200 bg-white hover:bg-zinc-50 hover:text-zinc-950 hover:border-[#0B5CFF]/30 transition-all duration-300 flex items-center justify-center text-zinc-500 shadow-sm cursor-pointer"
+                >
+                  <ChevronRight size={20} strokeWidth={2.5} />
+                </button>
+                
+                {/* Active index dot indicator */}
+                <div className="flex gap-2 ml-4">
+                  {teamMembers.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveIndex(i)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${i === activeIndex ? 'w-6 bg-[#0B5CFF]' : 'w-1.5 bg-zinc-200 hover:bg-zinc-400'}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: 3D stacked deck carousel */}
+            <div className="relative w-full h-[520px] flex items-center justify-center lg:justify-start pl-0 lg:pl-10 mt-12 lg:mt-0">
+              <div className="relative w-[320px] sm:w-[360px] h-[460px]">
+                {teamMembers.map((member, i) => {
+                  const offset = getCardIndexOffset(i);
+                  return (
+                    <TeamCard
+                      key={i}
+                      member={member}
+                      offset={offset}
+                      isActive={offset === 0}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* ─── FAQ Section ─── */
+interface FAQItem {
+  num: string;
+  category: string;
+  question: string;
+  answer: string;
+}
+
+const faqItems: FAQItem[] = [
+  {
+    num: "01",
+    category: "TIMELINE & LAUNCH",
+    question: "How quickly can a study launch?",
+    answer: "Most consumer research projects can launch within 24 hours of final questionnaire approval. For complex, highly targeted B2B cohorts or custom international panels, initial feasibility matching and verification checks typically require 48 to 72 hours."
+  },
+  {
+    num: "02",
+    category: "AUDIENCE & TARGETING",
+    question: "What audiences can be targeted?",
+    answer: "We support targeting across 50+ countries. Our segments range from general consumer demographics to highly specialized cohorts, including C-suite B2B decision-makers, software developers, medical professionals, and niche buyer personas."
+  },
+  {
+    num: "03",
+    category: "DATA INTEGRITY",
+    question: "How is response quality validated?",
+    answer: "Every response runs through our multi-layered validation suite. This includes checking for duplicate fingerprints, testing IP addresses for VPN/proxy usage, monitoring answer speed-running, tracking keystroke dynamics, and auditing qualitative inputs for coherence."
+  },
+  {
+    num: "04",
+    category: "GLOBAL CAPABILITIES",
+    question: "Do you support international research?",
+    answer: "Yes, our capabilities span North America, Europe, APAC, and Latin America. We provide native translation services, localized survey interfaces, and coordinate with regional study managers to maintain cultural relevance and data alignment."
+  },
+  {
+    num: "05",
+    category: "DELIVERY & INTEGRATION",
+    question: "Can datasets be white-labelled?",
+    answer: "Absolutely. We supply datasets in all standard structures, including SPSS, CSV, and JSON. Visual report deliverables, presentation decks, and dashboard reporting views can be fully white-labelled to reflect your brand's style guide."
+  }
+];
+
+function FAQSection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Reset and animate progress bar at top of FAQ card when question changes
+    if (progressBarRef.current) {
+      gsap.fromTo(progressBarRef.current,
+        { width: '0%' },
+        { width: '100%', duration: 0.6, ease: 'power2.out' }
+      );
+    }
+  }, [activeIndex]);
+
+  return (
+    <section
+      className="py-20 sm:py-28 bg-white relative overflow-hidden z-10"
+    >
+      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
+
+        {/* Section Header */}
+        <div className="text-left mb-16">
+          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3.5 py-1.5 text-xs font-semibold tracking-wider uppercase text-zinc-500 w-fit">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#0B5CFF]" />
+            FAQ
+          </div>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-[1000] uppercase tracking-tight text-zinc-950 font-sans leading-none mt-4">
+            COMMON<br />
+            QUESTIONS.
+          </h2>
+        </div>
+
+        {/* FAQ Grid */}
+        <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-20 items-start">
+
+          {/* LEFT: Questions list */}
+          <div className="flex flex-col gap-2.5 w-full">
+            {faqItems.map((item, idx) => {
+              const isActive = activeIndex === idx;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => setActiveIndex(idx)}
+                  className={`group relative text-left py-5 px-6 rounded-2xl border transition-all duration-300 flex items-center justify-between cursor-pointer select-none ${isActive
+                    ? 'border-[#0B5CFF]/20 bg-[#0B5CFF]/5 text-[#0B5CFF] shadow-[0_4px_20px_rgba(11,92,255,0.04)]'
+                    : 'border-zinc-150 bg-white text-zinc-800 hover:border-zinc-300 hover:bg-zinc-50/50'
+                    }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <span className={`text-[10px] font-mono font-bold tracking-wider transition-colors duration-300 ${isActive ? 'text-[#0B5CFF]' : 'text-zinc-400 group-hover:text-zinc-600'
+                      }`}>
+                      [{item.num}]
+                    </span>
+                    <span className={`text-sm sm:text-base font-bold transition-colors duration-300 ${isActive ? 'text-[#0B5CFF]' : 'text-zinc-900 group-hover:text-[#0B5CFF]'
+                      }`}>
+                      {item.question}
+                    </span>
+                  </div>
+
+                  {/* Indicator Dot */}
+                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${isActive
+                    ? 'bg-[#0B5CFF] scale-100 shadow-[0_0_8px_rgba(11,92,255,0.6)]'
+                    : 'bg-zinc-200 group-hover:bg-zinc-400 group-hover:scale-105'
+                    }`} />
+                </button>
+              );
+            })}
+          </div>
+
+          {/* RIGHT: Answer Panel Viewer */}
+          <div className="relative rounded-3xl border border-zinc-150 bg-white p-8 lg:p-10 shadow-sm min-h-[320px] flex flex-col justify-between overflow-hidden">
+            {/* Moving Indicator bar at the top */}
+            <div className="absolute top-0 inset-x-0 h-[3px] bg-zinc-100">
+              <div ref={progressBarRef} className="h-full bg-[#0B5CFF] w-0" />
+            </div>
+
+            {/* Answer Content Viewer */}
+            <div className="flex-grow flex flex-col justify-center py-4">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0, x: 15 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -15 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  className="flex flex-col text-left gap-4"
+                >
+                  <span className="text-[10px] font-black tracking-widest text-zinc-400 uppercase">
+                    {faqItems[activeIndex].category}
+                  </span>
+
+                  <h3 className="text-xl sm:text-2xl font-[900] text-zinc-950 uppercase tracking-tight leading-snug">
+                    {faqItems[activeIndex].question}
+                  </h3>
+
+                  <p className="text-zinc-500 text-sm sm:text-base font-medium leading-relaxed mt-2">
+                    {faqItems[activeIndex].answer}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Help / Callout Footer info */}
+            <div className="mt-8 pt-6 border-t border-zinc-100 flex items-center gap-3 text-left">
+              <div className="w-8 h-8 rounded-full bg-[#0B5CFF]/10 text-[#0B5CFF] flex items-center justify-center">
+                <HelpCircle size={14} className="stroke-[2.5]" />
+              </div>
+              <div>
+                <span className="text-[9.5px] font-black tracking-widest text-zinc-400 uppercase block">
+                  Still have questions?
+                </span>
+                <a href="/contact" className="text-xs font-black text-[#0B5CFF] uppercase tracking-wider hover:underline flex items-center gap-1 mt-0.5">
+                  Connect with a research strategist <ArrowRight size={10} strokeWidth={3} />
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+/* ─── Main Export ─── */
 export default function About() {
   return (
     <>
       <AboutHero />
+      <OurStorySection />
+      <TeamSection />
+      <FAQSection />
       <FinalCTA />
     </>
   );
