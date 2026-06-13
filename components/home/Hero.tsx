@@ -159,7 +159,7 @@ export function Hero() {
 
             {/* ── Trust Bar above headline ── */}
             <motion.div variants={itemVariants} className="mb-4">
-              <div className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-xl border border-zinc-200/60 bg-white/70 px-3 py-1.5 backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+              <div className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1.5 rounded-xl border border-zinc-200/60 bg-white/70 px-3 py-1.5 lg:backdrop-blur-sm shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
                 {/* 5 Star Rating */}
                 <div className="flex items-center gap-0.5">
                   {[...Array(5)].map((_, i) => (

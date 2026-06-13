@@ -22,7 +22,7 @@ export function HeroVisual() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-4 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06),0_16px_32px_-20px_rgba(0,0,0,0.04),0_0_0_1px_rgba(0,0,0,0.04)] backdrop-blur-sm transition-all duration-500 hover:shadow-[0_40px_80px_-24px_rgba(0,0,0,0.1)]"
+        className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-4 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06),0_16px_32px_-20px_rgba(0,0,0,0.04),0_0_0_1px_rgba(0,0,0,0.04)] lg:backdrop-blur-sm transition-all duration-500 hover:shadow-[0_40px_80px_-24px_rgba(0,0,0,0.1)]"
       >
         {/* Dashboard Content */}
         <div className="space-y-4">
@@ -133,7 +133,7 @@ export function HeroVisual() {
         className="absolute -top-2 right-2 z-25"
       >
         <div
-          className="bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+          className="bg-white/95 lg:backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
           style={{
             '--float-y': '-4px',
             animation: 'float 5.5s ease-in-out infinite',
@@ -158,7 +158,7 @@ export function HeroVisual() {
         className="absolute top-[44%] -left-2 lg:-left-4 z-25"
       >
         <div
-          className="bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+          className="bg-white/95 lg:backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
           style={{
             '--float-y': '4px',
             animation: 'float 6s ease-in-out infinite',
@@ -183,7 +183,7 @@ export function HeroVisual() {
         className="absolute top-[22%] -right-14 lg:-right-18 z-25"
       >
         <div
-          className="bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+          className="bg-white/95 lg:backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
           style={{
             '--float-y': '-5px',
             animation: 'float 6.5s ease-in-out infinite',
@@ -208,7 +208,7 @@ export function HeroVisual() {
         className="absolute bottom-1 -right-2 z-25"
       >
         <div
-          className="bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+          className="bg-white/95 lg:backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
           style={{
             '--float-y': '3px',
             animation: 'float 5s ease-in-out infinite',
@@ -233,7 +233,7 @@ export function HeroVisual() {
         className="absolute -bottom-6 -left-2 lg:-left-6 z-30 max-w-[280px]"
       >
         <div
-          className="rounded-2xl border border-white/60 bg-white/80 backdrop-blur-lg p-3.5 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1),0_8px_16px_-8px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] hover:shadow-[0_36px_60px_rgba(0,0,0,0.14)] transition-all duration-300 hover:scale-[1.01] will-change-transform"
+          className="rounded-2xl border border-white/60 bg-white/80 lg:backdrop-blur-lg p-3.5 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1),0_8px_16px_-8px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] hover:shadow-[0_36px_60px_rgba(0,0,0,0.14)] transition-all duration-300 hover:scale-[1.01] will-change-transform"
           style={{
             '--float-y': '-3px',
             animation: 'float 7s ease-in-out infinite',

@@ -76,8 +76,8 @@ style={{
     overflow-hidden
     rounded-[2.5rem]
     border border-white/70
-    bg-white/90
-    backdrop-blur-xl
+    bg-white/95 md:bg-white/90
+    md:backdrop-blur-xl
     p-8
     shadow-[0_20px_60px_-15px_rgba(0,0,0,0.12)]
   "
