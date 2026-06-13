@@ -60,20 +60,32 @@ export function Hero() {
       {/* ── Background radial glow centered behind the graphic ── */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_75%_35%,rgba(92,142,255,0.04),transparent_55%)] pointer-events-none" />
 
-      {/* ── Custom curved background shape (reduced dominance, high-end accent) ── */}
-      <motion.svg
-        style={{ y: svgY }}
-        className="absolute right-0 top-0 bottom-0 h-full w-[40%] hidden lg:block pointer-events-none z-0 opacity-15"
-        viewBox="0 0 420 1000"
-        preserveAspectRatio="none"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M 420 0 L 120 0 C 80 120 40 240 40 360 C 40 500 120 620 200 700 C 280 780 420 840 420 900 V 0 Z"
-          fill="var(--brand, #5C8EFF)"
-        />
-      </motion.svg>
+     <motion.svg
+  style={{ y: svgY }}
+  className="absolute right-0 top-0 bottom-0 h-full w-[40%] hidden lg:block pointer-events-none z-0 opacity-25"
+  viewBox="0 0 420 1000"
+  preserveAspectRatio="none"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <linearGradient
+      id="heroGradient"
+      x1="0%"
+      y1="0%"
+      x2="100%"
+      y2="100%"
+    >
+      <stop offset="0%" stopColor="#3b82f6" />
+      <stop offset="100%" stopColor="#02e8f8" />
+    </linearGradient>
+  </defs>
+
+  <path
+    d="M 420 0 L 120 0 C 80 120 40 240 40 360 C 40 500 120 620 200 700 C 280 780 420 840 420 900 V 0 Z"
+    fill="url(#heroGradient)"
+  />
+</motion.svg>
 
       <Container className="relative z-10 w-full flex-1 flex flex-col justify-center">
         <motion.div
@@ -109,10 +121,10 @@ export function Hero() {
                 {isBrands ? (
                   <>
                     Reach Verified<br />
-                    <span className="text-[gradient-to-br from-[#3b82f6] to-[#02e8f8]] inline-flex overflow-hidden vertical-align-middle pb-1">
+                    <span className=" inline-flex overflow-hidden vertical-align-middle pb-1">
                       <RotatingText
                         texts={['Respondents.', 'Audiences.', 'Professionals.', 'Consumers.', 'Experts']}
-                        mainClassName="inline-flex text-[var(--brand,#5C8EFF)] font-black"
+                        mainClassName="inline-flex font-black text-[#1FC5F7]"
                         staggerFrom="last"
                         initial={{ y: '100%' }}
                         animate={{ y: 0 }}
@@ -172,7 +184,7 @@ export function Hero() {
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <Link
                   href="/contact"
-                  className="group relative inline-flex h-10.5 items-center justify-center rounded-xl bg-[var(--brand,#5C8EFF)] px-5.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_6px_20px_-4px_rgba(92,142,255,0.25)] transition-all duration-300 hover:bg-[var(--brand-dark,#5c8eff)] hover:scale-[1.02] hover:shadow-[0_10px_24px_-4px_rgba(92,142,255,0.35)] overflow-hidden"
+                  className="group relative inline-flex h-10.5 items-center justify-center rounded-xl bg-gradient-to-br from-[#3b82f6] to-[#02e8f8] px-5.5 text-[11px] font-black uppercase tracking-widest text-white shadow-[0_6px_20px_-4px_rgba(92,142,255,0.25)] transition-all duration-300 hover:bg-[var(--brand-dark,#5c8eff)] hover:scale-[1.02] hover:shadow-[0_10px_24px_-4px_rgba(92,142,255,0.35)] overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center gap-1.5">
                     Book a Demo
