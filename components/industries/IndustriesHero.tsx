@@ -139,7 +139,7 @@ export function IndustriesHero() {
             {/* RIGHT COLUMN: Interactive Segment CardSwap Stack */}
             <motion.div
               variants={itemVariants}
-              className="relative flex items-center justify-center lg:justify-end py-4"
+              className="relative flex items-center justify-center lg:justify-end py-4 hidden lg:block"
             >
               <div className="absolute inset-0 rounded-[3rem] bg-[radial-gradient(circle_at_50%_50%,rgba(92,142,255,0.06),transparent_50%)] opacity-95 blur-3xl pointer-events-none" />
 
