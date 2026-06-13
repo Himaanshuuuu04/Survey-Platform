@@ -58,7 +58,10 @@ export default function RootLayout({
       className={`${inter.variable} min-h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-white " suppressHydrationWarning  style={{
+        backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
+        backgroundSize: '24px 24px',
+      }}>
         <AudienceProvider>
           <ScrollToTop />
           <Navbar />

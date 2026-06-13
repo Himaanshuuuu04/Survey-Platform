@@ -272,8 +272,8 @@ export function Hero() {
      
 
       {/* ── Bottom Section: Aligned Grayscale Trust Logos ── */}
-      <Container className="relative z-10 w-full">
-        <div className=" border-zinc-100 pt-12 w-full z-10">
+      <Container className="relative z-10 w-full mt-30">
+        <div className=" border-zinc-100  pt-12  w-full z-10">
           <p className="text-center text-lg font-black uppercase tracking-[0.25em] text-zinc-400 mb-8">
             Trusted by Leading Brands & Organizations
           </p>
@@ -292,7 +292,7 @@ export function Hero() {
       {/* Mobile background block */}
       <div
         className="absolute right-0 left-0 bottom-0 h-[28%] rounded-t-[2.5rem] lg:hidden -z-10 opacity-15"
-        style={{ background: 'var(--brand, #5C8EFF)' }}
+        style={{ background: 'var(--brand)' }}
       />
     </section>
   );

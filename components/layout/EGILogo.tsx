@@ -14,7 +14,7 @@ export function EGILogo({ className = '', iconOnly = false, size = 48 }: EGILogo
     // Image actual size is 1536 x 1024. Box is x=[599, 935], y=[214, 550] (336x336 pixels)
     return (
       <div
-        className={`relative overflow-hidden rounded-xl select-none flex-shrink-0 ${className}`}
+        className={`relative overflow-hidden object-cover rounded-full select-none flex-shrink-0 ${className}`}
         style={{
           width: `${size}px`,
           height: `${size}px`,
@@ -23,16 +23,8 @@ export function EGILogo({ className = '', iconOnly = false, size = 48 }: EGILogo
         <img
           src="/logo.webp"
           alt="EvoGlobalInsight Icon"
-          style={{
-            position: 'absolute',
-            width: '457.14%',   // 1536 / 336 * 100
-            height: '304.76%',  // 1024 / 336 * 100
-            left: '-178.27%',   // 599 / 336 * 100
-            top: '-63.69%',     // 214 / 336 * 100
-            maxWidth: 'none',
-            mixBlendMode: 'multiply',
-          }}
-          className="transition-transform duration-300 group-hover:scale-102"
+         
+          className="transition-transform duration-300 group-hover:scale-102 object-cover h-full w-full"
         />
       </div>
     );
@@ -40,16 +32,16 @@ export function EGILogo({ className = '', iconOnly = false, size = 48 }: EGILogo
 
   // Display the full vertical stacked logo from public/logo.jpeg
   return (
-    <div className={`flex items-center select-none ${className}`}>
+    <div className={`flex items-center select-none overflow-hidden rounded-full ${className}`}>
       <img
         src="/logo.webp"
         alt="EvoGlobalInsight Logo"
         style={{
           height: `${size}px`,
-          width: 'auto',
+          width: `${size}px`,
           mixBlendMode: 'multiply',
         }}
-        className="transition-transform duration-300 group-hover:scale-102 flex-shrink-0"
+        className="transition-transform duration-300 group-hover:scale-102 flex-shrink-0 object-cover"
       />
     </div>
   );

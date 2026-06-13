@@ -61,11 +61,14 @@ export function Navbar() {
       >
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
           <div
-            className={`relative mx-auto flex items-center justify-between px-6 py-1 pointer-events-auto rounded-full border border-white/20 dark:border-zinc-800/60 bg-white/45 dark:bg-zinc-950/45 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.5)] max-w-5xl transition-all duration-300`}
+            className={`relative mx-auto flex items-center justify-between px-6 py-1 pointer-events-auto rounded-full border border-zinc-200 dark:border-zinc-800/60 bg-white/45 dark:bg-zinc-950/45 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.5)] max-w-5xl transition-all duration-300`}
           >
             {/* Logo */}
-            <Link href="/" className="group flex items-center relative z-10 transition-transform duration-300 hover:scale-105">
-              <EGILogo size={36} />
+            <Link href="/" className="group flex items-center gap-2 relative z-10 transition-transform duration-300 hover:scale-102">
+              <EGILogo size={36} iconOnly={true} /> 
+              <span className="font-sans text-lg font-lg tracking-tight text-zinc-950 dark:text-white select-none">
+                Evo<span className="text-brand uppercase">Global</span>Insight
+              </span>
             </Link>
 
             {/* Desktop nav with active sliding glass pill and cursor tracking */}
@@ -92,8 +95,9 @@ export function Navbar() {
                     {isActive && (
                       <motion.div
                         layoutId="activeNavPill"
-                        className="absolute inset-0 rounded-full bg-white/70 dark:bg-zinc-900/60 border border-white/60 dark:border-zinc-850 shadow-[0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.5)] backdrop-blur-sm z-0"
-                        transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+                        className="absolute inset-0 rounded-full bg-white/70 dark:bg-zinc-900/60 border border-black/5 dark:border-zinc-850 shadow-[0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.5)] backdrop-blur-sm z-0 "
+                        transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+                       
                       />
                     )}
 
@@ -154,9 +158,16 @@ export function Navbar() {
           menuButtonColor="#0A0A0A"
           openMenuButtonColor="#0A0A0A"
           changeMenuColorOnOpen={false}
-          colors={['#0A0A0A', '#5C8EFF']}
-          logo={<EGILogo size={52} />}
-          accentColor="#5C8EFF"
+          colors={['#0A0A0A', 'var(--brand)']}
+          logo={
+            <Link href="/" className="flex items-center gap-2 select-none pointer-events-auto">
+              <EGILogo size={32} iconOnly={true} />
+              <span className="font-sans text-lg font-black tracking-tight text-zinc-950 dark:text-white">
+                Evo<span className="text-brand uppercase">Global</span>Insight
+              </span>
+            </Link>
+          }
+          accentColor="var(--brand)"
           isFixed={true}
           audienceContent={
             <div className="flex rounded-full border border-zinc-200/80 bg-zinc-100/30 p-1 text-[11px] font-bold uppercase tracking-wider w-full">
