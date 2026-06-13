@@ -128,129 +128,156 @@ export function HeroVisual() {
       {/* Card 1: 92% Completion Rate */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0, y: [0, -4, 0] }}
-        transition={{
-          opacity: { delay: 0.3, duration: 0.6 },
-          x: { delay: 0.3, duration: 0.6 },
-          y: floatTransition(5.5, 0.2)
-        }}
-        className="absolute -top-2 right-2 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="absolute -top-2 right-2 z-25"
       >
-        <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
-          <Check size={10} strokeWidth={3.5} />
-        </div>
-        <div>
-          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Avg Completion</span>
-          <span className="text-[10.5px] font-black text-zinc-950">92% Completion Rate</span>
+        <div
+          className="bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+          style={{
+            '--float-y': '-4px',
+            animation: 'float 5.5s ease-in-out infinite',
+            animationDelay: '0.2s'
+          } as React.CSSProperties}
+        >
+          <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
+            <Check size={10} strokeWidth={3.5} />
+          </div>
+          <div>
+            <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Avg Completion</span>
+            <span className="text-[10.5px] font-black text-zinc-950">92% Completion Rate</span>
+          </div>
         </div>
       </motion.div>
 
       {/* Card 2: Bot Detection Active */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0, y: [0, 4, 0] }}
-        transition={{
-          opacity: { delay: 0.45, duration: 0.6 },
-          x: { delay: 0.45, duration: 0.6 },
-          y: floatTransition(6, 0.5)
-        }}
-        className="absolute top-[44%] -left-2 lg:-left-4 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.45 }}
+        className="absolute top-[44%] -left-2 lg:-left-4 z-25"
       >
-        <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
-          <ShieldCheck size={10} strokeWidth={3} />
-        </div>
-        <div>
-          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Security Engine</span>
-          <span className="text-[10.5px] font-black text-zinc-950">Bot Detection Active</span>
+        <div
+          className="bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+          style={{
+            '--float-y': '4px',
+            animation: 'float 6s ease-in-out infinite',
+            animationDelay: '0.5s'
+          } as React.CSSProperties}
+        >
+          <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
+            <ShieldCheck size={10} strokeWidth={3} />
+          </div>
+          <div>
+            <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Security Engine</span>
+            <span className="text-[10.5px] font-black text-zinc-950">Bot Detection Active</span>
+          </div>
         </div>
       </motion.div>
 
       {/* Card 3: Verified Respondents */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0, y: [0, -5, 0] }}
-        transition={{
-          opacity: { delay: 0.6, duration: 0.6 },
-          x: { delay: 0.6, duration: 0.6 },
-          y: floatTransition(6.5, 0.8)
-        }}
-        className="absolute top-[22%] -right-14 lg:-right-18 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        className="absolute top-[22%] -right-14 lg:-right-18 z-25"
       >
-        <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
-          <Users size={10} strokeWidth={3} />
-        </div>
-        <div>
-          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Audience Quality</span>
-          <span className="text-[10.5px] font-black text-zinc-950">Verified Respondents</span>
+        <div
+          className="bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+          style={{
+            '--float-y': '-5px',
+            animation: 'float 6.5s ease-in-out infinite',
+            animationDelay: '0.8s'
+          } as React.CSSProperties}
+        >
+          <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
+            <Users size={10} strokeWidth={3} />
+          </div>
+          <div>
+            <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Audience Quality</span>
+            <span className="text-[10.5px] font-black text-zinc-950">Verified Respondents</span>
+          </div>
         </div>
       </motion.div>
 
       {/* Card 4: 250K+ Responses */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: [0, 3, 0] }}
-        transition={{
-          opacity: { delay: 0.75, duration: 0.6 },
-          y: floatTransition(5, 1.2)
-        }}
-        className="absolute bottom-1 -right-2 z-25 bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.75 }}
+        className="absolute bottom-1 -right-2 z-25"
       >
-        <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
-          <TrendingUp size={10} strokeWidth={3} />
-        </div>
-        <div>
-          <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Platform Scale</span>
-          <span className="text-[10.5px] font-black text-zinc-950">250K+ Responses</span>
+        <div
+          className="bg-white/95 backdrop-blur-md border border-zinc-200 shadow-[0_12px_24px_-4px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] rounded-xl px-2.5 py-1.5 flex items-center gap-2 hover:shadow-[0_16px_32px_rgba(0,0,0,0.09)] hover:scale-[1.03] transition-all duration-300 will-change-transform"
+          style={{
+            '--float-y': '3px',
+            animation: 'float 5s ease-in-out infinite',
+            animationDelay: '1.2s'
+          } as React.CSSProperties}
+        >
+          <div className="w-5 h-5 rounded-full bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 flex items-center justify-center text-[#5C8EFF] shadow-sm">
+            <TrendingUp size={10} strokeWidth={3} />
+          </div>
+          <div>
+            <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Platform Scale</span>
+            <span className="text-[10.5px] font-black text-zinc-950">250K+ Responses</span>
+          </div>
         </div>
       </motion.div>
 
       {/* 3. Floating Testimonial Over Dashboard */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, y: [0, -3, 0] }}
-        transition={{
-          opacity: { delay: 0.9, duration: 0.8 },
-          y: floatTransition(7, 0)
-        }}
-        className="absolute -bottom-6 -left-2 lg:-left-6 z-30 max-w-[280px] rounded-2xl border border-white/60 bg-white/80 backdrop-blur-lg p-3.5 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1),0_8px_16px_-8px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] hover:shadow-[0_36px_60px_rgba(0,0,0,0.14)] transition-all duration-300 hover:scale-[1.01] will-change-transform"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.9 }}
+        className="absolute -bottom-6 -left-2 lg:-left-6 z-30 max-w-[280px]"
       >
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            {/* Styled SVG Avatar */}
-            <svg className="w-8.5 h-8.5 rounded-full border border-zinc-200/60 shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="100" height="100" fill="url(#avatar-grad)" />
-              <defs>
-                <linearGradient id="avatar-grad" x1="0" y1="0" x2="100" y2="100">
-                  <stop offset="0%" stopColor="#5C8EFF" stopOpacity={0.15} />
-                  <stop offset="100%" stopColor="#5C8EFF" stopOpacity={0.85} />
-                </linearGradient>
-              </defs>
-              <circle cx="50" cy="40" r="18" fill="#FFFFFF" />
-              <path d="M22,80 C22,62 34,55 50,55 C66,55 78,62 78,80 Z" fill="#FFFFFF" />
-            </svg>
-            <div>
-              <span className="block text-[11px] font-black text-zinc-950">Sarah Jenkins</span>
-              <span className="block text-[8px] font-bold uppercase tracking-wider text-zinc-500">VP of Product</span>
+        <div
+          className="rounded-2xl border border-white/60 bg-white/80 backdrop-blur-lg p-3.5 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1),0_8px_16px_-8px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.02)] hover:shadow-[0_36px_60px_rgba(0,0,0,0.14)] transition-all duration-300 hover:scale-[1.01] will-change-transform"
+          style={{
+            '--float-y': '-3px',
+            animation: 'float 7s ease-in-out infinite',
+            animationDelay: '0s'
+          } as React.CSSProperties}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              {/* Styled SVG Avatar */}
+              <svg className="w-8.5 h-8.5 rounded-full border border-zinc-200/60 shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="url(#avatar-grad)" />
+                <defs>
+                  <linearGradient id="avatar-grad" x1="0" y1="0" x2="100" y2="100">
+                    <stop offset="0%" stopColor="#5C8EFF" stopOpacity={0.15} />
+                    <stop offset="100%" stopColor="#5C8EFF" stopOpacity={0.85} />
+                  </linearGradient>
+                </defs>
+                <circle cx="50" cy="40" r="18" fill="#FFFFFF" />
+                <path d="M22,80 C22,62 34,55 50,55 C66,55 78,62 78,80 Z" fill="#FFFFFF" />
+              </svg>
+              <div>
+                <span className="block text-[11px] font-black text-zinc-950">Sarah Jenkins</span>
+                <span className="block text-[8px] font-bold uppercase tracking-wider text-zinc-500">VP of Product</span>
+              </div>
+            </div>
+            {/* Company logo mock (VeloCare) */}
+            <div className="flex items-center text-[9px] tracking-tighter">
+              <span className="font-extrabold text-[#5C8EFF]">Velo</span>
+              <span className="font-semibold text-zinc-800">Care</span>
             </div>
           </div>
-          {/* Company logo mock (VeloCare) */}
-          <div className="flex items-center text-[9px] tracking-tighter">
-            <span className="font-extrabold text-[#5C8EFF]">Velo</span>
-            <span className="font-semibold text-zinc-800">Care</span>
-          </div>
-        </div>
 
-        <p className="mt-2.5 text-[10.5px] font-semibold leading-relaxed text-zinc-800">
-          “EvoGlobalInsight helped us target our niche demographics and scale responses overnight.”
-        </p>
+          <p className="mt-2.5 text-[10.5px] font-semibold leading-relaxed text-zinc-800">
+            “EvoGlobalInsight helped us target our niche demographics and scale responses overnight.”
+          </p>
 
-        {/* Verified customer badge */}
-        <div className="mt-2.5 flex items-center justify-between border-t border-zinc-100/60 pt-2">
-          <div className="flex items-center gap-1 rounded-full bg-[#5C8EFF]/10 px-1.5 py-0.5 border border-[#5C8EFF]/20 shadow-inner">
-            <CheckCircle2 size={9} className="text-[#5C8EFF] animate-pulse" strokeWidth={3.5} />
-            <span className="text-[7px] font-bold text-[#5C8EFF] uppercase tracking-wider">Verified Customer</span>
+          {/* Verified customer badge */}
+          <div className="mt-2.5 flex items-center justify-between border-t border-zinc-100/60 pt-2">
+            <div className="flex items-center gap-1 rounded-full bg-[#5C8EFF]/10 px-1.5 py-0.5 border border-[#5C8EFF]/20 shadow-inner">
+              <CheckCircle2 size={9} className="text-[#5C8EFF] animate-pulse" strokeWidth={3.5} />
+              <span className="text-[7px] font-bold text-[#5C8EFF] uppercase tracking-wider">Verified Customer</span>
+            </div>
+            <span className="text-[8px] font-semibold text-zinc-400">Enterprise Panel</span>
           </div>
-          <span className="text-[8px] font-semibold text-zinc-400">Enterprise Panel</span>
         </div>
       </motion.div>
     </div>

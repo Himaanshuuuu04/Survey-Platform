@@ -127,18 +127,13 @@ export function WhatWeDo() {
               }`}
             >
               {/* Floating animation wrapper */}
-              <motion.div
-                animate={{
-                  y: [0, -10, 0],
-                }}
-                transition={{
-                  duration: 4.5 + i * 0.7,
-                  repeat: Infinity,
-                  repeatType: 'mirror',
-                  ease: 'easeInOut',
-                  delay: i * 0.2
-                }}
-                className={`w-full h-full flex flex-col justify-between p-6 lg:p-7 rounded-2xl ${shadowColor} ${cardStyle}`}
+              <div
+                className={`w-full h-full flex flex-col justify-between p-6 lg:p-7 rounded-2xl will-change-transform ${shadowColor} ${cardStyle}`}
+                style={{
+                  '--float-y': '-10px',
+                  animation: `float ${4.5 + i * 0.7}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.2}s`
+                } as React.CSSProperties}
               >
                 {/* Top Row */}
                 <div className="flex items-center justify-between">
@@ -170,7 +165,7 @@ export function WhatWeDo() {
                     {it.desc}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
           );
         })}

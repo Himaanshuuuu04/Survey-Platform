@@ -111,7 +111,7 @@ export function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative overflow-hidden min-h-[80vh] flex flex-col justify-center bg-white pt-8 lg:pt-12 pb-6 z-10"
+      className="relative overflow-hidden min-h-[102vh] flex flex-col justify-center bg-white pt-8 lg:pt-36 lg:-mt-24 pb-6 z-10"
       style={{
         backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',
@@ -122,7 +122,7 @@ export function Hero() {
 
       <motion.svg
         style={{ y: svgY }}
-        className="absolute right-0 top-0 bottom-0 h-full w-[40%] hidden lg:block pointer-events-none z-0 opacity-25"
+        className="absolute right-0 -top-12 h-[calc(100%+96px)] w-[40%] hidden lg:block pointer-events-none z-0 opacity-25"
         viewBox="0 0 420 1000"
         preserveAspectRatio="none"
         fill="none"

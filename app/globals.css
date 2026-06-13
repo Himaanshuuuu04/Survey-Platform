@@ -96,6 +96,7 @@
 [data-audience='participants'] {
   --brand: #BE123C;
   --brand-dark: #9F1239;
+  --brand-light: #FB7185;
   --brand-soft: #FFF1F2;
   --brand-glow: rgba(190, 18, 60, 0.18);
 }
@@ -220,14 +221,12 @@ body,
 }
 
 @keyframes float {
-
   0%,
   100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0px, 0);
   }
-
   50% {
-    transform: translateY(-8px);
+    transform: translate3d(0, var(--float-y, -8px), 0);
   }
 }
 

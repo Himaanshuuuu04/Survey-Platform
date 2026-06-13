@@ -64,7 +64,7 @@ style={{
             itemScale={0.05}
             itemStackDistance={25}
             rotationAmount={1.5}
-            blurAmount={1.5}
+            blurAmount={0}
             baseScale={0.9}
             className="w-full"
           >
