@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://evoglobalinsight.com'
-  const routes = ['', '/about', '/case-studies', '/contact', '/industries', '/insights', '/services']
+  const routes = ['', '/about', '/contact', '/industries', '/insights', '/services']
   
   return routes.map((route) => ({
     url: `${baseUrl}${route}`,

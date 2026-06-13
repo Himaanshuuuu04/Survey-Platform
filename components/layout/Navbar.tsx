@@ -14,7 +14,6 @@ const links = [
   { to: '/', label: 'Home' },
   { to: '/services', label: 'Services' },
   { to: '/industries', label: 'Industries' },
-  { to: '/case-studies', label: 'Case Studies' },
   { to: '/about', label: 'About' },
   { to: '/insights', label: 'Insights' },
 ];

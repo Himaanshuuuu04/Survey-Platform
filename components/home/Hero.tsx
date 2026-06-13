@@ -179,12 +179,6 @@ export function Hero() {
                     </svg>
                   </span>
                 </Link>
-                <Link
-                  href="/case-studies"
-                  className="inline-flex h-10.5 items-center justify-center rounded-xl border border-zinc-200 bg-white px-5.5 text-[11px] font-black uppercase tracking-widest text-zinc-800 transition-all duration-300 hover:border-zinc-950 hover:bg-zinc-50/50 hover:scale-[1.02]"
-                >
-                  View Case Studies
-                </Link>
               </div>
             </motion.div>
 
