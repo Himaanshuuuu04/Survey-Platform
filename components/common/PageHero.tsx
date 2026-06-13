@@ -8,8 +8,7 @@ export function PageHero({ eyebrow, title, sub, children }: { eyebrow: string; t
         backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',
       }}>
-      <GradientBlob className="-top-32 -left-32 h-96 w-96" />
-      <GradientBlob className="-top-32 -right-32 h-96 w-96" from="var(--accent)" to="var(--brand)" />
+     
       <Container>
         <div className="mx-auto max-w-3xl text-center">
           <Reveal><SectionEyebrow>{eyebrow}</SectionEyebrow></Reveal>

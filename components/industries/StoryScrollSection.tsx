@@ -117,13 +117,13 @@ export function StoryScrollSection() {
             <h2 
               ref={headlineRef}
               className="font-[900] leading-[1.05] tracking-tight whitespace-pre-wrap text-[#050505]"
-              style={{ fontSize: "clamp(36px, 5.5vw, 56px)" }}
+              style={{ fontSize: "clamp(36px, 5.5vw, 44px)" }}
             >
               {`Real opinions.\nReal consumers.\nReal market intelligence.`}
             </h2>
 
             {/* DESKTOP WORDS */}
-            <div className="hidden lg:flex relative w-full my-12 md:my-16 lg:h-[200px] items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
+            <div className="hidden lg:flex relative w-full my-12 md:my-16 lg:h-[150px] items-center justify-center pointer-events-none select-none z-0 overflow-hidden">
               {words.map((word, index) => (
                 <span
                   key={word}
@@ -158,7 +158,7 @@ export function StoryScrollSection() {
               ))}
             </div>
 
-            <div ref={columnsRef} className="flex flex-col sm:flex-row gap-6 sm:gap-12 mt-6 lg:mt-8">
+            <div ref={columnsRef} className="flex flex-col sm:flex-row gap-6 sm:gap-12 mt-6 lg:mt-0">
               <p className="text-lg lg:text-[15px] leading-relaxed text-[#525252] sm:w-1/2 font-medium">
                 We connect brands with verified consumers to gather authentic feedback, uncover buying behavior, and validate business decisions with confidence.
               </p>
@@ -167,7 +167,7 @@ export function StoryScrollSection() {
               </p>
             </div>
 
-            <div ref={ctaRef} className="mt-8 lg:mt-12">
+            <div ref={ctaRef} className="mt-8 lg:mt-8">
               <button className="group relative inline-flex items-center gap-4 text-xl lg:text-2xl hover:tracking-wide transition-all duration-500 py-2 rounded-full p-4 border-1 border-black text-black hover:bg-gradient-to-br from-[#3b82f6] to-[#02e8f8] ">
                 Start Your Research 
                 <ArrowRight className="transition-transform duration-500 group-hover:translate-x-3 w-6 h-6 lg:w-8 lg:h-8" />
