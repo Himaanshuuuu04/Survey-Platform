@@ -273,7 +273,7 @@ export function Hero() {
 
       {/* ── Bottom Section: Aligned Grayscale Trust Logos ── */}
       <Container className="relative z-10 w-full mt-30">
-        <div className=" border-zinc-100  pt-12  w-full z-10">
+        <div className=" border-zinc-100   w-full z-10">
           <p className="text-center text-lg font-black uppercase tracking-[0.25em] text-zinc-400 mb-8">
             Trusted by Leading Brands & Organizations
           </p>
