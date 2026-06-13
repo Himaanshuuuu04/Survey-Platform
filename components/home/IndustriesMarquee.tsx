@@ -2,26 +2,28 @@
 
 import { Cpu, HeartPulse, Landmark, ShoppingCart, GraduationCap, Car, ShoppingBag, Radio, Plane, Film } from 'lucide-react';
 import { Container, Reveal } from '../primitives';
+import { motion } from 'motion/react';
 
 const items = [
-  { icon: HeartPulse, label: 'Healthcare' },
-  { icon: Landmark, label: 'Finance' },
-  { icon: ShoppingCart, label: 'Consumer Goods' },
-  { icon: GraduationCap, label: 'Education' },
-  { icon: Car, label: 'Automotive' },
-  { icon: Cpu, label: 'Technology' },
-  { icon: ShoppingBag, label: 'Retail' },
-  { icon: Radio, label: 'Telecommunications' },
-  { icon: Plane, label: 'Travel' },
-  { icon: Film, label: 'Entertainment' },
+  { icon: HeartPulse, label: 'Healthcare', outlined: true },
+  { icon: Landmark, label: 'Finance', outlined: false },
+  { icon: ShoppingCart, label: 'Consumer Goods', outlined: true },
+  { icon: GraduationCap, label: 'Education', outlined: false },
+  { icon: Car, label: 'Automotive', outlined: true },
+  { icon: Cpu, label: 'Technology', outlined: false },
+  { icon: ShoppingBag, label: 'Retail', outlined: true },
+  { icon: Radio, label: 'Telecommunications', outlined: false },
+  { icon: Plane, label: 'Travel', outlined: true },
+  { icon: Film, label: 'Entertainment', outlined: false },
 ];
 
 export function IndustriesMarquee() {
-  // Duplicate the list of items to ensure a seamless, infinite loop
-  const loop = [...items, ...items];
-
   return (
-    <section className="pt-20 pb-0 border-t border-[var(--line)] relative overflow-hidden bg-white">
+    <section className="pt-20 pb-0  relative overflow-hidden bg-white"
+     style={{
+        backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
+        backgroundSize: '24px 24px',
+      }}>
       
       {/* SECTION 1: Top Area */}
       <Container className="relative z-20">
@@ -110,24 +112,53 @@ export function IndustriesMarquee() {
         </div>
       </div>
 
-      {/* SECTION 2: Infinite Marquee (RIGHT TO LEFT, pause on hover) */}
-      <div className="overflow-hidden marquee-fade relative z-20 w-full mb-6 border-y border-zinc-150 py-4 bg-zinc-50/30">
-        <div className="marquee-track-r2l">
-          {loop.map((it, i) => (
-            <div
-              key={i}
-              className="flex min-w-[220px] items-center gap-3.5 bg-white border border-zinc-200/80 p-4 rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(92,142,255,0.04)] hover:border-[var(--brand,#5C8EFF)]/30 group"
-            >
-              <div
-                className="grid h-10 w-10 place-items-center rounded-lg transition-colors group-hover:bg-[var(--brand,#5C8EFF)] group-hover:text-white"
-                style={{ background: 'var(--brand-soft)', color: 'var(--brand)' }}
-              >
-                <it.icon size={18} />
-              </div>
-              <span className="font-semibold text-zinc-700 transition-colors group-hover:text-zinc-950">{it.label}</span>
+      {/* SECTION 2: Infinite Marquee (Framer Motion, Smooth Scroll, Pause on Hover) */}
+      <div 
+        className="relative flex w-full items-center overflow-hidden py-12 border-y border-zinc-150 z-30 bg-white dark:bg-zinc-950"
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)"
+        }}
+      >
+        <motion.div
+          className="flex w-max flex-nowrap"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            repeat: Infinity,
+            ease: "linear",
+            duration: 50, // Adjust duration for scroll speed (larger is slower)
+          }}
+        >
+          {/* We map over an array of 2 to duplicate the items block for the perfect infinite loop */}
+          {[...Array(2)].map((_, loopIdx) => (
+            <div key={loopIdx} className="flex flex-nowrap items-center px-4">
+              {items.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={index} className="flex items-center mx-8 md:mx-12 gap-5 md:gap-7">
+                    {/* Icon Container */}
+                   
+                    {/* Giant Typography */}
+                    <span
+                      className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter lowercase text-nowrap ${
+                        item.outlined 
+                          ? "text-transparent" 
+                          : "text-brand dark:text-zinc-50"
+                      }`}
+                      style={
+                        item.outlined
+                          ? { WebkitTextStroke: "1.67px black" }
+                          : {}
+                      }
+                    >
+                      {item.label}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       
