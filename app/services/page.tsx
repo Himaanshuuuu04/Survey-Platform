@@ -596,41 +596,7 @@ function ValidationFeed({ isActive, isHovered, hoverTextDark }: { isActive: bool
   );
 }
 
-function WordRevealText({ text, delay = 0, className = '' }: { text: string; delay?: number; className?: string }) {
-  const words = text.split(" ");
-  return (
-    <motion.span
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      variants={{
-        hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: 0.03,
-            delayChildren: delay,
-          }
-        }
-      }}
-      className={`inline-block text-xs sm:text-[13px] leading-relaxed text-left font-sans tracking-tight normal-case ${className || 'font-medium text-zinc-500'}`}
-    >
-      {words.map((word, index) => (
-        <span key={index} className="inline-block mr-1">
-          <motion.span
-            variants={{
-              hidden: { opacity: 0, y: 8 },
-              visible: { opacity: 1, y: 0 }
-            }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-            className="inline-block"
-          >
-            {word}
-          </motion.span>
-        </span>
-      ))}
-    </motion.span>
-  );
-}
+
 
 function DeliveringStatement() {
   const line1 = Array.from("WHAT WE");
@@ -760,37 +726,7 @@ export default function Services() {
   // Calculate card number parallax translation offset
   const numberParallax = useTransform(scrollYProgress, [0, 1], [-25, 25]);
 
-  // Section 2 Scroll & Ref configuration for timeline
-  const timelineContainerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
-  const [timelineProgress, setTimelineProgress] = useState(0);
 
-  useEffect(() => {
-    if (!timelineContainerRef.current) return;
-
-    const scrollTriggerInstance = ScrollTrigger.create({
-      trigger: timelineContainerRef.current,
-      start: "top 85%",
-      end: "bottom 15%",
-      scrub: true,
-      onUpdate: (self) => {
-        const progress = self.progress;
-        setTimelineProgress(progress);
-        
-        let step = 0;
-        if (progress < 0.20) step = 0;
-        else if (progress < 0.40) step = 1;
-        else if (progress < 0.60) step = 2;
-        else if (progress < 0.80) step = 3;
-        else step = 4;
-        setActiveStep(step);
-      }
-    });
-
-    return () => {
-      scrollTriggerInstance.kill();
-    };
-  }, []);
 
   // Floating particles local state
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; duration: number; delay: number; driftX: number }>>([]);
@@ -855,10 +791,20 @@ export default function Services() {
 
     const onWheel = (e: WheelEvent) => {
       if (Math.abs(e.deltaY) > 12) {
+        const isScrollingDown = e.deltaY > 0;
+        
+        // Prevent scroll locking at slide deck boundaries to let the user scroll past the section
+        if (isScrollingDown && activeIndex === steps.length - 1) {
+          return;
+        }
+        if (!isScrollingDown && activeIndex === 0) {
+          return;
+        }
+
         const now = Date.now();
         if (now - lastScrollTime > scrollCooldown) {
           e.preventDefault();
-          if (e.deltaY > 0) {
+          if (isScrollingDown) {
             setActiveIndex(prev => Math.min(prev + 1, steps.length - 1));
           } else {
             setActiveIndex(prev => Math.max(prev - 1, 0));
@@ -872,7 +818,7 @@ export default function Services() {
 
     container.addEventListener('wheel', onWheel, { passive: false });
     return () => container.removeEventListener('wheel', onWheel);
-  }, []);
+  }, [activeIndex]);
 
   // Mobile swipe gestures
   const touchStartX = useRef(0);
@@ -923,96 +869,7 @@ export default function Services() {
 
         <div className="relative z-10 max-w-[1400px] mx-auto px-5 sm:px-8">
           
-          {/* Connected Interactive Workflow Process Strip */}
-          <div ref={timelineContainerRef} className="relative z-10 w-full mb-12">
-            {/* Horizontal progress path track */}
-            <div className="relative w-full h-[2.5px] bg-zinc-150 rounded-full mb-8">
-              <motion.div
-                className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-[#5B84FF] to-[#02E8F8]"
-                style={{ width: `${timelineProgress * 100}%` }}
-              />
-              
-              {/* Sliding Active Blue/Cyan dot */}
-              <motion.div
-                className="absolute w-4 h-4 rounded-full bg-gradient-to-r from-[#5B84FF] to-[#02E8F8] border-2 border-white -translate-y-[5.75px] shadow-[0_0_10px_rgba(2,232,248,0.8)] z-20"
-                style={{ left: `calc(${timelineProgress * 100}% - 8px)` }}
-                transition={{ type: "spring", stiffness: 200, damping: 22 }}
-              />
 
-              {/* Timeline nodes along progress line */}
-              <div className="absolute inset-0 flex justify-between pointer-events-none">
-                {[0, 1, 2, 3, 4].map((stepIdx) => {
-                  const isCompleted = stepIdx < activeStep;
-                  const isActive = stepIdx === activeStep;
-                  return (
-                    <div 
-                      key={stepIdx}
-                      className={`w-3.5 h-3.5 rounded-full -translate-y-[5.75px] border-2 bg-white transition-all duration-300 ${
-                        isCompleted 
-                          ? 'border-[#5B84FF] bg-[#5B84FF] scale-110 shadow-[0_0_8px_rgba(91,132,255,0.3)]' 
-                          : isActive 
-                            ? 'border-[#02E8F8] bg-white scale-125 shadow-[0_0_12px_rgba(2,232,248,0.7)]' 
-                            : 'border-zinc-200'
-                      }`}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Timelines descriptions grid */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-left">
-              {[
-                "pinpoint your target audience globally",
-                "deploy surveys across digital channels",
-                "verify response data in real-time",
-                "deliver clean analytical datasets",
-                "scale operations with egi platform"
-              ].map((sentence, sIdx) => {
-                const isCompleted = sIdx < activeStep;
-                const isActive = sIdx === activeStep;
-                return (
-                  <div 
-                    key={sIdx} 
-                    className={`flex flex-col pt-3 pb-4 px-3 rounded-xl transition-all duration-300 border ${
-                      isActive 
-                        ? 'bg-slate-50/50 border-[#5B84FF]/15 shadow-[0_4px_20px_rgba(91,132,255,0.05)]' 
-                        : 'border-transparent bg-transparent'
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <span className={`text-[10px] font-mono font-bold transition-colors duration-300 ${
-                        isActive 
-                          ? 'text-[#5B84FF]' 
-                          : isCompleted 
-                            ? 'text-[#02E8F8]' 
-                            : 'text-zinc-400'
-                      }`}>
-                        0{sIdx + 1}
-                      </span>
-                      {isCompleted && (
-                        <Check size={8} strokeWidth={4} className="text-[#02E8F8]" />
-                      )}
-                      {isActive && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#02E8F8] animate-pulse" />
-                      )}
-                    </div>
-                    <WordRevealText 
-                      text={sentence} 
-                      delay={0}
-                      className={`transition-colors duration-300 ${
-                        isActive 
-                          ? 'text-zinc-950 font-semibold' 
-                          : isCompleted 
-                            ? 'text-zinc-600 font-medium' 
-                            : 'text-zinc-400 font-medium'
-                      }`}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
 
           {/* Center Giant two-line Delivering Statement emerging from shade */}
           <div className="w-full relative overflow-hidden flex justify-center items-center py-4 select-none">

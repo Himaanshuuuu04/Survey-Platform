@@ -228,10 +228,11 @@ export default function Contact() {
                 {/* Dropdown SELECT */}
                 <div className="relative w-full">
                   <select
+                    defaultValue=""
                     {...register("projectType", { required: "Selecting interested category is required" })}
                     className="w-full bg-white border border-zinc-200 focus:border-[#0B5CFF] px-4.5 py-3.5 rounded-xl text-zinc-900 text-sm outline-none transition-all duration-300 font-medium appearance-none cursor-pointer"
                   >
-                    <option value="" disabled selected>Interested in *</option>
+                    <option value="" disabled>Interested in *</option>
                     <option value="Quantitative Surveys">Quantitative Surveys</option>
                     <option value="Qualitative Focus Groups">Qualitative Focus Groups</option>
                     <option value="B2B Expert Interviews">B2B Expert Interviews</option>
