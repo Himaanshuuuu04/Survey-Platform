@@ -15,6 +15,9 @@ export function Hero() {
   const isBrands = audience === 'brands';
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const brandRotatingTexts = useMemo(() => ['Respondents.', 'Audiences.', 'Professionals.', 'Consumers.', 'Experts'], []);
+  const participantRotatingTexts = useMemo(() => ['Global', 'Future', "Tomorrow's", 'Everyday', 'Leading'], []);
+
   const logoItems = useMemo(() => [
     {
       node: (
@@ -180,7 +183,7 @@ export function Hero() {
                     Reach Verified<br />
                     <span className=" inline-flex overflow-hidden vertical-align-middle pb-1">
                       <RotatingText
-                        texts={['Respondents.', 'Audiences.', 'Professionals.', 'Consumers.', 'Experts']}
+                        texts={brandRotatingTexts}
                         mainClassName="inline-flex font-black text-[#1FC5F7]"
                         staggerFrom="last"
                         initial={{ y: '100%' }}
@@ -203,7 +206,7 @@ export function Hero() {
                     Your Voice Shapes<br />
                     <span className="text-[var(--brand,#BE123C)] inline-flex overflow-hidden vertical-align-middle pb-1">
                       <RotatingText
-                        texts={['Global', 'Future', "Tomorrow's", 'Everyday', 'Leading']}
+                        texts={participantRotatingTexts}
                         mainClassName="inline-flex text-[var(--brand,#BE123C)] font-black"
                         staggerFrom="last"
                         initial={{ y: '100%' }}

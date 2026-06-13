@@ -92,6 +92,18 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Clean up GSAP timelines/tweens on unmount to prevent memory leaks targeting unmounted nodes
+  useEffect(() => {
+    return () => {
+      openTlRef.current?.kill();
+      closeTweenRef.current?.kill();
+      spinTweenRef.current?.kill();
+      textCycleAnimRef.current?.kill();
+      colorTweenRef.current?.kill();
+      itemEntranceTweenRef.current?.kill();
+    };
+  }, []);
+
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const panel = panelRef.current;

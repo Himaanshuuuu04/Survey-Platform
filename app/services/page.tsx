@@ -780,63 +780,6 @@ export default function Services() {
       clearTimeout(timer);
     };
   }, [activeIndex]);
-
-  // Intercept scroll wheel inside viewport to snap cards
-  useEffect(() => {
-    const container = viewportRef.current;
-    if (!container) return;
-
-    let lastScrollTime = 0;
-    const scrollCooldown = 600; // time window to avoid multiple rapid trigger scroll signals
-
-    const onWheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaY) > 12) {
-        const isScrollingDown = e.deltaY > 0;
-        
-        // Prevent scroll locking at slide deck boundaries to let the user scroll past the section
-        if (isScrollingDown && activeIndex === steps.length - 1) {
-          return;
-        }
-        if (!isScrollingDown && activeIndex === 0) {
-          return;
-        }
-
-        const now = Date.now();
-        if (now - lastScrollTime > scrollCooldown) {
-          e.preventDefault();
-          if (isScrollingDown) {
-            setActiveIndex(prev => Math.min(prev + 1, steps.length - 1));
-          } else {
-            setActiveIndex(prev => Math.max(prev - 1, 0));
-          }
-          lastScrollTime = now;
-        } else {
-          e.preventDefault();
-        }
-      }
-    };
-
-    container.addEventListener('wheel', onWheel, { passive: false });
-    return () => container.removeEventListener('wheel', onWheel);
-  }, [activeIndex]);
-
-  // Mobile swipe gestures
-  const touchStartX = useRef(0);
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const deltaX = touchEndX - touchStartX.current;
-    if (Math.abs(deltaX) > 50) {
-      if (deltaX < 0) {
-        setActiveIndex(prev => Math.min(prev + 1, steps.length - 1));
-      } else {
-        setActiveIndex(prev => Math.max(prev - 1, 0));
-      }
-    }
-  };
-
   const handlePrev = () => {
     setActiveIndex(prev => Math.max(prev - 1, 0));
   };
@@ -1299,12 +1242,9 @@ export default function Services() {
               </Reveal>
             </div>
 
-            {/* Right Column: Horizontal Cards Slider */}
             <div 
               ref={viewportRef}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-              className="relative w-full overflow-hidden select-none cursor-grab active:cursor-grabbing pb-8 pt-4 px-2"
+              className="relative w-full overflow-hidden select-none pb-8 pt-4 px-2"
             >
               {/* Progress timeline bar connecting stages */}
               <div className="relative w-full h-[2.5px] bg-zinc-100 mb-12 z-10 rounded-full">

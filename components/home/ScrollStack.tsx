@@ -149,6 +149,17 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
     const scaleEndPositionPx = scaleEndPositionPxRef.current;
     const endElementTop = endElementTopRef.current;
 
+    let topCardIndex = 0;
+    if (blurAmount) {
+      for (let j = 0; j < cardsRef.current.length; j++) {
+        const jCardTop = cardOffsetsRef.current[j] || 0;
+        const jTriggerStart = jCardTop - stackPositionPx - itemStackDistance * j;
+        if (scrollTop >= jTriggerStart) {
+          topCardIndex = j;
+        }
+      }
+    }
+
     cardsRef.current.forEach((card, i) => {
       if (!card) return;
 
@@ -164,20 +175,9 @@ const ScrollStack: React.FC<ScrollStackProps> = ({
       const rotation = rotationAmount ? i * rotationAmount * scaleProgress : 0;
 
       let blur = 0;
-      if (blurAmount) {
-        let topCardIndex = 0;
-        for (let j = 0; j < cardsRef.current.length; j++) {
-          const jCardTop = cardOffsetsRef.current[j] || 0;
-          const jTriggerStart = jCardTop - stackPositionPx - itemStackDistance * j;
-          if (scrollTop >= jTriggerStart) {
-            topCardIndex = j;
-          }
-        }
-
-        if (i < topCardIndex) {
-          const depthInStack = topCardIndex - i;
-          blur = Math.max(0, depthInStack * blurAmount);
-        }
+      if (blurAmount && i < topCardIndex) {
+        const depthInStack = topCardIndex - i;
+        blur = Math.max(0, depthInStack * blurAmount);
       }
 
       let translateY = 0;
