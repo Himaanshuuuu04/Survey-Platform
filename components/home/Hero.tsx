@@ -7,6 +7,7 @@ import { useAudience } from '../layout/AudienceContext';
 import { HeroVisual } from './HeroVisual';
 import Link from 'next/link';
 import { BarChart3, Target, CheckCircle2, ShieldCheck, Star } from 'lucide-react';
+import CountUp from '../CountUp';
 
 export function Hero() {
   const { audience } = useAudience();
@@ -103,11 +104,12 @@ export function Hero() {
 
             {/* Headline */}
             <motion.div variants={itemVariants}>
-              <h1 className="text-2xl sm:text-3xl lg:text-[2.5rem] xl:text-[2.75rem] font-[900] tracking-tight uppercase leading-[1.05] text-zinc-950">
+              <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem] font-[900] tracking-tight uppercase leading-[1.05] text-zinc-950">
+                      
                 {isBrands ? (
                   <>
-                    Reach Verified{' '}
-                    <span className="text-[var(--brand,#5C8EFF)] inline-flex overflow-hidden vertical-align-middle pb-1">
+                    Reach Verified<br />
+                    <span className="text-[gradient-to-br from-[#3b82f6] to-[#02e8f8]] inline-flex overflow-hidden vertical-align-middle pb-1">
                       <RotatingText
                         texts={['Respondents.', 'Audiences.', 'Professionals.', 'Consumers.', 'Experts']}
                         mainClassName="inline-flex text-[var(--brand,#5C8EFF)] font-black"
@@ -124,12 +126,12 @@ export function Hero() {
                         loop
                       />
                     </span>
-                    {' '}
+                    <br />
                     Collect <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">Better Insights.</span>
                   </>
                 ) : (
                   <>
-                    Your Voice Shapes{' '}
+                    Your Voice Shapes<br/>
                     <span className="text-[var(--brand,#BE123C)] inline-flex overflow-hidden vertical-align-middle pb-1">
                       <RotatingText
                         texts={['Global', 'Future', "Tomorrow's", 'Everyday', 'Leading']}
@@ -146,7 +148,7 @@ export function Hero() {
                         auto
                         loop
                       />
-                    </span>{' '}
+                    </span><br/>
                     Products. <span className="text-transparent [-webkit-text-stroke:1.2px_#111111] font-black tracking-wide">Get Rewarded.</span>
                   </>
                 )}
@@ -182,44 +184,6 @@ export function Hero() {
               </div>
             </motion.div>
 
-            {/* Premium Metrics Cards Block */}
-            <motion.div variants={itemVariants}>
-              <div className="mt-8 border-t border-zinc-100 pt-6 max-w-md">
-                <div className="grid grid-cols-2 gap-2.5">
-                  {[
-                    { value: '250K+', label: 'Responses Generated', icon: BarChart3 },
-                    { value: '500+', label: 'Campaigns Delivered', icon: Target },
-                    { value: '92%', label: 'Avg Completion Rate', icon: CheckCircle2 },
-                    { value: '99.7%', label: 'Fraud Detection Accuracy', icon: ShieldCheck }
-                  ].map((m) => {
-                    const IconComponent = m.icon;
-                    return (
-                      <div
-                        key={m.label}
-                        className="relative overflow-hidden rounded-xl border border-zinc-200/50 bg-gradient-to-b from-white to-zinc-50/50 p-3 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[var(--brand,#5C8EFF)]/40 hover:shadow-[0_8px_16px_rgba(92,142,255,0.04)] hover:-translate-y-0.5 group flex items-center gap-3"
-                      >
-                        {/* Top accent border visible on hover */}
-                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-[var(--brand,#5C8EFF)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-
-                        {/* Icon Wrapper */}
-                        <div className="w-8 h-8 rounded-lg bg-[var(--brand,#5C8EFF)]/5 flex items-center justify-center text-[var(--brand,#5C8EFF)] group-hover:bg-[var(--brand,#5C8EFF)] group-hover:text-white transition-colors duration-300 flex-shrink-0">
-                          <IconComponent size={14} className="stroke-[2.5]" />
-                        </div>
-
-                        <div>
-                          <span className="block text-base sm:text-lg font-black tracking-tight text-zinc-950 leading-none">
-                            {m.value}
-                          </span>
-                          <span className="mt-1 block text-[7.5px] font-extrabold uppercase tracking-wider text-zinc-400 leading-tight">
-                            {m.label}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </motion.div>
           </div>
 
           {/* ── Right Column: Interactive Dashboard visual with scroll parallax ── */}
@@ -231,52 +195,78 @@ export function Hero() {
             <HeroVisual />
           </motion.div>
         </motion.div>
+      </Container>
 
-        {/* ── Bottom Section: Aligned Grayscale Trust Logos ── */}
-        <div className="mt-16 lg:mt-24 border-t border-zinc-100 pt-12 w-full z-10">
-          <p className="text-center text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400">
+      {/* Premium Metrics Cards Block */}
+      <div className="w-full bg-gradient-to-br from-[#3b82f6] to-[#02e8f8] py-12 sm:py-16 z-20 mt-20 lg:mt-10">
+        <Container>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 items-center text-center">
+            {[
+              { val: 250, suffix: 'K+', desc: 'Responses Generated' },
+              { val: 500, suffix: '+', desc: 'Campaigns Delivered' },
+              { val: 92, suffix: '%', desc: 'Completion Rate' },
+              { val: 99.7, suffix: '%', desc: 'Fraud Detection Accuracy' }
+            ].map((stat, idx) => (
+              <div key={idx} className="flex flex-col items-center">
+                <span className="text-4xl sm:text-5xl lg:text-6xl font-[950] tracking-tight text-white leading-none inline-flex items-baseline justify-center">
+                  <CountUp to={stat.val} duration={2} separator="," />
+                  <span>{stat.suffix}</span>
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-blue-100/90 mt-3 leading-tight max-w-[150px]">
+                  {stat.desc}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </div>
+
+      {/* ── Bottom Section: Aligned Grayscale Trust Logos ── */}
+      <Container className="relative z-10 w-full">
+        <div className="border-t border-zinc-100 pt-12 w-full z-10">
+          <p className="text-center text-lg  font-black uppercase tracking-[0.25em] text-zinc-400">
             Trusted by Leading Brands & Organizations
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 lg:gap-x-16 opacity-50 grayscale contrast-125 transition-all duration-300 hover:opacity-75">
+          <div className="mt-8 grid grid-cols-2 md:flex md:flex-wrap md:justify-center justify-items-center items-center gap-x-8 gap-y-6 md:gap-x-12 lg:gap-x-16 opacity-50 grayscale contrast-125 transition-all duration-300 hover:opacity-75">
             {/* nglcc */}
             <div className="flex items-center gap-2">
-              <span className="text-lg font-black tracking-tighter text-[#0A0A0A]">nglcc</span>
-              <span className="text-[7px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
+              <span className="text-lg font-black tracking-tighter text-[#0A0A0A] shrink-0">nglcc</span>
+              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
                 National LGBT<br />Chamber of Commerce
               </span>
             </div>
 
             {/* IAC */}
             <div className="flex items-center gap-1.5">
-              <div className="border border-[#0A0A0A] px-1 py-0.5 text-xs font-black tracking-tight text-[#0A0A0A] leading-none">
+              <div className="border border-[#0A0A0A] px-1 py-0.5 text-xs font-black tracking-tight text-[#0A0A0A] leading-none shrink-0">
                 IAC
               </div>
-              <span className="text-[7px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
+              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
                 Internet Advertising<br />Competition
               </span>
             </div>
 
             {/* VEGA */}
             <div className="flex items-center gap-2">
-              <span className="text-sm font-extrabold tracking-widest text-[#0A0A0A]">VEGA</span>
-              <span className="text-[7px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
+              <span className="text-sm font-extrabold tracking-widest text-[#0A0A0A] shrink-0">VEGA</span>
+              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
                 Digital Awards<br />2025 Gold Winner
               </span>
             </div>
 
             {/* NYX */}
             <div className="flex items-center gap-2">
-              <span className="text-sm font-black tracking-wider text-[#0A0A0A]">NYX</span>
-              <span className="text-[7px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
+              <span className="text-sm font-black tracking-wider text-[#0A0A0A] shrink-0">NYX</span>
+              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
                 Grand Winner<br />Awards
               </span>
             </div>
 
             {/* MUSE */}
-            <div className="flex items-center gap-2">
-              <div className="w-3.5 h-3.5 rounded-full bg-[#0A0A0A] flex items-center justify-center text-[8px] text-white font-extrabold">M</div>
-              <span className="text-sm font-bold tracking-wider text-[#0A0A0A]">MUSE</span>
-              <span className="text-[7px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-none">
+            <div className="flex items-center gap-2 col-span-2 md:col-span-1">
+              <div className="w-3.5 h-3.5 rounded-full bg-[#0A0A0A] flex items-center justify-center text-[8px] text-white font-extrabold shrink-0">M</div>
+              <span className="text-sm font-bold tracking-wider text-[#0A0A0A] shrink-0">MUSE</span>
+              <span className="text-[7.5px] sm:text-[8.5px] uppercase font-bold tracking-widest text-[#0A0A0A]/70 leading-tight">
                 Creative Awards<br />Official Winner
               </span>
             </div>

@@ -111,9 +111,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       preLayerElsRef.current = preLayers;
 
       const offscreen = position === 'left' ? -100 : 100;
-      gsap.set([panel, ...preLayers], { xPercent: offscreen, opacity: 1 });
+      
+      // Set visibility to visible when GSAP mounts and translate offscreen
+      gsap.set([panel, ...preLayers], { visibility: 'visible', xPercent: offscreen, opacity: 1 });
       if (preContainer) {
-        gsap.set(preContainer, { xPercent: 0, opacity: 1 });
+        gsap.set(preContainer, { visibility: 'visible', xPercent: 0, opacity: 1 });
       }
 
       gsap.set(plusH, { transformOrigin: '50% 50%', rotate: 0 });
@@ -499,7 +501,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                 />
                 <span
                   ref={plusVRef}
-                  className="sm-icon-line"
+                  className="sm-icon-line sm-icon-line-v"
                 />
               </span>
             </button>
@@ -592,12 +594,14 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope .sm-icon { position: relative; width: 18px; height: 18px; flex: 0 0 18px; display: inline-flex; align-items: center; justify-content: center; will-change: transform; }
 .sm-scope .sm-panel-itemWrap { position: relative; overflow: hidden; line-height: 1; margin: 0.2em 0; }
 .sm-scope .sm-icon-line { position: absolute; left: 0; top: 8px; width: 18px; height: 2px; background: currentColor; border-radius: 2px; will-change: transform; }
+.sm-scope .sm-icon-line-v { transform: rotate(90deg); }
 .sm-scope .sm-line { display: none !important; }
-.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: white; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; flex-direction: column; padding: 6em 2em 2em 2em; overflow-y: auto; z-index: 10; }
+.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: white; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; flex-direction: column; padding: 6em 2em 2em 2em; overflow-y: auto; z-index: 10; visibility: hidden; }
 .sm-scope [data-position='left'] .staggered-menu-panel { right: auto; left: 0; }
-.sm-scope .sm-prelayers { position: absolute; top: 0; right: 0; bottom: 0; width: clamp(260px, 38vw, 420px); pointer-events: none; z-index: 5; }
+.sm-scope .sm-prelayers { position: absolute; top: 0; right: 0; bottom: 0; width: clamp(260px, 38vw, 420px); pointer-events: none; z-index: 5; visibility: hidden; }
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
-.sm-scope .sm-prelayer { position: absolute; top: 0; right: 0; height: 100%; width: 100%; transform: translateX(0); }
+.sm-scope .sm-prelayer { position: absolute; top: 0; right: 0; height: 100%; width: 100%; visibility: hidden; }
+.sm-scope [data-position='left'] .sm-prelayer { }
 .sm-scope .sm-panel-inner { flex: 1; display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-inter), 'Inter', sans-serif; }
 .sm-scope .sm-socials { margin-top: auto; padding-top: 2rem; display: flex; flex-direction: column; gap: 0.75rem; font-family: var(--font-inter), 'Inter', sans-serif; }
 .sm-scope .sm-socials-title { margin: 0; font-size: 1rem; font-weight: 600; color: var(--sm-accent, #ff0000); font-family: var(--font-inter), 'Inter', sans-serif; }
@@ -620,12 +624,14 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 @media (max-width: 1024px) { 
   .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; } 
   .sm-scope .sm-prelayers { width: 100%; left: 0; right: 0; } 
+  .sm-scope .sm-prelayer { }
   .sm-scope .sm-panel-item { font-size: clamp(1.8rem, 6vw, 2.5rem); padding-left: 1.2em; }
   .sm-scope .staggered-menu-wrapper[data-open] .sm-logo-img { filter: invert(0); } 
 }
 @media (max-width: 640px) { 
   .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; } 
   .sm-scope .sm-prelayers { width: 100%; left: 0; right: 0; } 
+  .sm-scope .sm-prelayer { }
   .sm-scope .sm-panel-item { font-size: clamp(1.8rem, 6vw, 2.5rem); padding-left: 1.2em; }
   .sm-scope .staggered-menu-wrapper[data-open] .sm-logo-img { filter: invert(0); } 
 }

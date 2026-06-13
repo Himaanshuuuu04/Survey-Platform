@@ -184,27 +184,7 @@ export function IndustriesMarquee() {
       </div>
 
       {/* SECTION 4: Elegant Compact Statistics Banner (py-14 sm:py-20) */}
-      <div className="w-full bg-[var(--brand,#5C8EFF)] py-14 sm:py-20 relative z-20">
-        <Container>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 items-center text-center">
-            {[
-              { val: '250K+', desc: 'Responses Generated' },
-              { val: '500+', desc: 'Campaigns Delivered' },
-              { val: '92%', desc: 'Completion Rate' },
-              { val: '99.7%', desc: 'Fraud Detection Accuracy' }
-            ].map((stat, idx) => (
-              <div key={idx} className="flex flex-col items-center">
-                <span className="text-4xl sm:text-5xl lg:text-6xl font-[950] tracking-tight text-[#0A0A0A] leading-none">
-                  {stat.val}
-                </span>
-                <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-[#0A0A0A]/70 mt-3 leading-tight max-w-[150px]">
-                  {stat.desc}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </div>
+     
 
     </section>
   );
