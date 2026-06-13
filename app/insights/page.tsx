@@ -11,7 +11,7 @@ const categories = ['All', 'Market Research', 'Consumer Behavior', 'Brand Strate
 const posts = [
   { cat: 'Market Research', title: 'How to size a market when the category doesn’t exist yet', read: '7 min', tint: 'var(--brand)', h: 'h-72' },
   { cat: 'Consumer Behavior', title: 'The post-loyalty consumer: what 5,000 shoppers told us', read: '5 min', tint: 'var(--coral)', h: 'h-60' },
-  { cat: 'Brand Strategy', title: 'Tracking brand health without drowning in dashboards', read: '6 min', tint: 'var(--accent)', h: 'h-80' },
+  { cat: 'Brand Strategy', title: 'Tracking brand health without drowning in dashboards', read: '6 min', tint: 'var(--acceant)', h: 'h-80' },
   { cat: 'Industry Trends', title: 'AI in research: where it helps, where it hurts', read: '8 min', tint: 'var(--amber)', h: 'h-64' },
   { cat: 'Consumer Behavior', title: 'Why your Gen Z segment is probably three segments', read: '4 min', tint: 'var(--brand)', h: 'h-72' },
   { cat: 'Market Research', title: 'A practical guide to concept testing in 2026', read: '9 min', tint: 'var(--accent)', h: 'h-60' },
