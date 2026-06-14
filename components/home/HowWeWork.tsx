@@ -42,7 +42,7 @@ const steps = [
 export function HowWeWork() {
   const ref = useRef<HTMLDivElement>(null);
   return (
-    <section id="how-we-work" className="border-t border-[#E5E7EB] bg-[#F8FAFA] py-10 sm:py-16 lg:pb-0 relative overflow-hidden min-h-[80vh] flex flex-col justify-center bg-white pt-8 lg:pt-12 pb-6 z-10"
+    <section id="how-we-work" className="border-t border-[#E5E7EB] bg-[#F8FAFA] py-10 sm:py-16 lg:pb-0 relative overflow-x-clip min-h-[80vh] flex flex-col justify-center bg-white pt-8 lg:pt-12 pb-6 z-10"
 style={{
   backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',
