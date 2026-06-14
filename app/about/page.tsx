@@ -619,7 +619,7 @@ function TeamSection() {
               </p>
 
               {/* Navigation Controls */}
-              <div className="flex items-center gap-4 mt-10">
+              <div className="flex items-center justify-center lg:justify-start gap-4 mt-10 w-full">
                 <button
                   onClick={handlePrev}
                   className="w-12 h-12 rounded-full border border-zinc-200 bg-white hover:bg-zinc-50 hover:text-zinc-950 hover:border-[#0B5CFF]/30 transition-all duration-300 flex items-center justify-center text-zinc-500 shadow-sm cursor-pointer"
@@ -634,7 +634,7 @@ function TeamSection() {
                 </button>
                 
                 {/* Active index dot indicator */}
-                <div className="flex gap-2 ml-4">
+                <div className="hidden lg:flex gap-2 ml-4">
                   {teamMembers.map((_, i) => (
                     <button
                       key={i}
