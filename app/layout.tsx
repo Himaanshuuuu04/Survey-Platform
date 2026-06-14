@@ -5,6 +5,7 @@ import { AudienceProvider } from "../components/layout/AudienceContext";
 import { ScrollToTop } from "../components/layout/ScrollToTop";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
+import { Chatbot } from "../components/Chatbot";
 
 const calSans = localFont({
   src: [
@@ -95,6 +96,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <Chatbot />
         </AudienceProvider>
       </body>
     </html>
