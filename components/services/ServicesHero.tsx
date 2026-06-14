@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Check, ShieldCheck, Users, Globe2, ArrowRight } from 'lucide-react';
 import { Container, Reveal, Button } from '../primitives';
+import TextType from '../TextType';
 
 export function ServicesHero() {
   const [mounted, setMounted] = useState(false);
@@ -70,15 +71,27 @@ export function ServicesHero() {
                 SERVICES &bull; AUDIENCE PLATFORM
               </div>
             </motion.div>
-
+ 
             {/* Giant Outlined Headline */}
             <motion.div variants={itemVariants}>
               <h1 className="text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-[3.25rem] font-[1000] tracking-tight uppercase leading-[1.05] text-zinc-950">
                 REACH VERIFIED<br />
                 AUDIENCES FOR<br />
                 BETTER<br />
-                <span className="font-fenwick text-[#111111] tracking-wide">
-                  DECISIONS.
+                <span className="font-fenwick text-[#111111] tracking-wide inline-flex items-center">
+                  <TextType 
+                    text={["DECISIONS.", "ANSWERS.", "INSIGHTS.", "OUTCOMES."]}
+                    typingSpeed={75}
+                    pauseDuration={1500}
+                    showCursor
+                    cursorCharacter="_"
+                    deletingSpeed={50}
+                    variableSpeedEnabled
+                    variableSpeedMin={30}
+                    variableSpeedMax={250}
+                    cursorBlinkDuration={0.5}
+                    className="inline"
+                  />
                 </span>
               </h1>
             </motion.div>

@@ -2,20 +2,21 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { 
-  ShieldCheck, 
-  Users, 
-  Globe2, 
-  ArrowRight, 
-  Brain, 
-  Target, 
-  Handshake, 
+import {
+  ShieldCheck,
+  Users,
+  Globe2,
+  ArrowRight,
+  Brain,
+  Target,
+  Handshake,
   Award,
   ChevronDown
 } from 'lucide-react';
 import { Container, Reveal, Button, GlassCard, Counter, GradientBlob } from '../primitives';
 import CardSwap, { Card } from '@/components/CardSwap';
 import Image from 'next/image';
+import BlurText from '@/components/BlurText';
 
 export function IndustriesHero() {
   const [mounted, setMounted] = useState(false);
@@ -81,7 +82,7 @@ export function IndustriesHero() {
           >
             {/* LEFT COLUMN: Headings, Supporting Copy and CTA Buttons */}
             <div className="text-left flex flex-col justify-center">
-              
+
               {/* Small Label */}
               <motion.div variants={itemVariants} className="mb-5">
                 <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3 py-1 text-[9px] font-black tracking-widest uppercase text-[#5B84FF] shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
@@ -90,22 +91,38 @@ export function IndustriesHero() {
                 </div>
               </motion.div>
 
-              {/* Giant Redesigned Headline */}
-              <motion.div variants={itemVariants}>
-                <h1 className="text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-[3.5rem] font-[1000] tracking-tight uppercase leading-[1.05] text-[#0A0A0A]">
-                  WE DECODE THE<br />
-                  <span className="font-fenwick text-[#111111] tracking-wide">
-                    MARKET SEGMENTS
-                  </span><br />
-                  THAT DRIVE{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5B84FF] to-[#02E8F8] font-black">
-                    INNOVATION.
-                  </span>
-                </h1>
+              {/* Giant Redesigned Headline with BlurText animation */}
+              <motion.div variants={itemVariants} className="flex flex-col gap-1.5">
+                <BlurText
+                  text="WE DECODE THE"
+                  delay={500}
+                  animateBy="words"
+                  className="text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-[3.5rem] font-[1000] tracking-tight uppercase leading-[1.05] text-[#0A0A0A]"
+                />
+                <BlurText
+                  text="MARKET SEGMENTS"
+                  delay={500}
+                  animateBy="words"
+                  className="font-fenwick text-[#111111] tracking-wide text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-[3.5rem] uppercase leading-[1.05]"
+                />
+                <div className="flex flex-wrap items-center gap-x-3.5 leading-[1.05]">
+                  <BlurText
+                    text="THAT DRIVE"
+                    delay={500}
+                    animateBy="words"
+                    className="text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-[3.5rem] font-[1000] tracking-tight uppercase text-[#0A0A0A]"
+                  />
+                  <BlurText
+                    text="INNOVATION."
+                    delay={500}
+                    animateBy="letters"
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-[#5B84FF] to-[#02E8F8] font-black text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-[3.5rem] tracking-tight uppercase"
+                  />
+                </div>
               </motion.div>
 
               {/* Sub-headline */}
-             
+
 
               {/* Supporting Copy */}
               <motion.div variants={itemVariants}>
@@ -116,17 +133,17 @@ export function IndustriesHero() {
 
               {/* CTA Buttons */}
               <motion.div variants={itemVariants} className="mt-8 flex flex-wrap gap-3">
-                <Button 
-                  href="/contact" 
-                  size="lg" 
+                <Button
+                  href="/contact"
+                  size="lg"
                   className="w-full sm:w-auto shadow-[0_8px_24px_-8px_rgba(92,142,255,0.3)] hover:translate-y-[-2px] hover:shadow-[0_14px_32px_-8px_rgba(92,142,255,0.4)] transition-all duration-300"
                 >
                   Start Your Research Project
                 </Button>
-                <Button 
-                  href="#approach" 
-                  variant="outline" 
-                  size="lg" 
+                <Button
+                  href="#approach"
+                  variant="outline"
+                  size="lg"
                   className="w-full sm:w-auto hover:translate-y-[-2px] transition-all duration-300 flex items-center gap-1.5"
                 >
                   Explore Our Approach
@@ -210,10 +227,10 @@ export function IndustriesHero() {
                 </CardSwap>
 
                 {/* Floating Metrics Badge 1 */}
-               
+
 
                 {/* Floating Metrics Badge 2 */}
-               
+
 
               </div>
             </motion.div>
@@ -238,7 +255,7 @@ export function IndustriesHero() {
                 Impact of Insights
               </div>
               <h2 className="text-3xl font-[900] tracking-tight uppercase leading-none text-zinc-950 mb-4">
-                TRUSTED DATA,<br/>
+                TRUSTED DATA,<br />
                 PROVEN RESULTS.
               </h2>
               <p className="text-sm text-zinc-500 font-medium leading-relaxed">
@@ -249,34 +266,34 @@ export function IndustriesHero() {
             {/* Metrics cards grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
-                { 
-                  value: 96, 
-                  suffix: '%', 
-                  label: 'Repeated Business', 
+                {
+                  value: 96,
+                  suffix: '%',
+                  label: 'Repeated Business',
                   desc: 'Our clients return for future projects, a testament to our quality service.',
                   icon: Users,
                   color: '#5C8EFF'
                 },
-                { 
-                  value: 97, 
-                  suffix: '+', 
-                  label: 'Extensive Reach', 
+                {
+                  value: 97,
+                  suffix: '+',
+                  label: 'Extensive Reach',
                   desc: 'We offer insights across diverse sectors, with research spanning over 97+ industries.',
                   icon: Globe2,
                   color: '#7C3AED'
                 },
-                { 
-                  value: 100, 
-                  suffix: '%', 
-                  label: 'Reliable Data', 
+                {
+                  value: 100,
+                  suffix: '%',
+                  label: 'Reliable Data',
                   desc: 'Count on our expert market research to deliver accurate and trustworthy insights.',
                   icon: ShieldCheck,
                   color: '#2563EB'
                 },
-                { 
-                  value: 7, 
-                  suffix: '+', 
-                  label: 'Quality Assurance', 
+                {
+                  value: 7,
+                  suffix: '+',
+                  label: 'Quality Assurance',
                   desc: 'Our rigorous 5-step quality check process, ensuring top-notch results.',
                   icon: Award,
                   color: '#02E8F8'
