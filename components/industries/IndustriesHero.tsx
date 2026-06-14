@@ -172,14 +172,14 @@ export function IndustriesHero() {
                 >
                   {floatingSegments.map((seg, idx) => {
                     const imgMap: Record<string, string> = {
-                      "Consumer Durables": "/industry_consumer_durables.png",
-                      "Financial Services": "/industry_financial_services.png",
-                      "Healthcare": "/industry_healthcare.png",
-                      "Tech, Media & Telecom": "/industry_tech_telecom.png",
-                      "Food & Beverage": "/industry_food_beverage.png",
-                      "Retail & Commerce": "/industry_retail_commerce.png",
+                      "Consumer Durables": "/industry_consumer_durables.webp",
+                      "Financial Services": "/industry_financial_services.webp",
+                      "Healthcare": "/industry_healthcare.webp",
+                      "Tech, Media & Telecom": "/industry_tech_telecom.webp",
+                      "Food & Beverage": "/industry_food_beverage.webp",
+                      "Retail & Commerce": "/industry_retail_commerce.webp",
                     };
-                    const imgPath = imgMap[seg.text] || "/about_hero_main.png";
+                    const imgPath = imgMap[seg.text] || "/about_hero_main.webp";
 
                     return (
                       <Card

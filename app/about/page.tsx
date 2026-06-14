@@ -137,9 +137,10 @@ function AboutHero() {
         <div className="about-hero-center" ref={centerImgRef}>
           <div className="about-hero-img-main">
             <Image
-              src="/about_hero_main.png"
+              src="/about_hero_main.webp"
               alt="Executives reviewing research insights in a premium boardroom"
               fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 540px"
               className="about-hero-img-main__img"
               priority
             />
@@ -150,9 +151,10 @@ function AboutHero() {
         <div className="about-hero-right" ref={rightBlockRef}>
           <div className="about-hero-img-small">
             <Image
-              src="/about_philosophy_small.png"
+              src="/about_philosophy_small.webp"
               alt="Calm professional workspace"
               fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 480px"
               className="about-hero-img-small__img"
             />
           </div>
@@ -206,7 +208,7 @@ function StoryCard({ item, index }: { item: typeof storyPillars[0]; index: numbe
     const y = e.clientY - rect.top;
     const rx = -((y - rect.height / 2) / (rect.height / 2)) * 6;
     const ry = ((x - rect.width / 2) / (rect.width / 2)) * 6;
-    
+
     cardRef.current.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-8px) scale(1.025)`;
     cardRef.current.style.background = `radial-gradient(280px circle at ${x}px ${y}px, rgba(92, 142, 255, 0.15), transparent 85%), rgba(255, 255, 255, 0.85)`;
     cardRef.current.style.boxShadow = '0 30px 60px rgba(92, 142, 255, 0.12)';
@@ -234,7 +236,7 @@ function StoryCard({ item, index }: { item: typeof storyPillars[0]; index: numbe
     >
       {/* Decorative top corner highlight */}
       <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand-light/10 to-transparent rounded-tr-3xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
+
       {/* Card Header */}
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center gap-3">
@@ -250,7 +252,7 @@ function StoryCard({ item, index }: { item: typeof storyPillars[0]; index: numbe
             </span>
           </div>
         </div>
-        
+
         {/* Pulsing Active indicator */}
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-50 border border-zinc-100 group-hover:bg-brand-soft group-hover:border-brand-light/20 transition-all duration-300">
           <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 group-hover:bg-brand-light animate-pulse transition-colors duration-300" />
@@ -339,7 +341,7 @@ function OurStorySection() {
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-stretch">
-          
+
           {/* Row 0 Cell 0: Eyebrow + Large editorial heading + statement (No border/bg, centered) */}
           <div className="flex flex-col justify-center items-center text-center p-6 h-full">
             <div className="flex flex-col items-center">
@@ -524,7 +526,7 @@ function TeamCard({ member, offset, isActive }: { member: TeamMember; offset: nu
         <div className="w-10 h-10 rounded-2xl bg-zinc-50 border border-zinc-200/50 flex items-center justify-center text-zinc-600 shadow-sm">
           <Icon size={18} strokeWidth={2.2} />
         </div>
-        
+
         {/* KPI Badge */}
         <div className="px-3 py-1 rounded-full border border-zinc-200 bg-white/80 backdrop-blur-sm shadow-sm">
           <span className="text-[10px] font-black tracking-widest text-[#0B5CFF] uppercase block">
@@ -541,7 +543,7 @@ function TeamCard({ member, offset, isActive }: { member: TeamMember; offset: nu
         <h3 className="text-2xl font-black text-zinc-950 tracking-tight uppercase leading-none mb-3">
           {member.name}
         </h3>
-        
+
         <p className="text-zinc-500 text-xs font-semibold leading-relaxed mb-6">
           {member.expertise}
         </p>
@@ -598,14 +600,14 @@ function TeamSection() {
 
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 relative z-10">
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-16 lg:gap-24 items-center min-h-[60vh]">
-            
+
             {/* Left Column: Title + Controls */}
             <div className="flex flex-col text-left max-w-xl">
               <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50/80 backdrop-blur-sm px-3 py-1.5 text-[10px] font-black tracking-widest uppercase text-[#0B5CFF] shadow-sm mb-5 w-fit">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#0B5CFF] animate-pulse" />
                 OUR TEAM &middot; LEADERSHIP
               </div>
-              
+
               <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-zinc-950 leading-tight">
                 THE PEOPLE<br />
                 BEHIND THE<br />
@@ -632,7 +634,7 @@ function TeamSection() {
                 >
                   <ChevronRight size={20} strokeWidth={2.5} />
                 </button>
-                
+
                 {/* Active index dot indicator */}
                 <div className="hidden lg:flex gap-2 ml-4">
                   {teamMembers.map((_, i) => (
@@ -754,7 +756,7 @@ function FAQAccordionItem({
     const rect = itemRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     if (isOpen) {
       itemRef.current.style.background = `radial-gradient(220px circle at ${x}px ${y}px, rgba(11, 92, 255, 0.04), transparent 85%), rgba(11, 92, 255, 0.01)`;
       itemRef.current.style.borderColor = 'rgba(11, 92, 255, 0.3)';
@@ -780,35 +782,31 @@ function FAQAccordionItem({
       ref={itemRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className={`rounded-2xl border transition-all duration-300 overflow-hidden text-left ${
-        isOpen
-          ? 'border-[#0B5CFF]/15 bg-[#0B5CFF]/[0.01] shadow-[0_8px_30px_rgba(11,92,255,0.03)]'
-          : 'border-zinc-200/60 bg-white/50 hover:bg-white hover:shadow-sm'
-      }`}
+      className={`rounded-2xl border transition-all duration-300 overflow-hidden text-left ${isOpen
+        ? 'border-[#0B5CFF]/15 bg-[#0B5CFF]/[0.01] shadow-[0_8px_30px_rgba(11,92,255,0.03)]'
+        : 'border-zinc-200/60 bg-white/50 hover:bg-white hover:shadow-sm'
+        }`}
     >
       <button
         onClick={onClick}
         className="w-full flex items-center justify-between py-5 px-6 sm:px-8 text-left cursor-pointer focus:outline-none"
       >
         <div className="flex items-center gap-4 sm:gap-5 pr-4">
-          <span className={`text-xs font-mono font-bold tracking-wider shrink-0 transition-colors duration-300 ${
-            isOpen ? 'text-[#0B5CFF]' : 'text-zinc-400'
-          }`}>
+          <span className={`text-xs font-mono font-bold tracking-wider shrink-0 transition-colors duration-300 ${isOpen ? 'text-[#0B5CFF]' : 'text-zinc-400'
+            }`}>
             {item.num}
           </span>
-          <span className={`text-base font-bold transition-colors duration-300 ${
-            isOpen ? 'text-zinc-950 font-black' : 'text-zinc-800'
-          }`}>
+          <span className={`text-base font-bold transition-colors duration-300 ${isOpen ? 'text-zinc-950 font-black' : 'text-zinc-800'
+            }`}>
             {item.question}
           </span>
         </div>
-        
+
         {/* Toggle Icon */}
-        <div className={`w-8 h-8 rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${
-          isOpen 
-            ? 'border-[#0B5CFF]/25 bg-[#0B5CFF]/5 text-[#0B5CFF] rotate-180' 
-            : 'border-zinc-200 bg-white text-zinc-400'
-        }`}>
+        <div className={`w-8 h-8 rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${isOpen
+          ? 'border-[#0B5CFF]/25 bg-[#0B5CFF]/5 text-[#0B5CFF] rotate-180'
+          : 'border-zinc-200 bg-white text-zinc-400'
+          }`}>
           <ChevronDown size={16} className="stroke-[2.5]" />
         </div>
       </button>
@@ -883,7 +881,7 @@ function FAQSection() {
     <section className="py-20 sm:py-28 bg-white relative overflow-hidden z-10 border-t border-zinc-100">
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-20 items-start">
-          
+
           {/* LEFT: Sticky Header & Callout */}
           <div className="lg:sticky lg:top-32 flex flex-col gap-6 text-left">
             <div>
@@ -904,7 +902,7 @@ function FAQSection() {
             <div className="relative rounded-2xl border border-zinc-150 bg-white/80 backdrop-blur-md p-6 shadow-sm overflow-hidden flex flex-col gap-4 mt-2 max-w-md group/status">
               {/* Soft pulse glow background */}
               <div className="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-emerald-500/10 blur-2xl group-hover/status:bg-emerald-500/15 transition-colors duration-500" />
-              
+
               <div className="flex items-center gap-3">
                 {/* Pulsing indicator dot */}
                 <div className="relative flex h-2.5 w-2.5">
