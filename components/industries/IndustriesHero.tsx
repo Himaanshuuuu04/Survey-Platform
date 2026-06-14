@@ -166,7 +166,7 @@ export function IndustriesHero() {
                   height="100%"
                   cardDistance={24}
                   verticalDistance={24}
-                  delay={4000}
+                  delay={2500}
                   skewAmount={4}
                   easing="elastic"
                 >

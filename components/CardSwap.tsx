@@ -71,28 +71,29 @@ const CardSwap: React.FC<CardSwapProps> = ({
   height = 400,
   cardDistance = 60,
   verticalDistance = 70,
-  delay = 5000,
+  delay = 2000,
   pauseOnHover = false,
   onCardClick,
   skewAmount = 6,
   easing = 'elastic',
   children
-}) => {
+ }) => {
+  const scale = delay / 5000;
   const config =
     easing === 'elastic'
       ? {
           ease: 'elastic.out(0.6,0.9)',
-          durDrop: 2,
-          durMove: 2,
-          durReturn: 2,
+          durDrop: 2 * scale,
+          durMove: 2 * scale,
+          durReturn: 2 * scale,
           promoteOverlap: 0.9,
           returnDelay: 0.05
         }
       : {
           ease: 'power1.inOut',
-          durDrop: 0.8,
-          durMove: 0.8,
-          durReturn: 0.8,
+          durDrop: 0.8 * scale,
+          durMove: 0.8 * scale,
+          durReturn: 0.8 * scale,
           promoteOverlap: 0.45,
           returnDelay: 0.2
         };
@@ -111,6 +112,9 @@ const CardSwap: React.FC<CardSwapProps> = ({
     refs.forEach((r, i) => placeNow(r.current!, makeSlot(i, cardDistance, verticalDistance, total), skewAmount));
 
     const swap = () => {
+      if (tlRef.current && tlRef.current.isActive()) {
+        tlRef.current.progress(1).kill();
+      }
       if (order.current.length < 2) return;
 
       const [front, ...rest] = order.current;
@@ -138,7 +142,7 @@ const CardSwap: React.FC<CardSwapProps> = ({
             duration: config.durMove,
             ease: config.ease
           },
-          `promote+=${i * 0.15}`
+          `promote+=${i * 0.15 * scale}`
         );
       });
 
