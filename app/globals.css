@@ -698,9 +698,26 @@ section.about-hero-section h1.about-hero-title,
     grid-column: 1 / -1;
   }
 
+  .about-hero-left {
+    align-items: center;
+    text-align: center;
+  }
+
   section.about-hero-section h1.about-hero-title,
   .about-hero-title {
     font-size: clamp(72px, 18vw, 120px) !important;
+    align-items: center !important;
+  }
+
+  .about-hero-label {
+    padding-left: 0;
+  }
+
+  .about-hero-desc {
+    font-size: 16px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding-left: 0;
   }
 
   .about-hero-img-main {
@@ -715,10 +732,5 @@ section.about-hero-section h1.about-hero-title,
 
   .about-hero-philosophy__heading {
     font-size: 28px;
-  }
-
-  .about-hero-desc {
-    font-size: 16px;
-    max-width: 100%;
   }
 }
