@@ -374,7 +374,7 @@ export function Chatbot() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -382,8 +382,7 @@ export function Chatbot() {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 300, scale: 0.95 }}
             transition={{ type: "spring", damping: 28, stiffness: 250 }}
-            className="w-[360px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col absolute bottom-0 right-0 origin-bottom-right"
-            style={{ height: "600px", maxHeight: "80vh" }}
+            className="w-[calc(100vw-32px)] sm:w-[360px] h-[calc(100dvh-32px)] sm:h-[600px] max-h-[calc(100dvh-32px)] sm:max-h-[80vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col absolute bottom-0 right-0 origin-bottom-right"
           >
             {/* Header Section */}
             <div className="relative">
@@ -495,7 +494,7 @@ export function Chatbot() {
             <div className="px-5 py-4 border-t border-gray-100 bg-white relative">
               {/* Emoji Picker Overlay */}
               {emojiOpen && (
-                <div className="absolute bottom-20 left-5 bg-white border border-gray-200 shadow-xl rounded-xl p-3 flex gap-2 z-30 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <div className="absolute bottom-20 left-5 bg-white border border-gray-200 shadow-xl rounded-xl p-3 flex flex-wrap justify-center gap-2 max-w-[260px] sm:max-w-none z-30 animate-in fade-in slide-in-from-bottom-2 duration-200">
                   {["😊", "👍", "👋", "🔥", "💡", "🚀", "📊", "❤️"].map((emoji) => (
                     <button
                       key={emoji}
