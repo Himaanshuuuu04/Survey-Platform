@@ -254,6 +254,33 @@ export function Chatbot() {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [emojiOpen, setEmojiOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Load history on mount to avoid hydration mismatch
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("evo_chat_history");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setMessages(parsed);
+          }
+        } catch (e) {
+          console.error("Failed to parse saved chat history", e);
+        }
+      }
+      setIsLoaded(true);
+    }
+  }, []);
+
+  // Save history whenever messages change
+  useEffect(() => {
+    if (isLoaded && typeof window !== "undefined") {
+      localStorage.setItem("evo_chat_history", JSON.stringify(messages));
+    }
+  }, [messages, isLoaded]);
 
   // GSAP animation for premium entrance of chat options when opened
   useEffect(() => {
@@ -405,11 +432,41 @@ export function Chatbot() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-white">
-                  <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors cursor-pointer">
-                    <MoreVertical size={20} />
-                  </button>
+                  <div className="relative">
+                    <button 
+                      onClick={() => setMenuOpen(!menuOpen)}
+                      className="p-1.5 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
+                    >
+                      <MoreVertical size={20} />
+                    </button>
+                    {menuOpen && (
+                      <div className="absolute right-0 mt-1 w-48 bg-white text-gray-800 rounded-lg shadow-xl border border-gray-100 py-1 z-30 animate-in fade-in slide-in-from-top-1 duration-150">
+                        <button
+                          onClick={() => {
+                            if (confirm("Are you sure you want to clear your chat history?")) {
+                              setMessages([
+                                {
+                                  id: "welcome",
+                                  sender: "bot",
+                                  text: "Hi there! 👋 Welcome to EvoGlobalInsight. How can we help you with your market research, audience intelligence, or consumer insight needs today?"
+                                }
+                              ]);
+                              localStorage.removeItem("evo_chat_history");
+                            }
+                            setMenuOpen(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 cursor-pointer"
+                        >
+                          Clear Chat History
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   <button 
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                      setIsOpen(false);
+                      setMenuOpen(false);
+                    }}
                     className="p-1.5 hover:bg-white/10 rounded-full transition-colors cursor-pointer"
                   >
                     <ChevronDown size={24} />
