@@ -6,7 +6,7 @@ import { ScrollToTop } from "../components/layout/ScrollToTop";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 import { Chatbot } from "../components/Chatbot";
-
+import { Analytics } from "@vercel/analytics/next"
 const calSans = localFont({
   src: [
     {
@@ -88,7 +88,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-white " suppressHydrationWarning style={{
         backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',
-      }}>
+      }}><Analytics />
         <AudienceProvider>
           <ScrollToTop />
           <Navbar />
