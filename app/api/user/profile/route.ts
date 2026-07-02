@@ -25,13 +25,13 @@ export async function GET(req: NextRequest) {
       user = await User.create({
         fullName: "Jane Doe",
         email: email.toLowerCase(),
+        clerkId: `mock_clerk_${Math.floor(100000 + Math.random() * 900000)}`,
         role: "user",
         status: "active",
         currentPoints: 1250,
         lifetimeEarnings: 25.5,
         pendingPoints: 100,
         surveysCompleted: 3,
-        gamesCompleted: 2,
         referralCode: `JANE${Math.floor(1000 + Math.random() * 9000)}`,
         preferences: {
           darkMode: true,

@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, lowercase: true, index: true },
   password: { type: String, required: false }, // Optional if using Google Login
   googleId: { type: String, sparse: true, unique: true },
+  clerkId: { type: String, required: true, unique: true, index: true },
   isEmailVerified: { type: Boolean, default: false },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   status: { type: String, enum: ['active', 'suspended', 'banned'], default: 'active' },
@@ -17,11 +18,10 @@ const userSchema = new mongoose.Schema({
   
   // Platform Statistics
   surveysCompleted: { type: Number, default: 0 },
-  gamesCompleted: { type: Number, default: 0 },
   
   // Referral System
   referralCode: { type: String, unique: true, index: true },
-  referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, index: true },
   referralEarnings: { type: Number, default: 0 },
 
   // Security & Fraud Detection

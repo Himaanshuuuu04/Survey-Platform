@@ -9,7 +9,8 @@ const redemptionSchema = new mongoose.Schema({
   status: { 
     type: String, 
     enum: ['pending', 'approved', 'rejected', 'completed'], 
-    default: 'pending' 
+    default: 'pending',
+    index: true
   },
   
   // Linked when Admin approves and assigns a card from the Gift Card Inventory
@@ -19,6 +20,8 @@ const redemptionSchema = new mongoose.Schema({
   processedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Admin who approved/rejected
   processedAt: { type: Date }
 }, { timestamps: true });
+
+redemptionSchema.index({ user: 1, createdAt: -1 });
 
 const Redemption = mongoose.models.Redemption || mongoose.model("Redemption", redemptionSchema);
 export default Redemption;
