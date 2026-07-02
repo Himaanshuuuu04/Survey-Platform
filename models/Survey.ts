@@ -14,4 +14,5 @@ const surveySchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Survey', surveySchema);
+const Survey = mongoose.models.Survey || mongoose.model("Survey", surveySchema);
+export default Survey;

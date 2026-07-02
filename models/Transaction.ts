@@ -23,4 +23,5 @@ const transactionSchema = new mongoose.Schema({
   providerTransactionId: { type: String, sparse: true } 
 }, { timestamps: true });
 
-module.exports = mongoose.model('Transaction', transactionSchema);
+const Transaction = mongoose.models.Transaction || mongoose.model("Transaction", transactionSchema);
+export default Transaction;

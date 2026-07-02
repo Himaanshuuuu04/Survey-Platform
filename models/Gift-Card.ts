@@ -16,4 +16,5 @@ const giftCardSchema = new mongoose.Schema({
   redeemedAt: { type: Date }
 }, { timestamps: true });
 
-module.exports = mongoose.model('GiftCard', giftCardSchema);
+const GiftCard = mongoose.models.GiftCard || mongoose.model("GiftCard", giftCardSchema);
+export default GiftCard;

@@ -20,4 +20,5 @@ const redemptionSchema = new mongoose.Schema({
   processedAt: { type: Date }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Redemption', redemptionSchema);
+const Redemption = mongoose.models.Redemption || mongoose.model("Redemption", redemptionSchema);
+export default Redemption;

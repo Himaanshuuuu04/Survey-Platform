@@ -13,4 +13,5 @@ const gameSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'inactive'], default: 'active' }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Game', gameSchema);
+const Game = mongoose.models.Game || mongoose.model("Game", gameSchema);
+export default Game;

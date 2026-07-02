@@ -8,4 +8,5 @@ const adminAuditLogSchema = new mongoose.Schema({
   details: { type: mongoose.Schema.Types.Mixed } // Stores a JSON snapshot of the change
 }, { timestamps: true });
 
-module.exports = mongoose.model('AdminAuditLog', adminAuditLogSchema);
+const AdminAuditLog = mongoose.models.AdminAuditLog || mongoose.model("AdminAuditLog", adminAuditLogSchema);
+export default AdminAuditLog;
