@@ -129,7 +129,7 @@ export default function LoginPage() {
               Evo<span className="text-[#5C8EFF] uppercase">Rewards</span>
             </span>
           </Link>
-          <p className="text-xs text-zinc-400">Join surveys, earn points, redeem gift cards.</p>
+          <p className="text-xs text-zinc-405">Join surveys, earn points, redeem gift cards.</p>
         </div>
 
         {/* Glow behind login card */}
@@ -156,7 +156,7 @@ export default function LoginPage() {
                 dividerLine: "bg-zinc-800/80",
                 dividerText: "text-zinc-500 font-bold text-[10px] uppercase tracking-wider",
                 formButtonPrimary: "bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold text-xs uppercase tracking-wider py-3 rounded-xl shadow-lg shadow-[#5C8EFF]/20 hover:scale-[1.01] active:scale-100 transition-all",
-                formFieldLabel: "text-zinc-350 font-bold text-[10px] uppercase tracking-wider",
+                formFieldLabel: "text-zinc-355 font-bold text-[10px] uppercase tracking-wider",
                 formFieldInput: "bg-zinc-850/80 border border-zinc-800 focus:border-[#5C8EFF] focus:ring-1 focus:ring-[#5C8EFF] text-white rounded-xl py-2.5 px-3.5 text-sm transition-all",
                 footerActionText: "text-zinc-400 text-xs font-medium",
                 footerActionLink: "text-[#5C8EFF] hover:text-[#5C8EFF]/80 font-bold transition-colors text-xs",

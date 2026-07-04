@@ -106,7 +106,7 @@ export default function RegisterPage() {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-white">{benefit.title}</h4>
-                  <p className="text-xs text-zinc-455 mt-1 leading-relaxed">{benefit.desc}</p>
+                  <p className="text-xs text-zinc-450 mt-1 leading-relaxed">{benefit.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                 card: "bg-zinc-900/65 backdrop-blur-xl border border-zinc-850 shadow-2xl rounded-3xl w-full p-2",
                 headerTitle: "text-white font-bold text-xl",
                 headerSubtitle: "text-zinc-450 text-sm mt-1",
-                socialButtonsBlockButton: "bg-zinc-855 hover:bg-zinc-800 border border-zinc-800 text-white font-semibold rounded-xl py-2.5 transition-colors",
+                socialButtonsBlockButton: "bg-zinc-850 hover:bg-zinc-805 border border-zinc-800 text-white font-semibold rounded-xl py-2.5 transition-colors",
                 socialButtonsBlockButtonText: "text-white font-semibold text-xs",
                 dividerLine: "bg-zinc-800/80",
                 dividerText: "text-zinc-500 font-bold text-[10px] uppercase tracking-wider",

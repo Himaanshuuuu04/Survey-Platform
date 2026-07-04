@@ -39,8 +39,8 @@ export async function GET(req: NextRequest) {
         clerkId: clerkId || `mock_clerk_${Math.floor(100000 + Math.random() * 900000)}`,
         role: "user",
         status: "active",
-        currentPoints: 1250, // Initial sign-up bonus
-        lifetimeEarnings: 1.25,
+        currentPoints: 0, // Initial sign-up balance
+        lifetimeEarnings: 0,
         pendingPoints: 0,
         surveysCompleted: 0,
         referralCode: referralCode,
@@ -91,8 +91,8 @@ export async function POST(req: NextRequest) {
         clerkId,
         role: "user",
         status: "active",
-        currentPoints: 1250,
-        lifetimeEarnings: 1.25,
+        currentPoints: 0,
+        lifetimeEarnings: 0,
         pendingPoints: 0,
         surveysCompleted: 0,
         referralCode,
