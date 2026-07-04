@@ -50,16 +50,6 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex font-sans">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-64 border-r border-zinc-900 bg-zinc-900/40 backdrop-blur-xl shrink-0">
-        {/* Brand */}
-        <div className="p-6 border-b border-zinc-900 flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-[#5C8EFF] to-[#02E8F8] text-white">
-            <Coins className="w-6 h-6" />
-          </div>
-          <span className="font-sans text-xl font-bold tracking-tight text-white select-none">
-            Evo<span className="text-[#5C8EFF] uppercase">Rewards</span>
-          </span>
-        </div>
-
         {/* User Quick Info */}
         <div className="p-6 border-b border-zinc-900">
           <div className="flex items-center gap-3">
@@ -134,10 +124,6 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
             >
               <Menu className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2">
-              <Coins className="w-5 h-5 text-[#5C8EFF]" />
-              <span className="font-bold text-white text-md">EvoRewards</span>
-            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -186,10 +172,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
               className="fixed top-0 bottom-0 left-0 w-72 bg-zinc-900 border-r border-zinc-800 p-6 flex flex-col z-50 lg:hidden"
             >
               <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-2">
-                  <Coins className="w-5 h-5 text-[#5C8EFF]" />
-                  <span className="font-bold text-white text-lg">EvoRewards</span>
-                </div>
+                <div className="w-1" />
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
                   className="p-1 text-zinc-400 hover:text-white"

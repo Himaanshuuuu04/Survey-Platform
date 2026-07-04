@@ -96,6 +96,12 @@ export default function DashboardPage() {
     surveysCompleted: dbUser?.surveysCompleted || 0,
   };
 
+  // Dynamically compute chart data from user's current points balance
+  const chartData = mockChartData.map(d => ({
+    day: d.day,
+    points: stats.currentPoints > 0 ? Math.round((d.points / 1250) * stats.currentPoints) : 0
+  }));
+
   // 5,000 points ($5) is the minimum redemption threshold
   const pointsGoal = 5000;
   const progressPercent = Math.min((stats.currentPoints / pointsGoal) * 100, 100);
@@ -254,15 +260,17 @@ export default function DashboardPage() {
               <span className="text-sm font-bold text-white block">Earnings Analytics</span>
               <span className="text-xs text-zinc-550">Overview of recent points accumulations</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span>+18.5%</span>
-            </div>
+            {stats.currentPoints > 0 && (
+              <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>+18.5%</span>
+              </div>
+            )}
           </div>
 
           <div className="h-56 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={mockChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorPoints" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#5C8EFF" stopOpacity={0.3}/>
