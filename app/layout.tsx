@@ -7,6 +7,8 @@ import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 import { Chatbot } from "../components/Chatbot";
 import { Analytics } from "@vercel/analytics/next"
+import { ClerkProvider } from "@clerk/nextjs";
+
 const calSans = localFont({
   src: [
     {
@@ -80,26 +82,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${calSans.variable} ${fenwick.variable} min-h-full antialiased`}
-      suppressHydrationWarning
-    >
-      <body className="min-h-full flex flex-col bg-white " suppressHydrationWarning style={{
-        backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
-        backgroundSize: '24px 24px',
-      }}>
-        <AudienceProvider>
-          <ScrollToTop />
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <Chatbot />
-        </AudienceProvider>
-        <Analytics />
-      </body>
-    </html>
+    <ClerkProvider>
+      <html
+        lang="en"
+        className={`${calSans.variable} ${fenwick.variable} min-h-full antialiased`}
+        suppressHydrationWarning
+      >
+        <body className="min-h-full flex flex-col bg-white " suppressHydrationWarning style={{
+          backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
+          backgroundSize: '24px 24px',
+        }}>
+          <AudienceProvider>
+            <ScrollToTop />
+            <Navbar />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+            <Chatbot />
+          </AudienceProvider>
+          <Analytics />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

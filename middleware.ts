@@ -3,7 +3,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 // Protect all /api/user routes, but keep landing page, about, and webhooks public.
 const isProtectedRoute = createRouteMatcher([
   "/api/user(.*)",
-  "/dashboard(.*)" // Assuming there's a user dashboard page
+  "/dashboard(.*)"
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

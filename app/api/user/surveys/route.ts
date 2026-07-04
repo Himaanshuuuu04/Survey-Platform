@@ -47,6 +47,53 @@ export async function GET(req: NextRequest) {
       query.countryEligibility = { $in: [country, "ALL"] };
     }
 
+    // 2.5 Auto-seed sample surveys if none exist in the database
+    const surveyCount = await Survey.countDocuments();
+    if (surveyCount === 0) {
+      await Survey.create([
+        {
+          title: "BitLabs Tech & Gadgets Survey",
+          provider: "BitLabs",
+          rewardPoints: 1200,
+          estimatedTimeMins: 10,
+          countryEligibility: ["ALL"],
+          deviceCompatibility: ["desktop", "mobile", "ios", "android"],
+          urlOrApiEndpoint: "https://example.com/survey/bitlabs/tech",
+          status: "active"
+        },
+        {
+          title: "CPX Research Consumer Preferences",
+          provider: "CPX Research",
+          rewardPoints: 2500,
+          estimatedTimeMins: 15,
+          countryEligibility: ["ALL"],
+          deviceCompatibility: ["desktop", "mobile", "ios", "android"],
+          urlOrApiEndpoint: "https://example.com/survey/cpx/consumer",
+          status: "active"
+        },
+        {
+          title: "Evo Global Media Consumption Habits",
+          provider: "Manual",
+          rewardPoints: 800,
+          estimatedTimeMins: 8,
+          countryEligibility: ["ALL"],
+          deviceCompatibility: ["desktop", "mobile", "ios", "android"],
+          urlOrApiEndpoint: "https://example.com/survey/evo/media",
+          status: "active"
+        },
+        {
+          title: "Global Finance & Mobile Banking Survey",
+          provider: "BitLabs",
+          rewardPoints: 3000,
+          estimatedTimeMins: 20,
+          countryEligibility: ["ALL"],
+          deviceCompatibility: ["desktop", "mobile"],
+          urlOrApiEndpoint: "https://example.com/survey/bitlabs/finance",
+          status: "active"
+        }
+      ]);
+    }
+
     const surveys = await Survey.find(query).sort({ rewardPoints: -1 });
 
     return NextResponse.json({
