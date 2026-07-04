@@ -35,6 +35,17 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', on);
   }, []);
 
+  useEffect(() => {
+    const isDarkPage = pathname.startsWith("/login") || pathname.startsWith("/register") || pathname.startsWith("/dashboard");
+    if (isDarkPage) {
+      document.body.style.backgroundColor = "#09090b";
+      document.body.style.backgroundImage = "none";
+    } else {
+      document.body.style.backgroundColor = "#ffffff";
+      document.body.style.backgroundImage = "radial-gradient(#E4E4E7 1.2px, transparent 1.2px)";
+    }
+  }, [pathname]);
+
   const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
     { label: 'Services', ariaLabel: 'View our services', link: '/services' },
