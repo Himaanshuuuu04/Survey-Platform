@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { AudienceProvider } from "../components/layout/AudienceContext";
-import { ScrollToTop } from "../components/layout/ScrollToTop";
-import { Navbar } from "../components/layout/Navbar";
-import { Footer } from "../components/layout/Footer";
-import { Chatbot } from "../components/Chatbot";
+import { RootLayoutWrapper } from "../components/layout/RootLayoutWrapper";
 import { Analytics } from "@vercel/analytics/next"
 import { ClerkProvider } from "@clerk/nextjs";
 
@@ -93,13 +90,9 @@ export default function RootLayout({
           backgroundSize: '24px 24px',
         }}>
           <AudienceProvider>
-            <ScrollToTop />
-            <Navbar />
-            <main className="flex-1">
+            <RootLayoutWrapper>
               {children}
-            </main>
-            <Footer />
-            <Chatbot />
+            </RootLayoutWrapper>
           </AudienceProvider>
           <Analytics />
         </body>

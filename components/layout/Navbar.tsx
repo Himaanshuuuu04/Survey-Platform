@@ -36,7 +36,7 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    const isDarkPage = pathname.startsWith("/login") || pathname.startsWith("/register") || pathname.startsWith("/dashboard");
+    const isDarkPage = pathname.startsWith("/login") || pathname.startsWith("/register") || pathname.startsWith("/user-dashboard");
     if (isDarkPage) {
       document.body.style.backgroundColor = "#09090b";
       document.body.style.backgroundImage = "none";

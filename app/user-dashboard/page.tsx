@@ -239,7 +239,7 @@ export default function DashboardPage() {
           <div className="mt-8">
             {isGoalReached ? (
               <Link 
-                href="/dashboard/redeem"
+                href="/user-dashboard/redeem"
                 className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-sm font-bold uppercase tracking-wider text-white hover:scale-[1.02] transition-transform duration-200"
               >
                 <span>Redeem Now</span>

@@ -26,12 +26,12 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Surveys", href: "/dashboard/surveys", icon: ClipboardList },
-    { label: "Wallet & History", href: "/dashboard/wallet", icon: Wallet },
-    { label: "Redeem Gift Cards", href: "/dashboard/redeem", icon: Gift },
-    { label: "Referrals", href: "/dashboard/referrals", icon: Users },
-    { label: "Notifications", href: "/dashboard/notifications", icon: Bell },
+    { label: "Dashboard", href: "/user-dashboard", icon: LayoutDashboard },
+    { label: "Surveys", href: "/user-dashboard/surveys", icon: ClipboardList },
+    { label: "Wallet & History", href: "/user-dashboard/wallet", icon: Wallet },
+    { label: "Redeem Gift Cards", href: "/user-dashboard/redeem", icon: Gift },
+    { label: "Referrals", href: "/user-dashboard/referrals", icon: Users },
+    { label: "Notifications", href: "/user-dashboard/notifications", icon: Bell },
   ];
 
   if (loading) {
