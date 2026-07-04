@@ -185,16 +185,6 @@ export default function DashboardPage() {
               <h2 className="text-lg font-bold text-white">Featured Surveys</h2>
               <p className="text-xs text-zinc-500 mt-0.5">Earn Evo points by completing targeted questionnaires.</p>
             </div>
-            
-            <div className="flex items-center gap-3">
-              <Link 
-                href="/user-dashboard/surveys" 
-                className="text-xs font-bold text-[#5C8EFF] hover:text-[#5C8EFF]/80 flex items-center gap-1 transition-colors"
-              >
-                <span>Change Devices</span>
-                <Monitor className="w-3.5 h-3.5" />
-              </Link>
-            </div>
           </div>
 
           {/* Tabs */}
