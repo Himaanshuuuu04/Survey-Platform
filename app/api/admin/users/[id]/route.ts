@@ -114,3 +114,53 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     );
   }
 }
+
+// DELETE: Delete user profile and associated data (Admin view)
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    await dbConnect();
+    
+    const { id } = await params;
+
+    // Ensure the ID is valid
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ success: false, error: "Invalid User ID" }, { status: 400 });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+    }
+
+    // Try deleting from Clerk first
+    if (user.clerkId) {
+      try {
+        const { createClerkClient } = await import("@clerk/nextjs/server");
+        const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+        await clerkClient.users.deleteUser(user.clerkId);
+        console.log(`Deleted Clerk user: ${user.clerkId}`);
+      } catch (clerkError: any) {
+        console.error("Failed to delete user from Clerk:", clerkError);
+        // We will continue and delete from MongoDB anyway to keep DB in sync
+      }
+    }
+
+    // Delete user and associated transactions and redemptions in parallel
+    await Promise.all([
+      User.findByIdAndDelete(id),
+      Transaction.deleteMany({ user: id }),
+      Redemption.deleteMany({ user: id })
+    ]);
+
+    return NextResponse.json({
+      success: true,
+      message: "User and all associated data deleted successfully"
+    });
+  } catch (error: any) {
+    console.error("Error deleting user:", error);
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to delete user" },
+      { status: 500 }
+    );
+  }
+}
