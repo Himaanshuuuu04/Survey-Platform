@@ -110,21 +110,7 @@ export default function ReferralsPage() {
         <div className="lg:col-span-2 rounded-2xl border border-zinc-800/80 bg-zinc-900/20 backdrop-blur-md p-6 space-y-6">
           <h3 className="text-sm font-bold text-white">Your Shareable Credentials</h3>
 
-          {/* Referral Code */}
-          <div className="space-y-2">
-            <label className="text-[10px] uppercase font-bold text-zinc-550 tracking-wider">Referral Code</label>
-            <div className="flex gap-2">
-              <div className="flex-1 bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 font-mono font-bold text-lg text-white select-all">
-                {referralCode}
-              </div>
-              <button 
-                onClick={handleCopyLink}
-                className="px-4 rounded-xl border border-zinc-800 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 hover:text-white transition-all flex items-center justify-center"
-              >
-                {copied ? <Check className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
+
 
           {/* Referral Link */}
           <div className="space-y-2">
