@@ -50,6 +50,42 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "User update failed" }, { status: 500 });
     }
 
+    // Check and process referral bonus if this is the referred user's first completed survey
+    if (updatedUser.surveysCompleted === 1 && updatedUser.referredBy) {
+      try {
+        const referrer = await User.findById(updatedUser.referredBy);
+        if (referrer) {
+          referrer.currentPoints = (referrer.currentPoints || 0) + 500;
+          referrer.lifetimeEarnings = (referrer.lifetimeEarnings || 0) + 0.50;
+          referrer.referralEarnings = (referrer.referralEarnings || 0) + 500;
+          await referrer.save();
+
+          // Create transaction for referrer
+          await Transaction.create({
+            user: referrer._id,
+            type: "credit",
+            amount: 500,
+            category: "referral",
+            status: "completed",
+            referenceId: updatedUser._id,
+            description: `Referral bonus for inviting ${updatedUser.fullName || "Friend"}`,
+          });
+
+          // Create notification for referrer
+          await Notification.create({
+            user: referrer._id,
+            type: "points_credited",
+            title: "Referral Bonus Credited!",
+            message: `You earned 500 Evo Points ($0.50) because your referred friend ${updatedUser.fullName || "Friend"} completed their first survey!`,
+            isRead: false,
+          });
+        }
+      } catch (err) {
+        console.error("Error processing referral credit:", err);
+        // Do not crash the entire endpoint if referral processing fails
+      }
+    }
+
     // 5. Create Transaction record (credit)
     const transaction = await Transaction.create({
       user: user._id,
