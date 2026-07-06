@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Survey from "@/models/Survey";
+import Transaction from "@/models/Transaction";
 import { getAuthenticatedUser } from "@/lib/authHelper";
 
 export async function GET(req: NextRequest) {
@@ -35,9 +36,19 @@ export async function GET(req: NextRequest) {
 
     const device = queryDevice || detectedDevice;
 
+    // Fetch completed survey reference IDs for the current user
+    const completedSurveyIds = await Transaction.find({
+      user: user._id,
+      category: "survey",
+      status: "completed"
+    }).distinct("referenceId");
+
     // 3. Build MongoDB query
-    // Find active surveys that match device compatibility and country eligibility
-    const query: Record<string, any> = { status: "active" };
+    // Find active surveys that match device compatibility and country eligibility, excluding already completed ones
+    const query: Record<string, any> = { 
+      status: "active",
+      _id: { $nin: completedSurveyIds }
+    };
 
     if (device) {
       query.deviceCompatibility = { $in: [device] };

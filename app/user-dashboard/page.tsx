@@ -32,7 +32,26 @@ interface SurveyType {
   countryEligibility: string[];
   deviceCompatibility: string[];
   urlOrApiEndpoint: string;
+  questions?: Array<{
+    questionText: string;
+    options: string[];
+  }>;
 }
+
+const DEFAULT_QUESTIONS = [
+  {
+    questionText: "How frequently do you research products online before making a purchase?",
+    options: ["Every single time", "Only for expensive items", "Occasionally", "Rarely or never"]
+  },
+  {
+    questionText: "Which of these digital rewards do you redeem most frequently?",
+    options: ["Amazon Gift Cards", "Google Play / Apple Gift Cards", "PayPal / Cash payouts", "Brand discounts"]
+  },
+  {
+    questionText: "How likely are you to recommend Evo Rewards to a friend or colleague?",
+    options: ["1", "2", "3", "4", "5"]
+  }
+];
 
 interface DashboardData {
   stats: {
@@ -150,6 +169,9 @@ export default function DashboardPage() {
   const handleSubmitSurveyAnswers = async () => {
     if (!activeSurvey || !user) return;
     setCompleting(true);
+    const surveyQuestions = activeSurvey.questions && activeSurvey.questions.length > 0
+      ? activeSurvey.questions
+      : DEFAULT_QUESTIONS;
     try {
       const res = await fetch("/api/user/surveys/complete", {
         method: "POST",
@@ -161,7 +183,7 @@ export default function DashboardPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setSurveyStep(4);
+        setSurveyStep(surveyQuestions.length + 1);
         refreshUser();
         fetchDashboardData();
       }
@@ -476,170 +498,131 @@ export default function DashboardPage() {
               exit={{ scale: 0.95, opacity: 0 }}
               className="relative w-full max-w-lg rounded-3xl border border-zinc-850 bg-zinc-900 p-6 shadow-2xl z-10"
             >
-              {/* Close Button */}
-              {surveyStep !== 4 && (
-                <button 
-                  onClick={handleCloseSurvey}
-                  className="absolute top-4 right-4 p-1.5 rounded-full bg-zinc-850 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
+              {(() => {
+                const surveyQuestions = activeSurvey.questions && activeSurvey.questions.length > 0
+                  ? activeSurvey.questions
+                  : DEFAULT_QUESTIONS;
 
-              {/* Step Renderers */}
-              {surveyStep === 0 && (
-                <div className="space-y-6">
-                  <div>
-                    <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">Survey Verification</span>
-                    <h3 className="text-xl font-bold text-white mt-1">{activeSurvey.title}</h3>
-                    <p className="text-xs text-zinc-450 mt-1">Provider: {activeSurvey.provider}</p>
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-zinc-950/50 border border-zinc-855 space-y-3 text-xs text-zinc-350">
-                    <div className="flex justify-between">
-                      <span>Time Commitment:</span>
-                      <span className="text-white font-semibold">{activeSurvey.estimatedTimeMins} Minutes</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Compatibility:</span>
-                      <span className="text-white font-semibold capitalize">{activeSurvey.deviceCompatibility.join(", ")}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Reward Value:</span>
-                      <span className="text-amber-400 font-black">+{activeSurvey.rewardPoints.toLocaleString()} PTS</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setSurveyStep(1)}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold uppercase tracking-wider text-xs shadow-lg hover:scale-[1.01] transition-transform"
-                  >
-                    Begin Survey Questionnaire
-                  </button>
-                </div>
-              )}
-
-              {surveyStep === 1 && (
-                <div className="space-y-6">
-                  <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">Question 1 of 3</span>
-                  <h4 className="text-md font-bold text-white">How frequently do you research products online before making a purchase?</h4>
-                  <div className="space-y-2.5">
-                    {["Every single time", "Only for expensive items", "Occasionally", "Rarely or never"].map((opt) => (
-                      <button
-                        key={opt}
-                        onClick={() => handleAnswerSelect("q1", opt)}
-                        className={`w-full text-left px-4 py-3.5 rounded-xl border text-sm font-medium transition-all ${
-                          answers.q1 === opt 
-                            ? "bg-[#5C8EFF]/10 border-[#5C8EFF] text-white font-semibold" 
-                            : "bg-zinc-850/50 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-850"
-                        }`}
+                return (
+                  <>
+                    {/* Close Button */}
+                    {surveyStep !== (surveyQuestions.length + 1) && (
+                      <button 
+                        onClick={handleCloseSurvey}
+                        className="absolute top-4 right-4 p-1.5 rounded-full bg-zinc-850 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
                       >
-                        {opt}
+                        <X className="w-4 h-4" />
                       </button>
-                    ))}
-                  </div>
-                  <button
-                    disabled={!answers.q1}
-                    onClick={() => setSurveyStep(2)}
-                    className="w-full py-3 rounded-xl bg-zinc-850 hover:bg-zinc-800 text-white font-bold uppercase tracking-wider text-xs disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center gap-2"
-                  >
-                    <span>Next Question</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              )}
-
-              {surveyStep === 2 && (
-                <div className="space-y-6">
-                  <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">Question 2 of 3</span>
-                  <h4 className="text-md font-bold text-white">Which of these digital rewards do you redeem most frequently?</h4>
-                  <div className="space-y-2.5">
-                    {["Amazon Gift Cards", "Google Play / Apple Gift Cards", "PayPal / Cash payouts", "Brand discounts"].map((opt) => (
-                      <button
-                        key={opt}
-                        onClick={() => handleAnswerSelect("q2", opt)}
-                        className={`w-full text-left px-4 py-3.5 rounded-xl border text-sm font-medium transition-all ${
-                          answers.q2 === opt 
-                            ? "bg-[#5C8EFF]/10 border-[#5C8EFF] text-white font-semibold" 
-                            : "bg-zinc-850/50 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-850"
-                        }`}
-                      >
-                        {opt}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    disabled={!answers.q2}
-                    onClick={() => setSurveyStep(3)}
-                    className="w-full py-3 rounded-xl bg-zinc-850 hover:bg-zinc-800 text-white font-bold uppercase tracking-wider text-xs disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center gap-2"
-                  >
-                    <span>Next Question</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              )}
-
-              {surveyStep === 3 && (
-                <div className="space-y-6">
-                  <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">Question 3 of 3</span>
-                  <h4 className="text-md font-bold text-white">How likely are you to recommend Evo Rewards to a friend or colleague?</h4>
-                  <div className="grid grid-cols-5 gap-2">
-                    {[1, 2, 3, 4, 5].map((val) => (
-                      <button
-                        key={val}
-                        onClick={() => handleAnswerSelect("q3", String(val))}
-                        className={`py-3 rounded-xl border text-center font-bold text-sm transition-all ${
-                          answers.q3 === String(val)
-                            ? "bg-[#5C8EFF]/10 border-[#5C8EFF] text-white"
-                            : "bg-zinc-850/50 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-850"
-                        }`}
-                      >
-                        {val}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="flex justify-between text-[10px] text-zinc-550 uppercase font-black tracking-widest">
-                    <span>Not likely</span>
-                    <span>Very likely</span>
-                  </div>
-                  <button
-                    disabled={!answers.q3 || completing}
-                    onClick={handleSubmitSurveyAnswers}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold uppercase tracking-wider text-xs disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center gap-2"
-                  >
-                    {completing ? (
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
-                    ) : (
-                      <>
-                        <span>Submit Response</span>
-                        <CheckCircle className="w-4 h-4" />
-                      </>
                     )}
-                  </button>
-                </div>
-              )}
 
-              {surveyStep === 4 && (
-                <div className="text-center py-6 space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
-                    <Sparkles className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white">Survey Completed!</h3>
-                  <p className="text-xs text-zinc-400 max-w-xs mx-auto">
-                    Your answers were submitted successfully. Your wallet has been credited with the reward.
-                  </p>
-                  <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 font-bold text-sm mx-auto">
-                    <Coins className="w-4 h-4" />
-                    <span>+{activeSurvey.rewardPoints.toLocaleString()} Evo Points</span>
-                  </div>
-                  <button
-                    onClick={handleCloseSurvey}
-                    className="w-full py-3 rounded-xl bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white font-bold uppercase tracking-wider text-xs transition-all"
-                  >
-                    Close & Return to Dashboard
-                  </button>
-                </div>
-              )}
+                    {/* Step Renderers */}
+                    {surveyStep === 0 && (
+                      <div className="space-y-6">
+                        <div>
+                          <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">Survey Verification</span>
+                          <h3 className="text-xl font-bold text-white mt-1">{activeSurvey.title}</h3>
+                          <p className="text-xs text-zinc-450 mt-1">Provider: {activeSurvey.provider}</p>
+                        </div>
+
+                        <div className="p-4 rounded-2xl bg-zinc-950/50 border border-zinc-855 space-y-3 text-xs text-zinc-350">
+                          <div className="flex justify-between">
+                            <span>Time Commitment:</span>
+                            <span className="text-white font-semibold">{activeSurvey.estimatedTimeMins} Minutes</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Compatibility:</span>
+                            <span className="text-white font-semibold capitalize">{activeSurvey.deviceCompatibility.join(", ")}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Reward Value:</span>
+                            <span className="text-amber-400 font-black">+{activeSurvey.rewardPoints.toLocaleString()} PTS</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => setSurveyStep(1)}
+                          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold uppercase tracking-wider text-xs shadow-lg hover:scale-[1.01] transition-transform"
+                        >
+                          Begin Survey Questionnaire
+                        </button>
+                      </div>
+                    )}
+
+                    {surveyStep >= 1 && surveyStep <= surveyQuestions.length && (() => {
+                      const currentQuestion = surveyQuestions[surveyStep - 1];
+                      const key = `q${surveyStep}`;
+                      const isLastQuestion = surveyStep === surveyQuestions.length;
+
+                      return (
+                        <div className="space-y-6">
+                          <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">
+                            Question {surveyStep} of {surveyQuestions.length}
+                          </span>
+                          <h4 className="text-md font-bold text-white">{currentQuestion.questionText}</h4>
+                          <div className="space-y-2.5">
+                            {currentQuestion.options.map((opt) => (
+                              <button
+                                key={opt}
+                                onClick={() => handleAnswerSelect(key, opt)}
+                                className={`w-full text-left px-4 py-3.5 rounded-xl border text-sm font-medium transition-all ${
+                                  answers[key] === opt 
+                                    ? "bg-[#5C8EFF]/10 border-[#5C8EFF] text-white font-semibold" 
+                                    : "bg-zinc-850/50 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-850"
+                                }`}
+                              >
+                                {opt}
+                              </button>
+                            ))}
+                          </div>
+                          <button
+                            disabled={!answers[key] || (isLastQuestion && completing)}
+                            onClick={isLastQuestion ? handleSubmitSurveyAnswers : () => setSurveyStep(surveyStep + 1)}
+                            className="w-full py-3 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold uppercase tracking-wider text-xs disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center gap-2"
+                          >
+                            {isLastQuestion ? (
+                              completing ? (
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                              ) : (
+                                <>
+                                  <span>Submit Response</span>
+                                  <CheckCircle className="w-4 h-4" />
+                                </>
+                              )
+                            ) : (
+                              <>
+                                <span>Next Question</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      );
+                    })()}
+
+                    {surveyStep === (surveyQuestions.length + 1) && (
+                      <div className="text-center py-6 space-y-4">
+                        <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
+                          <Sparkles className="w-8 h-8" />
+                        </div>
+                        <h3 className="text-xl font-bold text-white">Survey Completed!</h3>
+                        <p className="text-xs text-zinc-400 max-w-xs mx-auto">
+                          Your answers were submitted successfully. Your wallet has been credited with the reward.
+                        </p>
+                        <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 font-bold text-sm mx-auto">
+                          <Coins className="w-4 h-4" />
+                          <span>+{activeSurvey.rewardPoints.toLocaleString()} Evo Points</span>
+                        </div>
+                        <button
+                          onClick={handleCloseSurvey}
+                          className="w-full py-3 rounded-xl bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white font-bold uppercase tracking-wider text-xs transition-all"
+                        >
+                          Close & Return to Dashboard
+                        </button>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </motion.div>
           </div>
         )}

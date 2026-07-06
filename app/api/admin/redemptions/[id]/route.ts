@@ -64,7 +64,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (action === "approve") {
       // Step 2: Inventory Matching
       const availableGiftCard = await GiftCard.findOneAndUpdate(
-        { brand: redemption.rewardType, usdAmount: redemption.usdAmount, status: "available" },
+        { brand: redemption.requestedBrand, usdAmount: redemption.usdAmount, status: "available" },
         { $set: { status: "assigned", assignedTo: user._id } },
         { session, new: true }
       );
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       );
 
       // Restore Points
-      user.pointsBalance += redemption.pointsCost;
+      user.currentPoints += redemption.pointsDeducted;
       await user.save({ session });
     }
 
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       targetEntityType: "Redemption",
       details: {
         userId: user._id,
-        rewardType: redemption.rewardType,
+        requestedBrand: redemption.requestedBrand,
         usdAmount: redemption.usdAmount,
         reason: reason || "Processed by admin"
       }
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // User Notification
     const notificationContent = action === "approve" 
-      ? `Your redemption for $${redemption.usdAmount} ${redemption.rewardType} has been approved! Code: ${giftCardCodeData?.code} ${giftCardCodeData?.pin ? 'PIN: '+giftCardCodeData.pin : ''}`
+      ? `Your redemption for $${redemption.usdAmount} ${redemption.requestedBrand} has been approved! Code: ${giftCardCodeData?.code} ${giftCardCodeData?.pin ? 'PIN: '+giftCardCodeData.pin : ''}`
       : `Your redemption request was rejected. Reason: ${reason || 'Violation of terms.'}. Points have been refunded.`;
 
     const notification = new Notification({

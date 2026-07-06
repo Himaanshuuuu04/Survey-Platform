@@ -35,6 +35,10 @@ interface Survey {
   estimatedTimeMins: number;
   urlOrApiEndpoint?: string;
   status: string;
+  questions?: Array<{
+    questionText: string;
+    options: string[];
+  }>;
 }
 
 export default function SurveysPage() {
@@ -51,6 +55,12 @@ export default function SurveysPage() {
     estimatedTimeMins: "",
     urlOrApiEndpoint: "",
     status: "active",
+    q1Text: "",
+    q1Options: "",
+    q2Text: "",
+    q2Options: "",
+    q3Text: "",
+    q3Options: "",
   });
 
   // Edit & Delete States
@@ -64,6 +74,12 @@ export default function SurveysPage() {
     estimatedTimeMins: "",
     urlOrApiEndpoint: "",
     status: "active",
+    q1Text: "",
+    q1Options: "",
+    q2Text: "",
+    q2Options: "",
+    q3Text: "",
+    q3Options: "",
   });
 
   const [deleteConfirmSurvey, setDeleteConfirmSurvey] = useState<Survey | null>(null);
@@ -78,6 +94,12 @@ export default function SurveysPage() {
       estimatedTimeMins: String(survey.estimatedTimeMins),
       urlOrApiEndpoint: survey.urlOrApiEndpoint || "",
       status: survey.status,
+      q1Text: survey.questions?.[0]?.questionText || "",
+      q1Options: survey.questions?.[0]?.options?.join(", ") || "",
+      q2Text: survey.questions?.[1]?.questionText || "",
+      q2Options: survey.questions?.[1]?.options?.join(", ") || "",
+      q3Text: survey.questions?.[2]?.questionText || "",
+      q3Options: survey.questions?.[2]?.options?.join(", ") || "",
     });
     setIsEditOpen(true);
   };
@@ -86,6 +108,27 @@ export default function SurveysPage() {
     e.preventDefault();
     if (!editingSurvey) return;
     setIsUpdating(true);
+
+    const questions = [];
+    if (editFormData.q1Text && editFormData.q1Options) {
+      questions.push({
+        questionText: editFormData.q1Text,
+        options: editFormData.q1Options.split(",").map(o => o.trim()).filter(Boolean)
+      });
+    }
+    if (editFormData.q2Text && editFormData.q2Options) {
+      questions.push({
+        questionText: editFormData.q2Text,
+        options: editFormData.q2Options.split(",").map(o => o.trim()).filter(Boolean)
+      });
+    }
+    if (editFormData.q3Text && editFormData.q3Options) {
+      questions.push({
+        questionText: editFormData.q3Text,
+        options: editFormData.q3Options.split(",").map(o => o.trim()).filter(Boolean)
+      });
+    }
+
     try {
       const res = await fetch(`/api/admin/surveys/${editingSurvey._id}`, {
         method: "PATCH",
@@ -93,9 +136,13 @@ export default function SurveysPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...editFormData,
+          title: editFormData.title,
+          provider: editFormData.provider,
           rewardPoints: Number(editFormData.rewardPoints),
           estimatedTimeMins: Number(editFormData.estimatedTimeMins),
+          urlOrApiEndpoint: editFormData.urlOrApiEndpoint,
+          status: editFormData.status,
+          questions
         }),
       });
 
@@ -161,6 +208,27 @@ export default function SurveysPage() {
   const handleCreateSurvey = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsCreating(true);
+
+    const questions = [];
+    if (formData.q1Text && formData.q1Options) {
+      questions.push({
+        questionText: formData.q1Text,
+        options: formData.q1Options.split(",").map(o => o.trim()).filter(Boolean)
+      });
+    }
+    if (formData.q2Text && formData.q2Options) {
+      questions.push({
+        questionText: formData.q2Text,
+        options: formData.q2Options.split(",").map(o => o.trim()).filter(Boolean)
+      });
+    }
+    if (formData.q3Text && formData.q3Options) {
+      questions.push({
+        questionText: formData.q3Text,
+        options: formData.q3Options.split(",").map(o => o.trim()).filter(Boolean)
+      });
+    }
+
     try {
       const res = await fetch("/api/admin/surveys", {
         method: "POST",
@@ -168,11 +236,15 @@ export default function SurveysPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
+          title: formData.title,
+          provider: formData.provider,
           rewardPoints: Number(formData.rewardPoints),
           estimatedTimeMins: Number(formData.estimatedTimeMins),
+          urlOrApiEndpoint: formData.urlOrApiEndpoint,
+          status: formData.status,
           countryEligibility: ["ALL"],
           deviceCompatibility: ["desktop", "mobile", "ios", "android"], 
+          questions
         }),
       });
 
@@ -187,6 +259,12 @@ export default function SurveysPage() {
           estimatedTimeMins: "",
           urlOrApiEndpoint: "",
           status: "active",
+          q1Text: "",
+          q1Options: "",
+          q2Text: "",
+          q2Options: "",
+          q3Text: "",
+          q3Options: "",
         });
         fetchSurveys(); 
       } else {
@@ -216,7 +294,7 @@ export default function SurveysPage() {
               <Plus className="mr-2 h-4 w-4" /> Add Survey
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-[450px] max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Survey</DialogTitle>
               <DialogDescription>
@@ -274,6 +352,53 @@ export default function SurveysPage() {
                   onChange={(e) => setFormData({ ...formData, urlOrApiEndpoint: e.target.value })}
                 />
               </div>
+
+              <div className="space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-4">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Custom Questions (Optional)</h4>
+                
+                <div className="space-y-2">
+                  <Label>Question 1</Label>
+                  <Input
+                    placeholder="Question Text (e.g. How often do you buy gadgets?)"
+                    value={formData.q1Text}
+                    onChange={(e) => setFormData({ ...formData, q1Text: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Options (comma-separated, e.g. Daily, Weekly, Monthly)"
+                    value={formData.q1Options}
+                    onChange={(e) => setFormData({ ...formData, q1Options: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Question 2</Label>
+                  <Input
+                    placeholder="Question Text (e.g. Which platform do you prefer?)"
+                    value={formData.q2Text}
+                    onChange={(e) => setFormData({ ...formData, q2Text: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Options (comma-separated, e.g. Amazon, Apple, Google)"
+                    value={formData.q2Options}
+                    onChange={(e) => setFormData({ ...formData, q2Options: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Question 3</Label>
+                  <Input
+                    placeholder="Question Text (e.g. Rate your experience from 1 to 5)"
+                    value={formData.q3Text}
+                    onChange={(e) => setFormData({ ...formData, q3Text: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Options (comma-separated, e.g. 1, 2, 3, 4, 5)"
+                    value={formData.q3Options}
+                    onChange={(e) => setFormData({ ...formData, q3Options: e.target.value })}
+                  />
+                </div>
+              </div>
+
               <div className="pt-4 flex justify-end gap-2">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                   Cancel
@@ -361,7 +486,7 @@ export default function SurveysPage() {
 
       {/* Edit Survey Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[450px] max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Survey</DialogTitle>
             <DialogDescription>
@@ -430,6 +555,53 @@ export default function SurveysPage() {
                 <NativeSelectOption value="inactive">Inactive</NativeSelectOption>
               </NativeSelect>
             </div>
+
+            <div className="space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-4">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Custom Questions (Optional)</h4>
+              
+              <div className="space-y-2">
+                <Label>Question 1</Label>
+                <Input
+                  placeholder="Question Text"
+                  value={editFormData.q1Text}
+                  onChange={(e) => setEditFormData({ ...editFormData, q1Text: e.target.value })}
+                />
+                <Input
+                  placeholder="Options (comma-separated)"
+                  value={editFormData.q1Options}
+                  onChange={(e) => setEditFormData({ ...editFormData, q1Options: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Question 2</Label>
+                <Input
+                  placeholder="Question Text"
+                  value={editFormData.q2Text}
+                  onChange={(e) => setEditFormData({ ...editFormData, q2Text: e.target.value })}
+                />
+                <Input
+                  placeholder="Options (comma-separated)"
+                  value={editFormData.q2Options}
+                  onChange={(e) => setEditFormData({ ...editFormData, q2Options: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Question 3</Label>
+                <Input
+                  placeholder="Question Text"
+                  value={editFormData.q3Text}
+                  onChange={(e) => setEditFormData({ ...editFormData, q3Text: e.target.value })}
+                />
+                <Input
+                  placeholder="Options (comma-separated)"
+                  value={editFormData.q3Options}
+                  onChange={(e) => setEditFormData({ ...editFormData, q3Options: e.target.value })}
+                />
+              </div>
+            </div>
+
             <div className="pt-4 flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>
                 Cancel

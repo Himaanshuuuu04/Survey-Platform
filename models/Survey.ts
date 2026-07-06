@@ -11,7 +11,13 @@ const surveySchema = new mongoose.Schema({
   deviceCompatibility: [{ type: String, enum: ['desktop', 'mobile', 'ios', 'android'] }],
   
   urlOrApiEndpoint: { type: String, required: true },
-  status: { type: String, enum: ['active', 'inactive'], default: 'active' }
+  status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+  
+  // Dynamic survey questions
+  questions: [{
+    questionText: { type: String, required: true },
+    options: [{ type: String, required: true }]
+  }]
 }, { timestamps: true });
 
 const Survey = mongoose.models.Survey || mongoose.model("Survey", surveySchema);
