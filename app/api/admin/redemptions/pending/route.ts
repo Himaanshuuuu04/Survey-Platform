@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
     const [pendingRedemptions, total] = await Promise.all([
       Redemption.find({ status: "pending" })
-        .populate("user", "name email status")
+        .populate("user", "fullName email status")
         .sort({ createdAt: 1 }) // Chronological order (oldest first)
         .skip(skip)
         .limit(limit)

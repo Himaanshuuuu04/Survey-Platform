@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { AudienceProvider } from "../components/layout/AudienceContext";
-import { ScrollToTop } from "../components/layout/ScrollToTop";
-import { Navbar } from "../components/layout/Navbar";
-import { Footer } from "../components/layout/Footer";
-import { Chatbot } from "../components/Chatbot";
+
 import { Analytics } from "@vercel/analytics/next"
 const calSans = localFont({
   src: [
@@ -89,15 +85,7 @@ export default function RootLayout({
         backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
         backgroundSize: '24px 24px',
       }}>
-        <AudienceProvider>
-          <ScrollToTop />
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-          <Chatbot />
-        </AudienceProvider>
+        {children}
         <Analytics />
       </body>
     </html>
