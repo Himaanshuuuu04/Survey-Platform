@@ -48,12 +48,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       const email = clerkUser.primaryEmailAddress?.emailAddress;
       const fullName = clerkUser.fullName || clerkUser.username || "User";
       const clerkId = clerkUser.id;
+      const referredByCode = (clerkUser.unsafeMetadata?.referredByCode as string) || "";
 
       if (!email) return;
 
       // Sync and retrieve DB user profile
       const res = await fetch(
-        `/api/user/profile?email=${encodeURIComponent(email)}&clerkId=${clerkId}&fullName=${encodeURIComponent(fullName)}`,
+        `/api/user/profile?email=${encodeURIComponent(email)}&clerkId=${clerkId}&fullName=${encodeURIComponent(fullName)}&referredByCode=${encodeURIComponent(referredByCode)}`,
         {
           headers: {
             "x-clerk-user-id": clerkId,

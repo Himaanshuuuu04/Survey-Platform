@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
     const email = searchParams.get("email");
     const clerkId = searchParams.get("clerkId");
     const fullName = searchParams.get("fullName") || "Anonymous User";
+    const referredByCode = searchParams.get("referredByCode");
 
     if (!email) {
       return NextResponse.json(
@@ -30,6 +31,15 @@ export async function GET(req: NextRequest) {
 
     // If user doesn't exist, create it dynamically
     if (!user) {
+      // Find referrer by code if provided
+      let referredByUserId = null;
+      if (referredByCode) {
+        const referrer = await User.findOne({ referralCode: referredByCode });
+        if (referrer) {
+          referredByUserId = referrer._id;
+        }
+      }
+
       // Generate a random referral code
       const referralCode = `${fullName.slice(0, 4).toUpperCase()}${Math.floor(1000 + Math.random() * 9000)}`;
       
@@ -44,6 +54,7 @@ export async function GET(req: NextRequest) {
         pendingPoints: 0,
         surveysCompleted: 0,
         referralCode: referralCode,
+        referredBy: referredByUserId,
         preferences: {
           darkMode: true,
           emailNotifications: true,
@@ -72,7 +83,7 @@ export async function POST(req: NextRequest) {
   // Sync endpoint using POST as well
   try {
     await dbConnect();
-    const { email, clerkId, fullName } = await req.json();
+    const { email, clerkId, fullName, referredByCode } = await req.json();
 
     if (!email || !clerkId) {
       return NextResponse.json({ success: false, error: "email and clerkId are required" }, { status: 400 });
@@ -84,6 +95,14 @@ export async function POST(req: NextRequest) {
     }
 
     if (!user) {
+      let referredByUserId = null;
+      if (referredByCode) {
+        const referrer = await User.findOne({ referralCode: referredByCode });
+        if (referrer) {
+          referredByUserId = referrer._id;
+        }
+      }
+
       const referralCode = `${(fullName || "USER").slice(0, 4).toUpperCase()}${Math.floor(1000 + Math.random() * 9000)}`;
       user = await User.create({
         fullName: fullName || "Anonymous User",
@@ -96,6 +115,7 @@ export async function POST(req: NextRequest) {
         pendingPoints: 0,
         surveysCompleted: 0,
         referralCode,
+        referredBy: referredByUserId,
         preferences: {
           darkMode: true,
           emailNotifications: true,
