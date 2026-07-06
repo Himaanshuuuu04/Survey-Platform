@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 interface StatCardProps {
   title: string;
-  value: string | number;
+  value: React.ReactNode;
   icon: LucideIcon;
   description?: string;
   trend?: "up" | "down" | "neutral";

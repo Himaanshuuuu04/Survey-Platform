@@ -11,10 +11,12 @@ const giftCardSchema = new mongoose.Schema({
   status: { type: String, enum: ['available', 'used', 'expired'], default: 'available' },
   
   // Once redeemed, tie it to the user and their redemption request
-  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-  redemptionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Redemption', default: null },
+  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, index: true },
+  redemptionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Redemption', default: null, index: true },
   redeemedAt: { type: Date }
 }, { timestamps: true });
+
+giftCardSchema.index({ brand: 1, status: 1 });
 
 const GiftCard = mongoose.models.GiftCard || mongoose.model("GiftCard", giftCardSchema);
 export default GiftCard;

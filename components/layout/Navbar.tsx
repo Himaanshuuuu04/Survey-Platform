@@ -35,6 +35,17 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', on);
   }, []);
 
+  useEffect(() => {
+    const isDarkPage = pathname.startsWith("/login") || pathname.startsWith("/register") || pathname.startsWith("/user-dashboard");
+    if (isDarkPage) {
+      document.body.style.backgroundColor = "#09090b";
+      document.body.style.backgroundImage = "none";
+    } else {
+      document.body.style.backgroundColor = "#ffffff";
+      document.body.style.backgroundImage = "radial-gradient(#E4E4E7 1.2px, transparent 1.2px)";
+    }
+  }, [pathname]);
+
   const menuItems = [
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
     { label: 'Services', ariaLabel: 'View our services', link: '/services' },
@@ -110,31 +121,14 @@ export function Navbar() {
               })}
             </nav>
 
-            {/* Desktop CTA (Toggle + Contact Button) */}
+            {/* Desktop CTA (Portal Button + Contact Button) */}
             <div className="relative z-10 flex items-center gap-4.5">
-              <div className="relative flex rounded-full border border-zinc-950/10 dark:border-white/10 bg-zinc-950/5 dark:bg-white/5 p-0.5 text-[9.5px] font-black uppercase tracking-wider">
-                {(['brands', 'participants'] as const).map((a) => (
-                  <button
-                    key={a}
-                    onClick={() => setAudience(a)}
-                    className={`relative rounded-full px-3 py-1 transition-colors duration-300 cursor-pointer ${
-                      audience === a 
-                        ? 'text-white dark:text-zinc-950 font-black' 
-                        : 'text-zinc-550 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white'
-                    }`}
-                  >
-                    <span className="relative z-20">{a === 'brands' ? 'Brands' : 'Participants'}</span>
-                    {audience === a && (
-                      <motion.div
-                        layoutId="audiencePill"
-                        className="absolute inset-0 rounded-full z-10"
-                        style={{ background: 'var(--brand)' }}
-                        transition={{ type: 'spring', stiffness: 350, damping: 26 }}
-                      />
-                    )}
-                  </button>
-                ))}
-              </div>
+              <Link
+                href="/login"
+                className="px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 hover:text-[#5C8EFF] transition-colors border border-zinc-200 dark:border-zinc-800 rounded-full bg-white/50 dark:bg-zinc-900/50 hover:border-[#5C8EFF]/30 backdrop-blur-sm shadow-xs"
+              >
+                Participant Portal
+              </Link>
 
               <Link
                 href="/contact"
@@ -170,20 +164,12 @@ export function Navbar() {
           accentColor="var(--brand)"
           isFixed={true}
           audienceContent={
-            <div className="flex rounded-full border border-zinc-200/80 bg-zinc-100/30 p-1 text-[11px] font-bold uppercase tracking-wider w-full">
-              {(['brands', 'participants'] as const).map((a) => (
-                <button
-                  key={a}
-                  onClick={() => setAudience(a)}
-                  className={`flex-1 rounded-full px-3 py-1.5 transition-all duration-200 cursor-pointer ${
-                    audience === a ? 'text-white shadow-sm' : 'text-zinc-650'
-                  }`}
-                  style={audience === a ? { background: BRAND } : {}}
-                >
-                  {a === 'brands' ? 'Brands' : 'Participants'}
-                </button>
-              ))}
-            </div>
+            <Link
+              href="/login"
+              className="flex items-center justify-center rounded-full border border-zinc-200 bg-white p-2.5 text-xs font-bold uppercase tracking-wider w-full text-center text-zinc-800 shadow-xs"
+            >
+              Participant Portal
+            </Link>
           }
         />
       </div>
