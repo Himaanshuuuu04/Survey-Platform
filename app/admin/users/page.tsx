@@ -101,7 +101,7 @@ const DetailRow = ({
         <Icon className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm text-muted-foreground">{label}</span>
       </div>
-      <div className="flex items-center gap-1.5 min-w-0 max-w-[65%]">
+      <div className="flex items-center gap-1.5 min-w-0 max-w-[60%] sm:max-w-[75%] lg:max-w-[80%]">
         <span className={`text-sm truncate font-medium ${isMono ? 'font-mono text-xs bg-muted/40 px-1.5 py-0.5 rounded border border-border/50' : ''} ${className}`}>
           {value}
         </span>
@@ -391,15 +391,26 @@ export default function UsersPage() {
 
       {/* User Details Dialog */}
       <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
-        <DialogContent className="max-w-5xl w-full max-h-[90vh] flex flex-col p-6 overflow-hidden">
-          <DialogHeader className="border-b pb-3 shrink-0">
-            <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-              <UserIcon className="h-6 w-6 text-brand" />
-              User Information Card
+        <DialogContent className="w-full sm:max-w-3xl md:max-w-5xl lg:max-w-6xl max-h-[95vh] sm:max-h-[90vh] flex flex-col p-4 sm:p-5 overflow-hidden">
+          <DialogHeader className="border-b pb-2.5 shrink-0">
+            <DialogTitle className="text-xl font-bold flex flex-wrap items-center gap-2">
+              <UserIcon className="h-5 w-5 text-brand" />
+              <span>{selectedUser?.fullName || "User Details"}</span>
+              {selectedUser && (
+                <span className="inline-flex">
+                  {getStatusBadge(selectedUser.status)}
+                </span>
+              )}
             </DialogTitle>
-            <DialogDescription>
-              Detailed lookup for user profile metrics, access control, and transaction ledgers.
-            </DialogDescription>
+            {selectedUser && (
+              <DialogDescription className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+                <span className="font-medium text-foreground/80">{selectedUser.email}</span>
+                <span>•</span>
+                <span>{selectedUser.country || "Unknown Country"}</span>
+                <span>•</span>
+                <span>Joined {new Date(selectedUser.createdAt).toLocaleDateString()}</span>
+              </DialogDescription>
+            )}
           </DialogHeader>
 
           {loadingDetail ? (
@@ -407,34 +418,21 @@ export default function UsersPage() {
               <Loader2 className="h-8 w-8 animate-spin text-brand" />
             </div>
           ) : userDetail ? (
-            <div className="flex-1 flex flex-col overflow-hidden min-h-0 mt-4">
-              
-              {/* Premium Header Block */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 p-5 rounded-2xl border bg-gradient-to-br from-brand/5 to-transparent relative overflow-hidden shrink-0 mb-4">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full blur-3xl pointer-events-none" />
-                <div className="h-16 w-16 rounded-full bg-gradient-to-tr from-brand to-cyan-400 flex items-center justify-center text-white font-bold text-xl font-sharp shadow-lg shadow-brand/15 shrink-0">
-                  {userDetail.profile.fullName?.charAt(0).toUpperCase() || "U"}
-                </div>
-                <div className="flex-1 text-center sm:text-left space-y-1">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 justify-center sm:justify-start">
-                    <h2 className="text-xl font-bold text-ink">{userDetail.profile.fullName}</h2>
-                    <div className="flex justify-center">
-                      {getStatusBadge(userDetail.profile.status)}
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground break-all">{userDetail.profile.email}</p>
-                  <p className="text-xs text-muted-foreground flex items-center justify-center sm:justify-start gap-1">
-                    <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                    {userDetail.profile.country || "Unknown Country"} • Registered {new Date(userDetail.profile.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-
+            <div className="flex-1 flex flex-col overflow-hidden min-h-0 mt-2">
               <Tabs defaultValue="profile" className="flex-1 flex flex-col overflow-hidden">
-                <TabsList className="grid grid-cols-3 w-full shrink-0">
-                  <TabsTrigger value="profile">Profile & Security</TabsTrigger>
-                  <TabsTrigger value="earnings">Earnings & Activity</TabsTrigger>
-                  <TabsTrigger value="redemptions">Redemptions ({userDetail.history?.redemptions?.length || 0})</TabsTrigger>
+                <TabsList className="grid grid-cols-3 w-full shrink-0 h-auto p-1 bg-muted/30">
+                  <TabsTrigger value="profile" className="text-xs sm:text-sm py-2 px-1">
+                    <span className="hidden sm:inline">Profile & Security</span>
+                    <span className="sm:hidden">Profile</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="earnings" className="text-xs sm:text-sm py-2 px-1">
+                    <span className="hidden sm:inline">Earnings & Activity</span>
+                    <span className="sm:hidden">Earnings</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="redemptions" className="text-xs sm:text-sm py-2 px-1">
+                    <span className="hidden sm:inline">Redemptions ({userDetail.history?.redemptions?.length || 0})</span>
+                    <span className="sm:hidden">Redeems ({userDetail.history?.redemptions?.length || 0})</span>
+                  </TabsTrigger>
                 </TabsList>
 
                 {/* Profile & Security Tab */}
@@ -442,7 +440,7 @@ export default function UsersPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     {/* Account Demographics */}
-                    <Card className="p-5 border bg-muted/5 rounded-2xl space-y-3.5">
+                    <Card className="p-4 sm:p-5 border bg-muted/5 rounded-2xl space-y-3 sm:space-y-3.5">
                       <div className="flex items-center gap-2 border-b pb-2">
                         <UserIcon className="h-4.5 w-4.5 text-brand" />
                         <h3 className="font-bold text-sm tracking-wide text-ink">Account Demographics</h3>
@@ -457,7 +455,7 @@ export default function UsersPage() {
                     </Card>
 
                     {/* Security & Controls */}
-                    <Card className="p-5 border bg-muted/5 rounded-2xl space-y-3.5">
+                    <Card className="p-4 sm:p-5 border bg-muted/5 rounded-2xl space-y-3 sm:space-y-3.5">
                       <div className="flex items-center gap-2 border-b pb-2">
                         <Shield className="h-4.5 w-4.5 text-amber-500" />
                         <h3 className="font-bold text-sm tracking-wide text-ink">Security & Controls</h3>
@@ -507,7 +505,7 @@ export default function UsersPage() {
                   </div>
 
                   {/* Platform & Preferences */}
-                  <Card className="p-5 border bg-muted/5 rounded-2xl space-y-3.5">
+                  <Card className="p-4 sm:p-5 border bg-muted/5 rounded-2xl space-y-3 sm:space-y-3.5">
                     <div className="flex items-center gap-2 border-b pb-2">
                       <Fingerprint className="h-4.5 w-4.5 text-blue-500" />
                       <h3 className="font-bold text-sm tracking-wide text-ink">Platform & Referral Preferences</h3>
@@ -522,66 +520,62 @@ export default function UsersPage() {
                 </TabsContent>
 
                 {/* Earnings & Activity Tab */}
-                <TabsContent value="earnings" className="flex-1 overflow-hidden flex flex-col pt-4 min-h-0">
+                <TabsContent value="earnings" className="flex-1 overflow-y-auto pt-4 space-y-4 pr-1 min-h-0">
                   
-                  {/* Styled Earning Statistics Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 shrink-0 mb-4">
-                    <Card className="border bg-gradient-to-b from-brand/5 to-transparent relative overflow-hidden rounded-xl shadow-xs">
-                      <div className="p-4 space-y-1 relative z-10">
+                  {/* Compact Earning Statistics Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 shrink-0">
+                    <Card className="border bg-gradient-to-b from-brand/5 to-transparent rounded-xl shadow-xs">
+                      <div className="p-3 space-y-0.5">
                         <div className="flex justify-between items-center">
                           <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Current Balance</p>
-                          <Coins className="h-4 w-4 text-brand" />
+                          <Coins className="h-3.5 w-3.5 text-brand" />
                         </div>
-                        <p className="text-2xl font-bold font-sharp text-brand mt-1">
+                        <p className="text-xl font-bold font-sharp text-brand mt-0.5">
                           {(userDetail.profile.currentPoints || 0).toLocaleString()}
                         </p>
-                        <p className="text-[9px] text-muted-foreground">Available points</p>
                       </div>
                     </Card>
-                    <Card className="border bg-gradient-to-b from-success/5 to-transparent relative overflow-hidden rounded-xl shadow-xs">
-                      <div className="p-4 space-y-1 relative z-10">
+                    <Card className="border bg-gradient-to-b from-success/5 to-transparent rounded-xl shadow-xs">
+                      <div className="p-3 space-y-0.5">
                         <div className="flex justify-between items-center">
                           <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Lifetime Earned</p>
-                          <TrendingUp className="h-4 w-4 text-success" />
+                          <TrendingUp className="h-3.5 w-3.5 text-success" />
                         </div>
-                        <p className="text-2xl font-bold font-sharp text-success mt-1">
+                        <p className="text-xl font-bold font-sharp text-success mt-0.5">
                           {(userDetail.profile.lifetimeEarnings || 0).toLocaleString()}
                         </p>
-                        <p className="text-[9px] text-muted-foreground">Accumulated total</p>
                       </div>
                     </Card>
-                    <Card className="border bg-gradient-to-b from-amber-500/5 to-transparent relative overflow-hidden rounded-xl shadow-xs">
-                      <div className="p-4 space-y-1 relative z-10">
+                    <Card className="border bg-gradient-to-b from-amber-500/5 to-transparent rounded-xl shadow-xs">
+                      <div className="p-3 space-y-0.5">
                         <div className="flex justify-between items-center">
                           <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Pending Points</p>
-                          <Clock className="h-4 w-4 text-amber-500" />
+                          <Clock className="h-3.5 w-3.5 text-amber-500" />
                         </div>
-                        <p className="text-2xl font-bold font-sharp text-amber-500 mt-1">
+                        <p className="text-xl font-bold font-sharp text-amber-500 mt-0.5">
                           {(userDetail.profile.pendingPoints || 0).toLocaleString()}
                         </p>
-                        <p className="text-[9px] text-muted-foreground">Awaiting validation</p>
                       </div>
                     </Card>
-                    <Card className="border bg-gradient-to-b from-indigo-500/5 to-transparent relative overflow-hidden rounded-xl shadow-xs">
-                      <div className="p-4 space-y-1 relative z-10">
+                    <Card className="border bg-gradient-to-b from-indigo-500/5 to-transparent rounded-xl shadow-xs">
+                      <div className="p-3 space-y-0.5">
                         <div className="flex justify-between items-center">
                           <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">Surveys Done</p>
-                          <ClipboardCheck className="h-4 w-4 text-indigo-500" />
+                          <ClipboardCheck className="h-3.5 w-3.5 text-indigo-500" />
                         </div>
-                        <p className="text-2xl font-bold font-sharp text-indigo-500 mt-1">
+                        <p className="text-xl font-bold font-sharp text-indigo-500 mt-0.5">
                           {userDetail.profile.surveysCompleted || 0}
                         </p>
-                        <p className="text-[9px] text-muted-foreground">Completed offers</p>
                       </div>
                     </Card>
                   </div>
 
-                  <h3 className="font-semibold text-sm mb-2.5 flex items-center gap-1.5 shrink-0">
+                  <h3 className="font-semibold text-sm flex items-center gap-1.5 shrink-0">
                     <History className="h-4 w-4 text-muted-foreground" />
                     Points Ledger History
                   </h3>
                   
-                  <div className="flex-1 overflow-auto border rounded-2xl min-h-0 bg-muted/5">
+                  <div className="border rounded-2xl bg-muted/5 overflow-hidden">
                     <Table>
                       <TableHeader className="sticky top-0 bg-background z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.06)]">
                         <TableRow>
@@ -628,13 +622,13 @@ export default function UsersPage() {
                 </TabsContent>
 
                 {/* Redemptions Tab */}
-                <TabsContent value="redemptions" className="flex-1 overflow-hidden flex flex-col pt-4 min-h-0">
-                  <h3 className="font-semibold text-sm mb-2.5 flex items-center gap-1.5 shrink-0">
+                <TabsContent value="redemptions" className="flex-1 overflow-y-auto pt-4 space-y-4 pr-1 min-h-0">
+                  <h3 className="font-semibold text-sm flex items-center gap-1.5 shrink-0">
                     <DollarSign className="h-4 w-4 text-muted-foreground" />
                     Cashout Redemptions Ledger
                   </h3>
                   
-                  <div className="flex-1 overflow-auto border rounded-2xl min-h-0 bg-muted/5">
+                  <div className="border rounded-2xl bg-muted/5 overflow-hidden">
                     <Table>
                       <TableHeader className="sticky top-0 bg-background z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.06)]">
                         <TableRow>

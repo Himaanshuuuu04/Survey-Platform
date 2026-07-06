@@ -23,9 +23,13 @@ export async function POST(req: NextRequest) {
         throw new Error("Missing required fields (code, brand, usdAmount) in one or more cards");
       }
       
+      const usdAmountVal = Number(card.usdAmount);
+      const pointsRequiredVal = card.pointsRequired || (usdAmountVal * 1000);
+      
       return {
         brand: card.brand,
-        usdAmount: card.usdAmount,
+        usdAmount: usdAmountVal,
+        pointsRequired: pointsRequiredVal,
         code: card.code,
         pin: card.pin, // optional
         status: "available", // override any status passed in

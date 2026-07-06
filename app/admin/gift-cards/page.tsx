@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Toaster, toast } from "sonner";
 
 interface InventoryStat {
   brand: string;
@@ -83,12 +84,17 @@ export default function GiftCardsPage() {
         body: JSON.stringify(payload),
       });
 
+      const data = await res.json();
       if (res.ok) {
+        toast.success("Gift card added successfully");
         setSingleCard({ brand: "", usdAmount: "", code: "", pin: "" });
         fetchInventory();
+      } else {
+        toast.error(data.error || "Failed to add gift card");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      toast.error(error.message || "Failed to add gift card");
     } finally {
       setIsAddingSingle(false);
     }
@@ -100,6 +106,7 @@ export default function GiftCardsPage() {
       const parsed = JSON.parse(bulkJson);
       if (!Array.isArray(parsed)) {
         setUploadMessage("Error: Input must be a JSON array of objects.");
+        toast.error("Input must be a JSON array of objects.");
         return;
       }
       
@@ -112,13 +119,16 @@ export default function GiftCardsPage() {
       
       const data = await res.json();
       if (res.ok) {
+        toast.success(data.message || "Gift cards uploaded successfully");
         setUploadMessage(`Success: ${data.message}`);
         setBulkJson("");
         fetchInventory();
       } else {
+        toast.error(data.error || "Failed to upload gift cards");
         setUploadMessage(`Error: ${data.error}`);
       }
-    } catch (error) {
+    } catch (error: any) {
+      toast.error("Invalid JSON format.");
       setUploadMessage("Error: Invalid JSON format.");
     } finally {
       setIsUploading(false);
@@ -127,6 +137,7 @@ export default function GiftCardsPage() {
 
   return (
     <div className="space-y-6">
+      <Toaster richColors position="top-right" />
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-ink">Gift Cards</h1>
         <p className="text-muted-foreground mt-1">
