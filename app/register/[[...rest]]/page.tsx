@@ -4,6 +4,42 @@ import { SignUp } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import { Coins, Gift, ShieldCheck, Users, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+
+function ReferralSignUp() {
+  const searchParams = useSearchParams();
+  const refCode = searchParams.get("ref") || undefined;
+
+  return (
+    <SignUp 
+      path="/register"
+      routing="path"
+      signInUrl="/login"
+      unsafeMetadata={refCode ? { referredByCode: refCode } : undefined}
+      appearance={{
+        elements: {
+          card: "bg-zinc-900/65 backdrop-blur-xl border border-zinc-850 shadow-2xl rounded-3xl w-full p-2",
+          headerTitle: "text-white font-bold text-xl",
+          headerSubtitle: "text-zinc-450 text-sm mt-1",
+          socialButtonsBlockButton: "bg-zinc-850 hover:bg-zinc-805 border border-zinc-800 text-white font-semibold rounded-xl py-2.5 transition-colors",
+          socialButtonsBlockButtonText: "text-white font-semibold text-xs",
+          dividerLine: "bg-zinc-800/80",
+          dividerText: "text-zinc-500 font-bold text-[10px] uppercase tracking-wider",
+          formButtonPrimary: "bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold text-xs uppercase tracking-wider py-3 rounded-xl shadow-lg shadow-[#5C8EFF]/20 hover:scale-[1.01] active:scale-100 transition-all",
+          formFieldLabel: "text-zinc-350 font-bold text-[10px] uppercase tracking-wider",
+          formFieldInput: "bg-zinc-850/80 border border-zinc-800 focus:border-[#5C8EFF] focus:ring-1 focus:ring-[#5C8EFF] text-white rounded-xl py-2.5 px-3.5 text-sm transition-all",
+          footerActionText: "text-zinc-400 text-xs font-medium",
+          footerActionLink: "text-[#5C8EFF] hover:text-[#5C8EFF]/80 font-bold transition-colors text-xs",
+          identityPreviewText: "text-white font-medium",
+          identityPreviewEditButtonIcon: "text-[#5C8EFF]",
+          formResendCodeLink: "text-[#5C8EFF] hover:text-[#5C8EFF]/80 font-bold",
+          formFieldInputShowHideButton: "text-zinc-400 hover:text-white",
+        }
+      }}
+    />
+  );
+}
 
 export default function RegisterPage() {
   const benefits = [
@@ -142,31 +178,9 @@ export default function RegisterPage() {
           transition={{ duration: 0.6 }}
           className="w-full max-w-md"
         >
-          <SignUp 
-            path="/register"
-            routing="path"
-            signInUrl="/login"
-            appearance={{
-              elements: {
-                card: "bg-zinc-900/65 backdrop-blur-xl border border-zinc-850 shadow-2xl rounded-3xl w-full p-2",
-                headerTitle: "text-white font-bold text-xl",
-                headerSubtitle: "text-zinc-450 text-sm mt-1",
-                socialButtonsBlockButton: "bg-zinc-850 hover:bg-zinc-805 border border-zinc-800 text-white font-semibold rounded-xl py-2.5 transition-colors",
-                socialButtonsBlockButtonText: "text-white font-semibold text-xs",
-                dividerLine: "bg-zinc-800/80",
-                dividerText: "text-zinc-500 font-bold text-[10px] uppercase tracking-wider",
-                formButtonPrimary: "bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold text-xs uppercase tracking-wider py-3 rounded-xl shadow-lg shadow-[#5C8EFF]/20 hover:scale-[1.01] active:scale-100 transition-all",
-                formFieldLabel: "text-zinc-350 font-bold text-[10px] uppercase tracking-wider",
-                formFieldInput: "bg-zinc-850/80 border border-zinc-800 focus:border-[#5C8EFF] focus:ring-1 focus:ring-[#5C8EFF] text-white rounded-xl py-2.5 px-3.5 text-sm transition-all",
-                footerActionText: "text-zinc-400 text-xs font-medium",
-                footerActionLink: "text-[#5C8EFF] hover:text-[#5C8EFF]/80 font-bold transition-colors text-xs",
-                identityPreviewText: "text-white font-medium",
-                identityPreviewEditButtonIcon: "text-[#5C8EFF]",
-                formResendCodeLink: "text-[#5C8EFF] hover:text-[#5C8EFF]/80 font-bold",
-                formFieldInputShowHideButton: "text-zinc-400 hover:text-white",
-              }
-            }}
-          />
+          <Suspense fallback={<div className="text-zinc-500 text-xs">Loading signup...</div>}>
+            <ReferralSignUp />
+          </Suspense>
         </motion.div>
       </div>
     </div>
