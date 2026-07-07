@@ -147,7 +147,7 @@ export default function RedeemPage() {
   const selectedBrandLogo = GIFT_CARD_BRANDS.find((b) => b.name === selectedBrand)?.logo;
 
   return (
-    <div className="space-y-8 pb-12 max-w-6xl mx-auto">
+    <div className="space-y-8 pb-12">
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight flex items-center gap-3">

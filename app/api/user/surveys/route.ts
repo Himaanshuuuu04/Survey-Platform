@@ -58,6 +58,28 @@ export async function GET(req: NextRequest) {
       query.countryEligibility = { $in: [country, "ALL"] };
     }
 
+    // 2.2 Demographic Targeting
+    if (user.dateOfBirth && user.gender) {
+      // Calculate Age Bracket
+      const birthDate = new Date(user.dateOfBirth);
+      const ageDifMs = Date.now() - birthDate.getTime();
+      const ageDate = new Date(ageDifMs);
+      const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+
+      let ageBracket = 'All';
+      if (age >= 18 && age <= 24) ageBracket = '18-24';
+      else if (age >= 25 && age <= 34) ageBracket = '25-34';
+      else if (age >= 35 && age <= 44) ageBracket = '35-44';
+      else if (age >= 45) ageBracket = '45+';
+
+      query.targetAgeRange = { $in: ['All', ageBracket] };
+      query.targetGender = { $in: ['All', user.gender] };
+    } else {
+      // If no demographics are known, only show surveys targeted at everyone
+      query.targetAgeRange = 'All';
+      query.targetGender = 'All';
+    }
+
     // 2.5 Auto-seed sample surveys if none exist in the database
     const surveyCount = await Survey.countDocuments();
     if (surveyCount === 0) {

@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
   vpnDetected: { type: Boolean, default: false },
   country: { type: String },
 
+  // Demographics
+  dateOfBirth: { type: String }, // YYYY-MM-DD
+  gender: { type: String, enum: ['Male', 'Female', 'Other', 'Prefer not to say'] },
+
   // Preferences
   preferences: {
     darkMode: { type: Boolean, default: true },

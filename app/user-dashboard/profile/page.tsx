@@ -33,6 +33,14 @@ export default function ProfilePage() {
   
   const [fullName, setFullName] = useState("");
   const [country, setCountry] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [gender, setGender] = useState("");
+  
+  // Track if they were already set to disable the fields
+  const [hasCountry, setHasCountry] = useState(false);
+  const [hasDateOfBirth, setHasDateOfBirth] = useState(false);
+  const [hasGender, setHasGender] = useState(false);
+
   const [emailNotifications, setEmailNotifications] = useState(true);
   
   const [saving, setSaving] = useState(false);
@@ -42,7 +50,16 @@ export default function ProfilePage() {
   useEffect(() => {
     if (dbUser) {
       setFullName(dbUser.fullName || "");
+      
       setCountry(dbUser.country || "");
+      if (dbUser.country) setHasCountry(true);
+
+      setDateOfBirth(dbUser.dateOfBirth || "");
+      if (dbUser.dateOfBirth) setHasDateOfBirth(true);
+
+      setGender(dbUser.gender || "");
+      if (dbUser.gender) setHasGender(true);
+
       setEmailNotifications(dbUser.preferences?.emailNotifications ?? true);
     }
   }, [dbUser]);
@@ -65,6 +82,8 @@ export default function ProfilePage() {
         body: JSON.stringify({
           fullName,
           country,
+          dateOfBirth,
+          gender,
           preferences: {
             emailNotifications,
           },
@@ -96,7 +115,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="space-y-8 pb-12 max-w-5xl mx-auto">
+    <div className="space-y-8 pb-12">
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight flex items-center gap-3">
@@ -237,7 +256,8 @@ export default function ProfilePage() {
                     id="country"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
-                    className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 ring-offset-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    disabled={hasCountry}
+                    className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 ring-offset-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-500"
                   >
                     <option value="">Select Country</option>
                     <option value="United States">United States</option>
@@ -250,6 +270,44 @@ export default function ProfilePage() {
                     <option value="Japan">Japan</option>
                     <option value="Brazil">Brazil</option>
                   </select>
+                  {hasCountry && <p className="text-[10px] text-zinc-450">Country cannot be changed once set.</p>}
+                </div>
+
+                {/* Date of Birth */}
+                <div className="space-y-2">
+                  <label htmlFor="dateOfBirth" className="text-xs font-bold text-zinc-650 uppercase tracking-wider flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5" /> Date of Birth
+                  </label>
+                  <Input 
+                    id="dateOfBirth" 
+                    type="date"
+                    value={dateOfBirth}
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    disabled={hasDateOfBirth}
+                    className="border-zinc-200 text-zinc-800 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-500"
+                  />
+                  {hasDateOfBirth && <p className="text-[10px] text-zinc-450">Date of Birth cannot be changed once set.</p>}
+                </div>
+
+                {/* Gender */}
+                <div className="space-y-2">
+                  <label htmlFor="gender" className="text-xs font-bold text-zinc-650 uppercase tracking-wider flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5" /> Gender
+                  </label>
+                  <select 
+                    id="gender"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    disabled={hasGender}
+                    className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 ring-offset-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-500"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                  </select>
+                  {hasGender && <p className="text-[10px] text-zinc-450">Gender cannot be changed once set.</p>}
                 </div>
 
                 {/* Preferences */}

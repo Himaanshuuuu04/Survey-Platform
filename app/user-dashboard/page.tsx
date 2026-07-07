@@ -115,6 +115,7 @@ export default function DashboardPage() {
   const { dbUser, refreshUser } = useDBUser();
   const [data, setData] = useState<DashboardData | null>(null);
   const [surveys, setSurveys] = useState<SurveyType[]>([]);
+  const [completedSurveys, setCompletedSurveys] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Modal / Survey taking states
@@ -159,9 +160,26 @@ export default function DashboardPage() {
     }
   };
 
+  const fetchCompletedSurveys = async () => {
+    if (!user) return;
+    try {
+      const res = await fetch("/api/user/wallet?category=survey&type=credit&limit=50", {
+        headers: {
+          "x-clerk-user-id": user.id,
+        },
+      });
+      const json = await res.json();
+      if (json.success) {
+        setCompletedSurveys(json.data);
+      }
+    } catch (err) {
+      console.error("Error fetching completed surveys:", err);
+    }
+  };
+
   const loadAllData = async () => {
     setLoading(true);
-    await Promise.all([fetchDashboardData(), fetchSurveys()]);
+    await Promise.all([fetchDashboardData(), fetchSurveys(), fetchCompletedSurveys()]);
     setLoading(false);
   };
 
@@ -304,11 +322,43 @@ export default function DashboardPage() {
               </TabsContent>
               
               <TabsContent value="completed" className="mt-0">
-                <div className="h-48 flex flex-col items-center justify-center text-zinc-500 text-sm border-2 border-dashed border-zinc-200 rounded-xl bg-zinc-50/50">
-                  <CheckCircle className="w-10 h-10 text-emerald-500 mb-2" />
-                  <p className="font-bold text-zinc-900">Great job!</p>
-                  <p>You have completed {stats.surveysCompleted} surveys in total.</p>
-                </div>
+                {completedSurveys.length === 0 ? (
+                  <div className="h-48 flex flex-col items-center justify-center text-zinc-500 text-sm border-2 border-dashed border-zinc-200 rounded-xl bg-zinc-50/50">
+                    <CheckCircle className="w-10 h-10 text-emerald-500 mb-2" />
+                    <p className="font-bold text-zinc-900">Great job!</p>
+                    <p>You have completed {stats.surveysCompleted} surveys in total.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {completedSurveys.map((survey) => (
+                      <Card 
+                        key={survey._id}
+                        className="group flex flex-col justify-between overflow-hidden bg-zinc-50/50 border-zinc-200 shadow-none"
+                      >
+                        <CardHeader className="p-5 pb-0 opacity-90">
+                          <div className="flex items-center justify-between gap-3 mb-3">
+                            <Badge variant="outline" className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider bg-white">
+                              Completed
+                            </Badge>
+                            <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none font-black gap-1 px-2">
+                              <CheckCircle className="w-3 h-3" />
+                              +{survey.amount} PTS
+                            </Badge>
+                          </div>
+                          <CardTitle className="text-sm font-bold text-zinc-900 leading-snug line-clamp-2">
+                            {survey.description || "Survey Reward"}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardFooter className="p-5 pt-4 mt-auto border-t border-zinc-200/50 flex items-center justify-between text-xs text-zinc-500 opacity-80">
+                          <div className="flex items-center gap-1.5 font-medium">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>{new Date(survey.createdAt).toLocaleDateString()}</span>
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           </CardContent>

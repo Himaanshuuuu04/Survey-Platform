@@ -178,7 +178,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { fullName, country, preferences } = body;
+    const { fullName, country, dateOfBirth, gender, preferences } = body;
 
     const user = await User.findOne({ clerkId });
     if (!user) {
@@ -186,7 +186,12 @@ export async function PUT(req: NextRequest) {
     }
 
     if (fullName) user.fullName = fullName;
-    if (country !== undefined) user.country = country;
+    
+    // One-time fields: Only allow updating if they are not already set
+    if (country !== undefined && !user.country) user.country = country;
+    if (dateOfBirth !== undefined && !user.dateOfBirth) user.dateOfBirth = dateOfBirth;
+    if (gender !== undefined && !user.gender) user.gender = gender;
+
     if (preferences) {
       user.preferences = {
         ...user.preferences,

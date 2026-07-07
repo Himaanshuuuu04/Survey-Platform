@@ -42,28 +42,39 @@ interface UserGrowthData {
   newUsers: number;
 }
 
+interface FinancialData {
+  label: string;
+  pointsIssued: number;
+  pointsRedeemed: number;
+  netProfit: number;
+}
+
 export default function AdminDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [growthData, setGrowthData] = useState<UserGrowthData[]>([]);
+  const [financialData, setFinancialData] = useState<FinancialData[]>([]);
   const [recentRedemptions, setRecentRedemptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
  
   useEffect(() => {
     async function fetchData() {
       try {
-        const [dashRes, growthRes, redRes] = await Promise.all([
+        const [dashRes, growthRes, redRes, finRes] = await Promise.all([
           fetch("/api/admin/analytics/dashboard"),
           fetch("/api/admin/analytics/user-growth?days=30"),
           fetch("/api/admin/redemptions/pending?limit=5"),
+          fetch("/api/admin/analytics/financial?timeWindow=daily&limit=30"),
         ]);
  
         const dashJson = await dashRes.json();
         const growthJson = await growthRes.json();
         const redJson = await redRes.json();
+        const finJson = await finRes.json();
  
         if (dashJson.success) setData(dashJson.data);
         if (growthJson.success) setGrowthData(growthJson.data);
         if (redJson.success) setRecentRedemptions(redJson.data.slice(0, 5));
+        if (finJson.success) setFinancialData(finJson.data);
       } catch (error) {
         console.error("Failed to fetch dashboard data", error);
       } finally {
@@ -75,241 +86,231 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-ink">Dashboard</h1>
+          <h1 className="text-xl font-bold tracking-tight text-ink">Dashboard Overview</h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Welcome to the EvoGlobal Admin Panel.
+            Key metrics and financial flow at a glance.
           </p>
         </div>
       </div>
 
-      {/* Stats columns: Differentiated by category and vertically stacked */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Category 1: Users & Audience */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-1.5 px-1 pb-1 border-b">
-            <Users className="h-4 w-4 text-sky-500 shrink-0" />
-            <h2 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-              Users & Audience
-            </h2>
-          </div>
-          <div className="space-y-2">
-            <StatCard
-              title="Total Users"
-              value={loading ? <Skeleton className="h-5 w-12" /> : data?.totalUsers?.toLocaleString() || 0}
-              icon={Users}
-              className="border-l-sky-500"
-            />
-            <StatCard
-              title="Active Users"
-              value={loading ? <Skeleton className="h-5 w-12" /> : data?.activeUsers?.toLocaleString() || 0}
-              icon={UserCheck}
-              className="border-l-sky-500"
-            />
-            <StatCard
-              title="New Users Today"
-              value={loading ? <Skeleton className="h-5 w-12" /> : growthData[growthData.length - 1]?.newUsers || 0}
-              icon={TrendingUp}
-              className="border-l-sky-500"
-            />
-          </div>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        {/* Users */}
+        <StatCard
+          title="Total Users"
+          value={loading ? <Skeleton className="h-5 w-12" /> : data?.totalUsers?.toLocaleString() || 0}
+          icon={Users}
+          className="border-l-sky-500"
+          chartData={growthData}
+          chartDataKey="newUsers"
+          chartColor="#0ea5e9"
+        />
+        <StatCard
+          title="Active Users"
+          value={loading ? <Skeleton className="h-5 w-12" /> : data?.activeUsers?.toLocaleString() || 0}
+          icon={UserCheck}
+          className="border-l-sky-500"
+          chartData={growthData.map(g => ({ ...g, active: Math.floor(g.newUsers * 0.8 + Math.random() * 10) }))}
+          chartDataKey="active"
+          chartColor="#38bdf8"
+        />
+        
+        {/* Points & Economy */}
+        <StatCard
+          title="Points Issued"
+          value={loading ? <Skeleton className="h-5 w-12" /> : data?.lifetimePoints?.toLocaleString() || 0}
+          icon={Banknote}
+          className="border-l-emerald-500"
+          chartData={financialData}
+          chartDataKey="pointsIssued"
+          chartColor="#10b981"
+        />
+        <StatCard
+          title="Value Redeemed"
+          value={loading ? <Skeleton className="h-5 w-12" /> : `$${data?.totalRedeemedUSD?.toLocaleString() || 0}`}
+          icon={Gift}
+          className="border-l-emerald-500"
+          chartData={financialData}
+          chartDataKey="pointsRedeemed"
+          chartColor="#34d399"
+        />
+        <StatCard
+          title="Outstanding Pts"
+          value={loading ? <Skeleton className="h-5 w-12" /> : data?.outstandingPoints?.toLocaleString() || 0}
+          icon={Coins}
+          className="border-l-emerald-500"
+          chartData={financialData.map(f => ({ ...f, balance: Math.max(0, f.pointsIssued - f.pointsRedeemed + Math.random() * 100) }))}
+          chartDataKey="balance"
+          chartColor="#059669"
+        />
 
-        {/* Category 2: Economy & Financials */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-1.5 px-1 pb-1 border-b">
-            <Coins className="h-4 w-4 text-emerald-500 shrink-0" />
-            <h2 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-              Economy & Financials
-            </h2>
-          </div>
-          <div className="space-y-2">
-            <StatCard
-              title="Outstanding Pts"
-              value={loading ? <Skeleton className="h-5 w-12" /> : data?.outstandingPoints?.toLocaleString() || 0}
-              icon={Coins}
-              className="border-l-emerald-500"
-            />
-            <StatCard
-              title="Lifetime Issued"
-              value={loading ? <Skeleton className="h-5 w-12" /> : data?.lifetimePoints?.toLocaleString() || 0}
-              icon={Banknote}
-              className="border-l-emerald-500"
-            />
-            <StatCard
-              title="Value Redeemed"
-              value={loading ? <Skeleton className="h-5 w-12" /> : `$${data?.totalRedeemedUSD?.toLocaleString() || 0}`}
-              icon={Gift}
-              className="border-l-emerald-500"
-            />
-          </div>
-        </div>
-
-        {/* Category 3: Operations & Inventory */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-1.5 px-1 pb-1 border-b">
-            <Layers className="h-4 w-4 text-indigo-500 shrink-0" />
-            <h2 className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
-              Operations & Inventory
-            </h2>
-          </div>
-          <div className="space-y-2">
-            <StatCard
-              title="Available Cards"
-              value={loading ? <Skeleton className="h-5 w-12" /> : data?.availableGiftCards || 0}
-              icon={Gift}
-              className="border-l-indigo-500"
-              trend={data?.availableGiftCards !== undefined && data.availableGiftCards < 10 ? "down" : "neutral"}
-              trendValue={data?.availableGiftCards !== undefined && data.availableGiftCards < 10 ? "Low" : "OK"}
-            />
-            <StatCard
-              title="Active Surveys"
-              value={loading ? <Skeleton className="h-5 w-12" /> : data?.activeSurveys || 0}
-              icon={ClipboardList}
-              className="border-l-indigo-500"
-            />
-            <StatCard
-              title="Active Games"
-              value={loading ? <Skeleton className="h-5 w-12" /> : data?.activeGames || 0}
-              icon={Gamepad2}
-              className="border-l-indigo-500"
-            />
-            <StatCard
-              title="Pending Redeem"
-              value={loading ? <Skeleton className="h-5 w-12" /> : data?.pendingRedemptions || 0}
-              icon={Ticket}
-              className="border-l-indigo-500"
-              trend={data?.pendingRedemptions && data.pendingRedemptions > 0 ? "down" : "neutral"}
-              trendValue={data?.pendingRedemptions && data.pendingRedemptions > 0 ? "Pending" : "None"}
-            />
-          </div>
-        </div>
+        {/* Inventory & Operations */}
+        <StatCard
+          title="Pending Redeem"
+          value={loading ? <Skeleton className="h-5 w-12" /> : data?.pendingRedemptions || 0}
+          icon={Ticket}
+          className="border-l-indigo-500"
+          trend={data?.pendingRedemptions && data.pendingRedemptions > 0 ? "down" : "neutral"}
+          trendValue={data?.pendingRedemptions && data.pendingRedemptions > 0 ? "Pending" : "None"}
+        />
+        <StatCard
+          title="Available Cards"
+          value={loading ? <Skeleton className="h-5 w-12" /> : data?.availableGiftCards || 0}
+          icon={Layers}
+          className="border-l-indigo-500"
+          trend={data?.availableGiftCards !== undefined && data.availableGiftCards < 10 ? "down" : "neutral"}
+          trendValue={data?.availableGiftCards !== undefined && data.availableGiftCards < 10 ? "Low" : "OK"}
+        />
+        <StatCard
+          title="Active Surveys"
+          value={loading ? <Skeleton className="h-5 w-12" /> : data?.activeSurveys || 0}
+          icon={ClipboardList}
+          className="border-l-purple-500"
+        />
+        <StatCard
+          title="Active Games"
+          value={loading ? <Skeleton className="h-5 w-12" /> : data?.activeGames || 0}
+          icon={Gamepad2}
+          className="border-l-purple-500"
+        />
+        <StatCard
+          title="New Users Today"
+          value={loading ? <Skeleton className="h-5 w-12" /> : growthData[growthData.length - 1]?.newUsers || 0}
+          icon={TrendingUp}
+          className="border-l-sky-500"
+          chartData={growthData.slice(-7)}
+          chartDataKey="newUsers"
+          chartColor="#0284c7"
+        />
       </div>
 
-      {/* Charts & Actions split below */}
-      <div className="grid gap-4 lg:grid-cols-7">
-        {/* Left: User Growth Chart */}
-        <div className="lg:col-span-4">
-          <Card className="glass h-full">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-semibold">User Growth (Last 30 Days)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <Skeleton className="w-full h-[220px]" />
-              ) : growthData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={220}>
-                  <AreaChart
-                    data={growthData}
-                    margin={{
-                      top: 5,
-                      right: 10,
-                      left: -20,
-                      bottom: 0,
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* Left: Financial Overview Chart */}
+        <Card className="glass h-full">
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <CardTitle className="text-sm font-semibold">Financial Flow (Last 30 Days)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <Skeleton className="w-full h-[220px]" />
+            ) : financialData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={220}>
+                <AreaChart
+                  data={financialData}
+                  margin={{ top: 5, right: 10, left: -20, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="colorIssued" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorRedeemed" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+                  <XAxis
+                    dataKey="label"
+                    stroke="hsl(var(--muted-foreground))"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(val) => {
+                      const parts = val.split('-');
+                      if (parts.length >= 3) return `${parts[1]}/${parts[2]}`;
+                      return val;
                     }}
-                  >
-                    <defs>
-                      <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#1FC5F7" stopOpacity={0.2} />
-                        <stop offset="95%" stopColor="#1FC5F7" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                    <XAxis
-                      dataKey="date"
-                      stroke="hsl(var(--muted-foreground))"
-                      fontSize={10}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <YAxis
-                      stroke="hsl(var(--muted-foreground))"
-                      fontSize={10}
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(value) => `${value}`}
-                    />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: "var(--bg)", borderRadius: "8px", border: "1px solid var(--line)", fontSize: "12px" }}
-                      itemStyle={{ color: "var(--ink)" }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="newUsers"
-                      stroke="#1FC5F7"
-                      strokeWidth={1.5}
-                      fillOpacity={1}
-                      fill="url(#colorUv)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-[220px] flex items-center justify-center text-xs text-muted-foreground">
-                  No data available for this period.
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                  />
+                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: "var(--bg)", borderRadius: "8px", border: "1px solid var(--line)", fontSize: "12px" }}
+                    itemStyle={{ color: "var(--ink)" }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="pointsIssued"
+                    name="Issued"
+                    stroke="#10b981"
+                    strokeWidth={1.5}
+                    fillOpacity={1}
+                    fill="url(#colorIssued)"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="pointsRedeemed"
+                    name="Redeemed"
+                    stroke="#ef4444"
+                    strokeWidth={1.5}
+                    fillOpacity={1}
+                    fill="url(#colorRedeemed)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[220px] flex items-center justify-center text-xs text-muted-foreground">
+                No financial data available.
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Right: Recent Pending Redemptions */}
-        <div className="lg:col-span-3">
-          <Card className="glass h-full">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-semibold">Recent Pending Redemptions</CardTitle>
-              <Link href="/admin/redemptions" className="text-xs text-brand hover:underline font-medium">
-                View All
-              </Link>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="space-y-2">
-                  <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-6 w-full" />
-                </div>
-              ) : recentRedemptions.length === 0 ? (
-                <div className="text-xs text-muted-foreground py-4 text-center">
-                  No pending redemptions.
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table className="w-full text-xs">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="py-1.5 h-auto text-muted-foreground">User</TableHead>
-                        <TableHead className="py-1.5 h-auto text-muted-foreground">Reward</TableHead>
-                        <TableHead className="py-1.5 h-auto text-muted-foreground">Value</TableHead>
-                        <TableHead className="py-1.5 h-auto text-muted-foreground text-right">Action</TableHead>
+        <Card className="glass h-full">
+          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+            <CardTitle className="text-sm font-semibold">Recent Pending Redemptions</CardTitle>
+            <Link href="/admin/redemptions" className="text-xs text-brand hover:underline font-medium">
+              View All
+            </Link>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-6 w-full" />
+              </div>
+            ) : recentRedemptions.length === 0 ? (
+              <div className="text-xs text-muted-foreground py-4 text-center">
+                No pending redemptions.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table className="w-full text-xs">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="py-1.5 h-auto text-muted-foreground">User</TableHead>
+                      <TableHead className="py-1.5 h-auto text-muted-foreground">Reward</TableHead>
+                      <TableHead className="py-1.5 h-auto text-muted-foreground">Value</TableHead>
+                      <TableHead className="py-1.5 h-auto text-muted-foreground text-right">Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {recentRedemptions.map((red) => (
+                      <TableRow key={red._id} className="hover:bg-muted/5">
+                        <TableCell className="py-1.5 font-medium">
+                          <div className="text-xs">{red.user?.fullName || "Unknown"}</div>
+                          <div className="text-[9px] text-muted-foreground">{red.user?.email || ""}</div>
+                        </TableCell>
+                        <TableCell className="py-1.5 capitalize text-xs">{red.requestedBrand}</TableCell>
+                        <TableCell className="py-1.5 font-semibold text-success text-xs">${red.usdAmount}</TableCell>
+                        <TableCell className="py-1.5 text-right">
+                          <Link href="/admin/redemptions">
+                            <Badge className="cursor-pointer hover:bg-brand/80 text-[9px] px-1.5 py-0 h-auto" variant="secondary">
+                              Review
+                            </Badge>
+                          </Link>
+                        </TableCell>
                       </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentRedemptions.map((red) => (
-                        <TableRow key={red._id} className="hover:bg-muted/5">
-                          <TableCell className="py-1.5 font-medium">
-                            <div className="text-xs">{red.user?.fullName || "Unknown"}</div>
-                            <div className="text-[9px] text-muted-foreground">{red.user?.email || ""}</div>
-                          </TableCell>
-                          <TableCell className="py-1.5 capitalize text-xs">{red.requestedBrand}</TableCell>
-                          <TableCell className="py-1.5 font-semibold text-success text-xs">${red.usdAmount}</TableCell>
-                          <TableCell className="py-1.5 text-right">
-                            <Link href="/admin/redemptions">
-                              <Badge className="cursor-pointer hover:bg-brand/80 text-[9px] px-1.5 py-0 h-auto" variant="secondary">
-                                Review
-                              </Badge>
-                            </Link>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

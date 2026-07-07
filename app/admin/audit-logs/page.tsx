@@ -144,7 +144,7 @@ export default function AuditLogsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-ink flex items-center gap-2">
-          <FileText className="w-7 h-7 text-blue-600" />
+          
           <span>Admin Audit Logs</span>
         </h1>
         <p className="text-xs text-muted-foreground mt-0.5">
