@@ -19,6 +19,8 @@ import {
   Ticket,
   ClipboardList,
   Coins,
+  FileText,
+  FileSpreadsheet,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -59,6 +61,16 @@ const items = [
     title: "Points Adjustment",
     url: "/admin/points",
     icon: Coins,
+  },
+  {
+    title: "Reports",
+    url: "/admin/reports",
+    icon: FileSpreadsheet,
+  },
+  {
+    title: "Audit Logs",
+    url: "/admin/audit-logs",
+    icon: FileText,
   },
 ];
 

@@ -30,6 +30,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Survey not found" }, { status: 404 });
     }
 
+    // Check if user has already completed this survey
+    const existingTransaction = await Transaction.findOne({
+      user: user._id,
+      category: "survey",
+      status: "completed",
+      referenceId: survey._id,
+    });
+
+    if (existingTransaction) {
+      return NextResponse.json({ success: false, error: "You have already completed this survey." }, { status: 400 });
+    }
+
     // 4. Update User's balance atomically
     const rewardPoints = survey.rewardPoints;
     const usdEquivalent = rewardPoints / 1000;
@@ -65,7 +77,7 @@ export async function POST(req: NextRequest) {
             user: referrer._id,
             type: "credit",
             amount: 500,
-            category: "referral",
+            category: "referral_bonus",
             status: "completed",
             referenceId: updatedUser._id,
             description: `Referral bonus for inviting ${updatedUser.fullName || "Friend"}`,

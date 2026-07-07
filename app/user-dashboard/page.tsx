@@ -445,7 +445,7 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Total Earnings</p>
-                    <p className="text-sm font-bold text-zinc-900 mt-0.5">{stats.lifetimeEarnings.toFixed(2)} Points</p>
+                    <p className="text-sm font-bold text-zinc-900 mt-0.5">${stats.lifetimeEarnings.toFixed(2)} USD</p>
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 transition-colors" />

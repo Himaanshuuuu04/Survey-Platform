@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
     const [auditLogs, total] = await Promise.all([
       AdminAuditLog.find()
-        .populate("adminId", "name email")
+        .populate("adminId", "fullName email")
         .sort({ createdAt: -1 }) // Newest first
         .skip(skip)
         .limit(limit)

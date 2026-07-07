@@ -18,9 +18,9 @@ export async function GET(req: NextRequest) {
       { $match: { status: "completed" } },
       { 
         $group: {
-          _id: "$rewardType",
+          _id: "$requestedBrand",
           totalPayoutAmount: { $sum: "$usdAmount" },
-          totalPointsBurned: { $sum: "$pointsCost" },
+          totalPointsBurned: { $sum: "$pointsDeducted" },
           redemptionCount: { $sum: 1 }
         }
       },

@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.1.3'],
-  serverExternalPackages: ['pdf-parse'],
+  allowedDevOrigins: ['192.168.1.3','192.168.1.4'],
+  serverExternalPackages: ['pdf-parse', 'pdfkit', 'exceljs'],
   turbopack: {
     root: __dirname,
   },

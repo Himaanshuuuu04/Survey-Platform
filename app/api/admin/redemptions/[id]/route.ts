@@ -119,6 +119,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       // Restore Points
       user.currentPoints += redemption.pointsDeducted;
       await user.save({ session });
+
+      // Create Refund Transaction (credit)
+      const refundTx = new Transaction({
+        user: user._id,
+        type: "credit",
+        amount: redemption.pointsDeducted,
+        category: "redemption",
+        status: "completed",
+        referenceId: redemption._id,
+        description: `Refund: Rejected ${redemption.usdAmount} USD ${redemption.requestedBrand} Gift Card`,
+      });
+      await refundTx.save({ session });
     }
 
     // Step 4: Notification & Audit Triggering

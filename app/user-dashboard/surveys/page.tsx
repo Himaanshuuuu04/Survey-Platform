@@ -137,6 +137,7 @@ export default function SurveysPage() {
       if (json.success) {
         setSurveyStep(surveyQuestions.length + 1); // Success step
         refreshUser(); // Refresh global balance
+        fetchSurveys(); // Refresh surveys list
       } else {
         alert(json.error || "Failed to submit survey");
       }
