@@ -4,12 +4,18 @@ import User from "@/models/User";
 import Transaction from "@/models/Transaction";
 import Redemption from "@/models/Redemption";
 import mongoose from "mongoose";
+import { getAuthenticatedAdmin } from "@/lib/authHelper";
 
 // GET: Fetch detailed user profile (Admin view)
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await dbConnect();
     
+    const admin = await getAuthenticatedAdmin(req);
+    if (!admin) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
+
     const { id } = await params;
 
     let queryId = id;
@@ -62,6 +68,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await dbConnect();
+
+    const admin = await getAuthenticatedAdmin(req);
+    if (!admin) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
 
     const { id } = await params;
 
@@ -116,6 +127,20 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
     }
 
+    // Sync role change to Clerk if role was updated
+    if (role && updatedUser.clerkId) {
+      try {
+        const { createClerkClient } = await import("@clerk/nextjs/server");
+        const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+        await clerkClient.users.updateUserMetadata(updatedUser.clerkId, {
+          publicMetadata: { role }
+        });
+        console.log(`Synced role update to Clerk for user ${updatedUser.clerkId}: ${role}`);
+      } catch (clerkError) {
+        console.error("Failed to sync role update to Clerk:", clerkError);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: "User updated successfully",
@@ -135,6 +160,11 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   try {
     await dbConnect();
     
+    const admin = await getAuthenticatedAdmin(req);
+    if (!admin) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
+
     const { id } = await params;
 
     // Ensure the ID is valid

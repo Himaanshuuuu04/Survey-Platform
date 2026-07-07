@@ -30,3 +30,11 @@ export async function getAuthenticatedUser(req: NextRequest) {
   const user = await User.findOne({ clerkId });
   return user;
 }
+
+export async function getAuthenticatedAdmin(req: NextRequest) {
+  const user = await getAuthenticatedUser(req);
+  if (!user || user.role !== "admin") {
+    return null;
+  }
+  return user;
+}

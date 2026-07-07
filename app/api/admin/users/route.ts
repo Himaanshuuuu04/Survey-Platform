@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
+import { getAuthenticatedAdmin } from "@/lib/authHelper";
 
 // GET: List all users with pagination, search, and filtering
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
+
+    const admin = await getAuthenticatedAdmin(req);
+    if (!admin) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
 
     const { searchParams } = new URL(req.url);
     
