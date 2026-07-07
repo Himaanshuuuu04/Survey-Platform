@@ -66,21 +66,24 @@ export async function GET(req: NextRequest) {
       await user.save();
     }
 
-    // Sync role to Clerk publicMetadata if not matched
+    // Sync role to Clerk publicMetadata if not matched (non-blocking)
     if (user && clerkId) {
-      try {
-        const { createClerkClient } = await import("@clerk/nextjs/server");
-        const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
-        const clerkUser = await clerkClient.users.getUser(clerkId);
-        if (clerkUser.publicMetadata?.role !== user.role) {
-          await clerkClient.users.updateUserMetadata(clerkId, {
-            publicMetadata: { role: user.role }
-          });
-          console.log(`Synced role ${user.role} to Clerk for user ${clerkId}`);
+      import("@clerk/nextjs/server").then(async ({ createClerkClient }) => {
+        try {
+          const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+          const clerkUser = await clerkClient.users.getUser(clerkId);
+          if (clerkUser.publicMetadata?.role !== user.role) {
+            await clerkClient.users.updateUserMetadata(clerkId, {
+              publicMetadata: { role: user.role }
+            });
+            console.log(`Synced role ${user.role} to Clerk for user ${clerkId}`);
+          }
+        } catch (err) {
+          console.error("Error syncing role to Clerk in GET profile:", err);
         }
-      } catch (err) {
-        console.error("Error syncing role to Clerk in GET profile:", err);
-      }
+      }).catch(err => {
+        console.error("Failed to import Clerk in GET profile:", err);
+      });
     }
 
     return NextResponse.json({
@@ -144,21 +147,24 @@ export async function POST(req: NextRequest) {
       await user.save();
     }
 
-    // Sync role to Clerk publicMetadata if not matched
+    // Sync role to Clerk publicMetadata if not matched (non-blocking)
     if (user && clerkId) {
-      try {
-        const { createClerkClient } = await import("@clerk/nextjs/server");
-        const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
-        const clerkUser = await clerkClient.users.getUser(clerkId);
-        if (clerkUser.publicMetadata?.role !== user.role) {
-          await clerkClient.users.updateUserMetadata(clerkId, {
-            publicMetadata: { role: user.role }
-          });
-          console.log(`Synced role ${user.role} to Clerk for user ${clerkId}`);
+      import("@clerk/nextjs/server").then(async ({ createClerkClient }) => {
+        try {
+          const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+          const clerkUser = await clerkClient.users.getUser(clerkId);
+          if (clerkUser.publicMetadata?.role !== user.role) {
+            await clerkClient.users.updateUserMetadata(clerkId, {
+              publicMetadata: { role: user.role }
+            });
+            console.log(`Synced role ${user.role} to Clerk for user ${clerkId}`);
+          }
+        } catch (err) {
+          console.error("Error syncing role to Clerk in POST profile:", err);
         }
-      } catch (err) {
-        console.error("Error syncing role to Clerk in POST profile:", err);
-      }
+      }).catch(err => {
+        console.error("Failed to import Clerk in POST profile:", err);
+      });
     }
 
     return NextResponse.json({ success: true, data: user });
