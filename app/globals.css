@@ -738,3 +738,36 @@ section.about-hero-section h1.about-hero-title,
     font-size: 28px;
   }
 }
+
+/* ── Hide Clerk branding / powered-by logo / development warning ── */
+.cl-footer__clerk,
+.cl-footer__clerkRow,
+.cl-footerRow,
+.cl-internal-b38t6s, 
+.cl-internal-197acgy,
+[class*="developmentMode"],
+[class*="development-mode"],
+[id*="clerk-development-mode"],
+#clerk-development-mode,
+.cl-developmentMode,
+.cl-development-mode,
+.cl-internal-developmentMode,
+.cl-internal-development-mode-warning,
+.cl-internal-development-mode-indicator,
+.cl-internal-1py6n62,
+.cl-internal-1x6k0o4,
+.cl-internal-r93pb5,
+.cl-internal-57atez,
+.cl-internal-114rbaa,
+.cl-internal-x6kybh,
+.cl-internal-1e9vb3w,
+.cl-internal-95w9vp,
+.cl-internal-y44tp9,
+.cl-internal-114jbce,
+.cl-internal-1scq7x4,
+.cl-internal-1scxde7,
+.cl-internal-105nep3,
+[data-clerk-dev-mode-overlay],
+[data-clerk-dev-mode-notice] {
+  display: none !important;
+}
