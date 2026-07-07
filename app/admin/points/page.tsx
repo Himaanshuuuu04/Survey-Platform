@@ -99,11 +99,13 @@ export default function PointsAdjustmentPage() {
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-ink">Points Adjustment</h1>
-        <p className="text-muted-foreground mt-1">
-          Manually credit or debit points from a user's account.
-        </p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-ink">Points Adjustment</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Manually credit or debit points from a user's account.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

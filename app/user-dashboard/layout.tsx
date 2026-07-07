@@ -15,15 +15,28 @@ import {
   LogOut, 
   Menu, 
   X, 
-  Coins 
+  Coins,
+  MenuIcon
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarInset
+} from "@/components/ui/sidebar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
-function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
+function DashboardSidebar() {
   const pathname = usePathname();
   const { user } = useUser();
-  const { dbUser, loading } = useDBUser();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { dbUser } = useDBUser();
 
   const navItems = [
     { label: "Dashboard", href: "/user-dashboard", icon: LayoutDashboard },
@@ -34,190 +47,109 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
     { label: "Notifications", href: "/user-dashboard/notifications", icon: Bell },
   ];
 
+  return (
+    <Sidebar className="bg-zinc-50 border-r border-zinc-200">
+      <SidebarHeader className="p-4 border-b border-zinc-200">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10 border border-zinc-200">
+            <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
+            <AvatarFallback className="bg-zinc-100 text-zinc-900 font-bold">
+              {user?.firstName?.charAt(0) || "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="overflow-hidden">
+            <p className="text-sm font-semibold truncate text-zinc-900">{dbUser?.fullName || user?.fullName || "User"}</p>
+            <div className="flex items-center gap-1 mt-0.5 text-xs text-blue-600 font-bold">
+              <Coins className="w-3.5 h-3.5" />
+              <span>{(dbUser?.currentPoints || 0).toLocaleString()} PTS</span>
+            </div>
+          </div>
+        </div>
+      </SidebarHeader>
+      <SidebarContent className="px-2 py-4">
+        <SidebarMenu>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            const Icon = item.icon;
+            return (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton 
+                  asChild
+                  isActive={isActive}
+                  className={isActive 
+                    ? "bg-blue-50 text-blue-700 font-bold hover:bg-blue-100 hover:text-blue-800" 
+                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+                  }
+                >
+                  <Link href={item.href}>
+                    <Icon className="w-5 h-5" />
+                    <span>{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarContent>
+      <SidebarFooter className="p-4 border-t border-zinc-200">
+        <SignOutButton redirectUrl="/">
+          <SidebarMenuButton className="w-full text-red-600 hover:bg-red-50 hover:text-red-700 font-medium transition-colors">
+            <LogOut className="w-5 h-5 mr-2" />
+            <span>Logout</span>
+          </SidebarMenuButton>
+        </SignOutButton>
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
+
+function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
+  const { user } = useUser();
+  const { dbUser, loading } = useDBUser();
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center text-zinc-900">
         <div className="relative w-16 h-16">
-          <div className="absolute inset-0 rounded-full border-t-2 border-r-2 border-transparent border-t-[#5C8EFF] border-r-[#02E8F8] animate-spin" />
-          <Coins className="absolute inset-0 m-auto text-[#5C8EFF] w-6 h-6 animate-pulse" />
+          <div className="absolute inset-0 rounded-full border-t-2 border-r-2 border-transparent border-t-blue-500 border-r-cyan-400 animate-spin" />
+          <Coins className="absolute inset-0 m-auto text-blue-500 w-6 h-6 animate-pulse" />
         </div>
-        <p className="mt-4 text-zinc-400 text-sm tracking-widest font-mono">LOADING PORTAL...</p>
+        <p className="mt-4 text-zinc-500 text-sm tracking-widest font-mono">LOADING PORTAL...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex font-sans">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 border-r border-zinc-900 bg-zinc-900/40 backdrop-blur-xl shrink-0">
-        {/* User Quick Info */}
-        <div className="p-6 border-b border-zinc-900">
-          <div className="flex items-center gap-3">
-            {user?.imageUrl ? (
-              <img 
-                src={user.imageUrl} 
-                alt="Profile" 
-                className="w-10 h-10 rounded-full border border-zinc-800"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[#5C8EFF] font-bold">
-                {user?.firstName?.charAt(0) || "U"}
-              </div>
-            )}
-            <div className="overflow-hidden">
-              <p className="text-sm font-semibold truncate text-white">{dbUser?.fullName || user?.fullName || "User"}</p>
-              <div className="flex items-center gap-1.5 mt-0.5 text-xs text-amber-400 font-bold">
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-white text-zinc-900 font-sans">
+        <DashboardSidebar />
+        
+        <SidebarInset className="flex flex-col flex-1 min-w-0 bg-white">
+          <header className="lg:hidden h-16 border-b border-zinc-200 bg-white/80 backdrop-blur-xl px-4 flex items-center justify-between sticky top-0 z-40">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger className="text-zinc-600 hover:text-zinc-900" />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-blue-50 border-blue-200 text-blue-700 text-xs font-bold gap-1 px-2.5 py-0.5">
                 <Coins className="w-3.5 h-3.5" />
-                <span>{(dbUser?.currentPoints || 0).toLocaleString()} PTS</span>
-              </div>
+                <span>{(dbUser?.currentPoints || 0).toLocaleString()}</span>
+              </Badge>
+              <Avatar className="h-8 w-8 border border-zinc-200">
+                <AvatarImage src={user?.imageUrl} alt={user?.fullName || "User"} />
+                <AvatarFallback className="bg-zinc-100 text-zinc-900 font-bold text-xs">
+                  {user?.firstName?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
             </div>
-          </div>
-        </div>
+          </header>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 px-4 py-6 space-y-1.5">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 relative group ${
-                  isActive 
-                    ? "text-white font-bold bg-[#5C8EFF]/10 border border-[#5C8EFF]/20" 
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-900/50"
-                }`}
-              >
-                <Icon className={`w-5 h-5 ${isActive ? "text-[#5C8EFF]" : "text-zinc-400 group-hover:text-white"}`} />
-                <span>{item.label}</span>
-                {isActive && (
-                  <motion.div 
-                    layoutId="sidebarActivePill" 
-                    className="absolute left-0 w-1 h-6 bg-[#5C8EFF] rounded-r"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Logout */}
-        <div className="p-4 border-t border-zinc-900">
-          <SignOutButton redirectUrl="/">
-            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/5 transition-all duration-300">
-              <LogOut className="w-5 h-5" />
-              <span>Logout</span>
-            </button>
-          </SignOutButton>
-        </div>
-      </aside>
-
-      {/* Mobile Header & Container */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="lg:hidden h-16 border-b border-zinc-900 bg-zinc-900/40 backdrop-blur-xl px-4 flex items-center justify-between sticky top-0 z-40">
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setMobileMenuOpen(true)}
-              className="p-1.5 rounded-lg border border-zinc-800 text-zinc-400 hover:text-white"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-bold flex items-center gap-1">
-              <Coins className="w-3.5 h-3.5" />
-              <span>{(dbUser?.currentPoints || 0).toLocaleString()}</span>
-            </div>
-            {user?.imageUrl ? (
-              <img 
-                src={user.imageUrl} 
-                alt="Profile" 
-                className="w-8 h-8 rounded-full border border-zinc-800"
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-[#5C8EFF] font-bold text-xs">
-                {user?.firstName?.charAt(0) || "U"}
-              </div>
-            )}
-          </div>
-        </header>
-
-        {/* Main Content Area */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-7xl w-full mx-auto">
-          {children}
-        </main>
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-7xl w-full mx-auto">
+            {children}
+          </main>
+        </SidebarInset>
       </div>
-
-      {/* Mobile Drawer Navigation */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black z-50 lg:hidden"
-            />
-            {/* Drawer */}
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "tween", duration: 0.25 }}
-              className="fixed top-0 bottom-0 left-0 w-72 bg-zinc-900 border-r border-zinc-800 p-6 flex flex-col z-50 lg:hidden"
-            >
-              <div className="flex items-center justify-between mb-8">
-                <div className="w-1" />
-                <button 
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-1 text-zinc-400 hover:text-white"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-
-              {/* Navigation Links */}
-              <nav className="flex-1 space-y-1.5">
-                {navItems.map((item) => {
-                  const isActive = pathname === item.href;
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                        isActive 
-                          ? "text-white font-bold bg-[#5C8EFF]/10 border border-[#5C8EFF]/20" 
-                          : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
-                      }`}
-                    >
-                      <Icon className={`w-5 h-5 ${isActive ? "text-[#5C8EFF]" : "text-zinc-400"}`} />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </nav>
-
-              {/* Logout */}
-              <div className="pt-4 border-t border-zinc-800 mt-auto">
-                <SignOutButton redirectUrl="/">
-                  <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/5 transition-all">
-                    <LogOut className="w-5 h-5" />
-                    <span>Logout</span>
-                  </button>
-                </SignOutButton>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </div>
+    </SidebarProvider>
   );
 }
 

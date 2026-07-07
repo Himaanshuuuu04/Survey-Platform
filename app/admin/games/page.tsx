@@ -110,8 +110,8 @@ export default function GamesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-ink">Games</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-ink">Games</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
             Manage your game offerings and their rewards.
           </p>
         </div>

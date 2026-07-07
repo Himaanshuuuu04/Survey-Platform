@@ -204,12 +204,14 @@ export default function GiftCardsPage() {
 
   return (
     <div className="space-y-6">
-      <Toaster richColors position="top-right" />
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-ink">Gift Cards</h1>
-        <p className="text-muted-foreground mt-1">
-          Manage your gift card inventory. Click on any inventory row to view and delete individual card codes.
-        </p>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-ink">Gift Cards</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Manage your gift card inventory. Click on any inventory row to view and delete individual card codes.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

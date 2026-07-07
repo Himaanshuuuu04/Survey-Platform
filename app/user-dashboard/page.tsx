@@ -18,10 +18,43 @@ import {
   Globe,
   HelpCircle,
   X,
-  ArrowRight
+  ArrowRight,
+  ClipboardList
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle,
+  CardFooter
+} from "@/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 
 interface SurveyType {
   _id: string;
@@ -83,7 +116,6 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [surveys, setSurveys] = useState<SurveyType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"best" | "completed">("best");
 
   // Modal / Survey taking states
   const [activeSurvey, setActiveSurvey] = useState<SurveyType | null>(null);
@@ -194,439 +226,390 @@ export default function DashboardPage() {
     }
   };
 
+  const surveyQuestions = activeSurvey?.questions && activeSurvey.questions.length > 0
+    ? activeSurvey.questions
+    : DEFAULT_QUESTIONS;
+
   return (
-    <div className="flex flex-col lg:flex-row gap-8 pb-12 font-sans">
+    <div className="flex flex-col lg:flex-row gap-8 pb-12">
       
       {/* Middle Column (3/4 width on desktop) */}
       <div className="flex-1 lg:max-w-[73%] space-y-8">
         
         {/* Featured Surveys Section */}
-        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/10 backdrop-blur-md p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h2 className="text-lg font-bold text-white">Featured Surveys</h2>
-              <p className="text-xs text-zinc-500 mt-0.5">Earn Evo points by completing targeted questionnaires.</p>
-            </div>
-          </div>
-
-          {/* Tabs */}
-          <div className="flex border-b border-zinc-850 gap-6 mb-6 text-xs font-bold uppercase tracking-wider">
-            <button 
-              onClick={() => setActiveTab("best")}
-              className={`pb-3 relative transition-colors ${activeTab === "best" ? "text-white" : "text-zinc-500 hover:text-zinc-300"}`}
-            >
-              Best Surveys
-              {activeTab === "best" && (
-                <motion.div layoutId="tabLine" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5C8EFF]" />
-              )}
-            </button>
-            <button 
-              onClick={() => setActiveTab("completed")}
-              className={`pb-3 relative transition-colors ${activeTab === "completed" ? "text-white" : "text-zinc-500 hover:text-zinc-300"}`}
-            >
-              My Completed ({stats.surveysCompleted})
-              {activeTab === "completed" && (
-                <motion.div layoutId="tabLine" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5C8EFF]" />
-              )}
-            </button>
-          </div>
-
-          {/* Surveys Grid / Carousel */}
-          {loading ? (
-            <div className="h-48 flex items-center justify-center text-zinc-500 text-xs">
-              Loading active surveys...
-            </div>
-          ) : activeTab === "completed" ? (
-            <div className="h-48 flex flex-col items-center justify-center text-zinc-500 text-xs border border-dashed border-zinc-850 rounded-2xl">
-              <CheckCircle className="w-10 h-10 text-zinc-700 mb-2" />
-              <p>You have completed {stats.surveysCompleted} surveys total.</p>
-            </div>
-          ) : surveys.length === 0 ? (
-            <div className="h-48 flex flex-col items-center justify-center text-zinc-500 text-xs border border-dashed border-zinc-850 rounded-2xl">
-              <Coins className="w-10 h-10 text-zinc-700 mb-2" />
-              <p className="font-semibold text-white">No surveys at the moment</p>
-              <p className="text-zinc-550 mt-1">Unfortunately currently there are no surveys. Please check back later!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {surveys.slice(0, 6).map((survey) => (
-                <div 
-                  key={survey._id}
-                  onClick={() => handleStartSurvey(survey)}
-                  className="group relative flex flex-col justify-between p-5 rounded-2xl border border-zinc-850/85 bg-zinc-900/20 hover:border-zinc-800 hover:bg-zinc-900/40 transition-all duration-300 cursor-pointer"
-                >
-                  <div>
-                    {/* Header: Category & Payout */}
-                    <div className="flex items-center justify-between gap-3 mb-4">
-                      <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider truncate max-w-[65%]">
-                        {survey.provider}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-black shrink-0">
-                        <Coins className="w-3.5 h-3.5" />
-                        <span>+{survey.rewardPoints} PTS</span>
-                      </span>
-                    </div>
-
-                    <h3 className="text-sm font-bold text-white group-hover:text-[#5C8EFF] transition-colors leading-snug line-clamp-2">
-                      {survey.title}
-                    </h3>
+        <Card className="border-zinc-200 shadow-sm bg-white">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl font-bold text-zinc-900">Featured Surveys</CardTitle>
+            <CardDescription>Earn Evo points by completing targeted questionnaires.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="best" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 max-w-sm mb-6 bg-zinc-100">
+                <TabsTrigger value="best" className="data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm font-bold">
+                  Best Surveys
+                </TabsTrigger>
+                <TabsTrigger value="completed" className="data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm font-bold">
+                  My Completed ({stats.surveysCompleted})
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="best" className="mt-0">
+                {loading ? (
+                  <div className="h-48 flex items-center justify-center text-zinc-500 text-sm">
+                    Loading active surveys...
                   </div>
-
-                  <div className="mt-5 pt-3 border-t border-zinc-850/60 flex items-center justify-between text-xs text-zinc-450">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>{survey.estimatedTimeMins} mins</span>
-                    </div>
-
-                    {/* Compatibility */}
-                    <div className="flex items-center gap-1.5 text-zinc-500">
-                      {survey.deviceCompatibility.includes("desktop") && <Monitor className="w-3.5 h-3.5" />}
-                      {survey.deviceCompatibility.includes("mobile") && <Smartphone className="w-3.5 h-3.5" />}
-                      {survey.deviceCompatibility.includes("tablet") && <Globe className="w-3.5 h-3.5" />}
-                    </div>
+                ) : surveys.length === 0 ? (
+                  <div className="h-48 flex flex-col items-center justify-center text-zinc-500 text-sm border-2 border-dashed border-zinc-200 rounded-xl bg-zinc-50/50">
+                    <ClipboardList className="w-10 h-10 text-zinc-400 mb-2" />
+                    <p className="font-bold text-zinc-700">No surveys at the moment</p>
+                    <p className="text-zinc-500 mt-1">Check back later for more opportunities!</p>
                   </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {surveys.slice(0, 6).map((survey) => (
+                      <Card 
+                        key={survey._id}
+                        className="group flex flex-col justify-between overflow-hidden cursor-pointer hover:border-blue-300 hover:shadow-md transition-all duration-300 bg-white"
+                        onClick={() => handleStartSurvey(survey)}
+                      >
+                        <CardHeader className="p-5 pb-0">
+                          <div className="flex items-center justify-between gap-3 mb-3">
+                            <Badge variant="outline" className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider bg-zinc-50">
+                              {survey.provider}
+                            </Badge>
+                            <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-amber-200 font-black gap-1 px-2">
+                              <Coins className="w-3 h-3" />
+                              +{survey.rewardPoints} PTS
+                            </Badge>
+                          </div>
+                          <CardTitle className="text-sm font-bold text-zinc-900 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2">
+                            {survey.title}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardFooter className="p-5 pt-4 mt-auto border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
+                          <div className="flex items-center gap-1.5 font-medium">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>{survey.estimatedTimeMins} mins</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            {survey.deviceCompatibility.includes("desktop") && <Monitor className="w-3.5 h-3.5" />}
+                            {survey.deviceCompatibility.includes("mobile") && <Smartphone className="w-3.5 h-3.5" />}
+                            {survey.deviceCompatibility.includes("tablet") && <Globe className="w-3.5 h-3.5" />}
+                          </div>
+                        </CardFooter>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="completed" className="mt-0">
+                <div className="h-48 flex flex-col items-center justify-center text-zinc-500 text-sm border-2 border-dashed border-zinc-200 rounded-xl bg-zinc-50/50">
+                  <CheckCircle className="w-10 h-10 text-emerald-500 mb-2" />
+                  <p className="font-bold text-zinc-900">Great job!</p>
+                  <p>You have completed {stats.surveysCompleted} surveys in total.</p>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
 
-        {/* Recent Activity Table */}
-        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/10 backdrop-blur-md p-6">
-          <div className="flex items-center justify-between mb-6">
+        {/* Recent Activity Section */}
+        <Card className="border-zinc-200 shadow-sm bg-white">
+          <CardHeader className="pb-4 flex flex-row items-center justify-between">
             <div>
-              <span className="text-sm font-bold text-white block">Recent Activity</span>
-              <span className="text-xs text-zinc-500">Latest transactions logged in your wallet</span>
+              <CardTitle className="text-lg font-bold text-zinc-900">Recent Activity</CardTitle>
+              <CardDescription>Latest transactions logged in your wallet</CardDescription>
             </div>
-            <Link 
-              href="/user-dashboard/wallet"
-              className="flex items-center gap-1 text-xs text-[#5C8EFF] font-semibold hover:text-[#5C8EFF]/80 transition-colors"
-            >
-              <span>Full History</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          {loading ? (
-            <div className="h-32 flex items-center justify-center text-zinc-500 text-xs">
-              Fetching activity history...
-            </div>
-          ) : !data || data.recentActivity.length === 0 ? (
-            <div className="h-32 flex flex-col items-center justify-center text-zinc-500 text-xs text-center border border-dashed border-zinc-850 rounded-2xl">
-              <Coins className="w-8 h-8 text-zinc-700 mb-2" />
-              <p>No recent activity. Complete your first survey to start earning!</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm border-collapse">
-                <thead>
-                  <tr className="border-b border-zinc-850 text-zinc-500 font-bold text-xs uppercase tracking-wider">
-                    <th className="pb-3 font-semibold">Activity</th>
-                    <th className="pb-3 font-semibold">Category</th>
-                    <th className="pb-3 font-semibold">Amount</th>
-                    <th className="pb-3 font-semibold">Status</th>
-                    <th className="pb-3 font-semibold text-right">Date</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-850/50">
+            <Button variant="ghost" size="sm" asChild className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-semibold text-xs">
+              <Link href="/user-dashboard/wallet">
+                Full History <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="h-32 flex items-center justify-center text-zinc-500 text-sm">
+                Fetching activity history...
+              </div>
+            ) : !data || data.recentActivity.length === 0 ? (
+              <div className="h-32 flex flex-col items-center justify-center text-zinc-500 text-sm text-center border-2 border-dashed border-zinc-200 rounded-xl bg-zinc-50/50">
+                <Coins className="w-8 h-8 text-zinc-400 mb-2" />
+                <p>No recent activity. Complete your first survey to start earning!</p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-zinc-200 hover:bg-transparent">
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Activity</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Category</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Amount</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {data.recentActivity.map((activity) => (
-                    <tr key={activity._id} className="text-zinc-300 hover:bg-zinc-900/20 transition-colors">
-                      <td className="py-3.5 font-medium max-w-xs sm:max-w-sm truncate text-white">{activity.description}</td>
-                      <td className="py-3.5 text-xs capitalize font-semibold">{activity.category.replace("_", " ")}</td>
-                      <td className={`py-3.5 font-bold ${activity.type === "credit" ? "text-emerald-400" : "text-rose-400"}`}>
+                    <TableRow key={activity._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                      <TableCell className="font-semibold text-sm max-w-xs sm:max-w-sm truncate text-zinc-900">
+                        {activity.description}
+                      </TableCell>
+                      <TableCell className="text-xs font-medium capitalize text-zinc-600">
+                        {activity.category.replace("_", " ")}
+                      </TableCell>
+                      <TableCell className={`font-bold text-sm ${activity.type === "credit" ? "text-emerald-600" : "text-rose-600"}`}>
                         {activity.type === "credit" ? "+" : "-"}{activity.amount.toLocaleString()} pts
-                      </td>
-                      <td className="py-3.5">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          activity.status === "completed" 
-                            ? "bg-emerald-500/10 text-emerald-400" 
-                            : activity.status === "pending"
-                            ? "bg-blue-500/10 text-blue-400"
-                            : "bg-rose-500/10 text-rose-400"
-                        }`}>
+                      </TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant="outline" 
+                          className={`text-[10px] font-bold uppercase tracking-wider ${
+                            activity.status === "completed" 
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                              : activity.status === "pending"
+                              ? "bg-blue-50 text-blue-700 border-blue-200"
+                              : "bg-rose-50 text-rose-700 border-rose-200"
+                          }`}
+                        >
                           {activity.status}
-                        </span>
-                      </td>
-                      <td className="py-3.5 text-right text-xs text-zinc-500">
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right text-xs text-zinc-500 font-medium">
                         {new Date(activity.createdAt).toLocaleDateString()}
-                      </td>
-                    </tr>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       {/* Right Column (1/4 width on desktop) */}
       <div className="w-full lg:w-[27%] space-y-6">
         
         {/* Balance Card */}
-        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/10 backdrop-blur-md p-6">
-          <div className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1">Balance:</div>
-          
-          <div className="flex items-baseline justify-between mb-4">
-            <span className="text-3xl font-black text-white">${stats.usdBalance.toFixed(2)} USD</span>
-            <span className="text-xs text-zinc-400 font-semibold">{stats.currentPoints.toLocaleString()} PTS</span>
+        <Card className="border-zinc-200 shadow-sm bg-white overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+            <Coins className="w-24 h-24 text-blue-600" />
           </div>
-
-          {/* Progress Goal */}
-          <div className="space-y-1.5 mb-6">
-            <div className="flex justify-between text-[11px] font-bold text-zinc-400">
-              <span>Goal Progress</span>
-              <span>${stats.usdBalance.toFixed(2)} / $5.00</span>
+          <CardHeader className="pb-2 relative z-10">
+            <CardDescription className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Available Balance</CardDescription>
+            <div className="flex items-baseline justify-between mt-1">
+              <CardTitle className="text-3xl font-black text-zinc-900">${stats.usdBalance.toFixed(2)} USD</CardTitle>
             </div>
-            
-            <div className="h-2 w-full bg-zinc-850 rounded-full overflow-hidden">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${progressPercent}%` }}
-                transition={{ duration: 0.8 }}
-                className="h-full rounded-full bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8]"
-              />
+            <div className="text-xs text-zinc-500 font-bold">{stats.currentPoints.toLocaleString()} PTS</div>
+          </CardHeader>
+          <CardContent className="relative z-10 pb-4">
+            <div className="space-y-2 mt-4">
+              <div className="flex justify-between text-[11px] font-bold text-zinc-600">
+                <span>Goal Progress</span>
+                <span>${stats.usdBalance.toFixed(2)} / $5.00</span>
+              </div>
+              <Progress value={progressPercent} className="h-2.5 bg-zinc-100" />
             </div>
-          </div>
-
-          {/* Cashout Button */}
-          <Link 
-            href="/user-dashboard/redeem"
-            className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-center text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
-              isGoalReached 
-                ? "bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white hover:scale-[1.02] shadow-lg shadow-[#5C8EFF]/25" 
-                : "bg-zinc-800 text-zinc-500 pointer-events-none cursor-not-allowed border border-zinc-750"
-            }`}
-          >
-            <Gift className="w-4 h-4" />
-            <span>Cashout</span>
-          </Link>
-        </div>
+          </CardContent>
+          <CardFooter className="relative z-10 pt-2 pb-6">
+            <Button 
+              asChild 
+              disabled={!isGoalReached} 
+              className={`w-full h-12 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md ${
+                isGoalReached 
+                  ? "bg-gradient-to-r from-blue-500 to-cyan-400 text-white hover:opacity-90 hover:shadow-lg"
+                  : "bg-zinc-100 text-zinc-400 hover:bg-zinc-100 cursor-not-allowed border border-zinc-200 shadow-none"
+              }`}
+            >
+              <Link href={isGoalReached ? "/user-dashboard/redeem" : "#"}>
+                <Gift className="w-4 h-4 mr-2" />
+                Cashout
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
 
         {/* Account Statistics */}
-        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/10 backdrop-blur-md p-6 space-y-4">
-          <h3 className="text-xs font-bold text-white uppercase tracking-wider border-b border-zinc-850 pb-3">Account statistics</h3>
-          
-          <div className="space-y-2">
-            
-            {/* Stat Item: Total Earnings */}
-            <Link 
-              href="/user-dashboard/wallet"
-              className="flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-850/50 hover:border-zinc-800 transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
-                  <DollarSign className="w-4 h-4" />
+        <Card className="border-zinc-200 shadow-sm bg-white">
+          <CardHeader className="pb-4 border-b border-zinc-100">
+            <CardTitle className="text-xs font-bold text-zinc-900 uppercase tracking-wider">Account statistics</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-zinc-100">
+              
+              <Link href="/user-dashboard/wallet" className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
+                    <DollarSign className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Total Earnings</p>
+                    <p className="text-sm font-bold text-zinc-900 mt-0.5">{stats.lifetimeEarnings.toFixed(2)} Points</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Total Earnings</p>
-                  <p className="text-xs font-bold text-white mt-0.5">${stats.lifetimeEarnings.toFixed(2)} USD</p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
-            </Link>
+                <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 transition-colors" />
+              </Link>
 
-            {/* Stat Item: Completed */}
-            <Link 
-              href="/user-dashboard/surveys"
-              className="flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-850/50 hover:border-zinc-800 transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
-                  <CheckCircle className="w-4 h-4" />
+              <Link href="/user-dashboard/surveys" className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600">
+                    <CheckCircle className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Surveys Completed</p>
+                    <p className="text-sm font-bold text-zinc-900 mt-0.5">{stats.surveysCompleted}</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Surveys Completed</p>
-                  <p className="text-xs font-bold text-white mt-0.5">{stats.surveysCompleted}</p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
-            </Link>
+                <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 transition-colors" />
+              </Link>
 
-            {/* Stat Item: Pending */}
-            <Link 
-              href="/user-dashboard/redeem"
-              className="flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-850/50 hover:border-zinc-800 transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400">
-                  <Clock className="w-4 h-4" />
+              <Link href="/user-dashboard/wallet" className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-amber-50 text-amber-600">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Pending Rewards</p>
+                    <p className="text-sm font-bold text-zinc-900 mt-0.5">{stats.pendingPoints.toLocaleString()} PTS</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Pending Rewards</p>
-                  <p className="text-xs font-bold text-white mt-0.5">{stats.pendingPoints.toLocaleString()} PTS</p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
-            </Link>
+                <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 transition-colors" />
+              </Link>
 
-            {/* Stat Item: Referrals */}
-            <Link 
-              href="/user-dashboard/referrals"
-              className="flex items-center justify-between p-3.5 rounded-xl bg-zinc-900/40 hover:bg-zinc-900/80 border border-zinc-850/50 hover:border-zinc-800 transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
-                  <Sparkles className="w-4 h-4" />
+              <Link href="/user-dashboard/referrals" className="flex items-center justify-between p-4 hover:bg-zinc-50 transition-colors group">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-purple-50 text-purple-600">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Referral Code</p>
+                    <p className="text-sm font-bold text-zinc-900 mt-0.5">{stats.referralCode || "GET CODE"}</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Referral Code</p>
-                  <p className="text-xs font-bold text-white mt-0.5">{stats.referralCode || "GET CODE"}</p>
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
-            </Link>
+                <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-zinc-500 transition-colors" />
+              </Link>
 
-          </div>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Survey Completion Wizard Modal Overlay */}
-      <AnimatePresence>
-        {activeSurvey && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
-              exit={{ opacity: 0 }}
-              onClick={handleCloseSurvey}
-              className="absolute inset-0 bg-black"
-            />
-            
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="relative w-full max-w-lg rounded-3xl border border-zinc-850 bg-zinc-900 p-6 shadow-2xl z-10"
-            >
-              {(() => {
-                const surveyQuestions = activeSurvey.questions && activeSurvey.questions.length > 0
-                  ? activeSurvey.questions
-                  : DEFAULT_QUESTIONS;
+      {/* Survey Completion Dialog */}
+      <Dialog open={!!activeSurvey} onOpenChange={(open) => !open && handleCloseSurvey()}>
+        <DialogContent className="sm:max-w-lg bg-white border-zinc-200">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-zinc-900">
+              {surveyStep === 0 ? "Survey Verification" : 
+               surveyStep <= surveyQuestions.length ? `Question ${surveyStep} of ${surveyQuestions.length}` :
+               "Survey Completed!"}
+            </DialogTitle>
+            <DialogDescription className="text-zinc-500">
+              {surveyStep === 0 && activeSurvey && (
+                <>Provider: <span className="font-semibold text-zinc-700">{activeSurvey.provider}</span></>
+              )}
+            </DialogDescription>
+          </DialogHeader>
 
-                return (
-                  <>
-                    {/* Close Button */}
-                    {surveyStep !== (surveyQuestions.length + 1) && (
-                      <button 
-                        onClick={handleCloseSurvey}
-                        className="absolute top-4 right-4 p-1.5 rounded-full bg-zinc-850 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+          <div className="py-2">
+            {surveyStep === 0 && activeSurvey && (
+              <div className="space-y-6">
+                <div className="p-5 rounded-xl bg-zinc-50 border border-zinc-100 space-y-4 text-sm text-zinc-600">
+                  <h3 className="font-bold text-lg text-zinc-900">{activeSurvey.title}</h3>
+                  <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                    <span className="font-medium">Time Commitment:</span>
+                    <span className="text-zinc-900 font-bold">{activeSurvey.estimatedTimeMins} Minutes</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                    <span className="font-medium">Compatibility:</span>
+                    <span className="text-zinc-900 font-bold capitalize">{activeSurvey.deviceCompatibility.join(", ")}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Reward Value:</span>
+                    <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none font-black text-sm px-3 py-1">
+                      +{activeSurvey.rewardPoints.toLocaleString()} PTS
+                    </Badge>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => setSurveyStep(1)}
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold uppercase tracking-wider text-xs shadow-md hover:opacity-90"
+                >
+                  Begin Questionnaire
+                </Button>
+              </div>
+            )}
+
+            {surveyStep >= 1 && surveyStep <= surveyQuestions.length && (() => {
+              const currentQuestion = surveyQuestions[surveyStep - 1];
+              const key = `q${surveyStep}`;
+              const isLastQuestion = surveyStep === surveyQuestions.length;
+
+              return (
+                <div className="space-y-6">
+                  <h4 className="text-lg font-bold text-zinc-900 leading-snug">{currentQuestion.questionText}</h4>
+                  <div className="space-y-3">
+                    {currentQuestion.options.map((opt) => (
+                      <Button
+                        key={opt}
+                        variant="outline"
+                        onClick={() => handleAnswerSelect(key, opt)}
+                        className={`w-full justify-start h-auto py-4 px-5 whitespace-normal text-left text-sm font-medium transition-all rounded-xl ${
+                          answers[key] === opt 
+                            ? "bg-blue-50 border-blue-400 text-blue-700 hover:bg-blue-50 hover:text-blue-800 ring-1 ring-blue-400" 
+                            : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50"
+                        }`}
                       >
-                        <X className="w-4 h-4" />
-                      </button>
+                        {opt}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    disabled={!answers[key] || (isLastQuestion && completing)}
+                    onClick={isLastQuestion ? handleSubmitSurveyAnswers : () => setSurveyStep(surveyStep + 1)}
+                    className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold uppercase tracking-wider text-xs hover:opacity-90 transition-all flex items-center justify-center gap-2 mt-6"
+                  >
+                    {isLastQuestion ? (
+                      completing ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                      ) : (
+                        <><span>Submit Response</span> <CheckCircle className="w-4 h-4 ml-1" /></>
+                      )
+                    ) : (
+                      <><span>Next Question</span> <ArrowRight className="w-4 h-4 ml-1" /></>
                     )}
+                  </Button>
+                </div>
+              );
+            })()}
 
-                    {/* Step Renderers */}
-                    {surveyStep === 0 && (
-                      <div className="space-y-6">
-                        <div>
-                          <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">Survey Verification</span>
-                          <h3 className="text-xl font-bold text-white mt-1">{activeSurvey.title}</h3>
-                          <p className="text-xs text-zinc-450 mt-1">Provider: {activeSurvey.provider}</p>
-                        </div>
-
-                        <div className="p-4 rounded-2xl bg-zinc-950/50 border border-zinc-855 space-y-3 text-xs text-zinc-350">
-                          <div className="flex justify-between">
-                            <span>Time Commitment:</span>
-                            <span className="text-white font-semibold">{activeSurvey.estimatedTimeMins} Minutes</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Compatibility:</span>
-                            <span className="text-white font-semibold capitalize">{activeSurvey.deviceCompatibility.join(", ")}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Reward Value:</span>
-                            <span className="text-amber-400 font-black">+{activeSurvey.rewardPoints.toLocaleString()} PTS</span>
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={() => setSurveyStep(1)}
-                          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold uppercase tracking-wider text-xs shadow-lg hover:scale-[1.01] transition-transform"
-                        >
-                          Begin Survey Questionnaire
-                        </button>
-                      </div>
-                    )}
-
-                    {surveyStep >= 1 && surveyStep <= surveyQuestions.length && (() => {
-                      const currentQuestion = surveyQuestions[surveyStep - 1];
-                      const key = `q${surveyStep}`;
-                      const isLastQuestion = surveyStep === surveyQuestions.length;
-
-                      return (
-                        <div className="space-y-6">
-                          <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">
-                            Question {surveyStep} of {surveyQuestions.length}
-                          </span>
-                          <h4 className="text-md font-bold text-white">{currentQuestion.questionText}</h4>
-                          <div className="space-y-2.5">
-                            {currentQuestion.options.map((opt) => (
-                              <button
-                                key={opt}
-                                onClick={() => handleAnswerSelect(key, opt)}
-                                className={`w-full text-left px-4 py-3.5 rounded-xl border text-sm font-medium transition-all ${
-                                  answers[key] === opt 
-                                    ? "bg-[#5C8EFF]/10 border-[#5C8EFF] text-white font-semibold" 
-                                    : "bg-zinc-850/50 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-850"
-                                }`}
-                              >
-                                {opt}
-                              </button>
-                            ))}
-                          </div>
-                          <button
-                            disabled={!answers[key] || (isLastQuestion && completing)}
-                            onClick={isLastQuestion ? handleSubmitSurveyAnswers : () => setSurveyStep(surveyStep + 1)}
-                            className="w-full py-3 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold uppercase tracking-wider text-xs disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center gap-2"
-                          >
-                            {isLastQuestion ? (
-                              completing ? (
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
-                              ) : (
-                                <>
-                                  <span>Submit Response</span>
-                                  <CheckCircle className="w-4 h-4" />
-                                </>
-                              )
-                            ) : (
-                              <>
-                                <span>Next Question</span>
-                                <ArrowRight className="w-3.5 h-3.5" />
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      );
-                    })()}
-
-                    {surveyStep === (surveyQuestions.length + 1) && (
-                      <div className="text-center py-6 space-y-4">
-                        <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
-                          <Sparkles className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-xl font-bold text-white">Survey Completed!</h3>
-                        <p className="text-xs text-zinc-400 max-w-xs mx-auto">
-                          Your answers were submitted successfully. Your wallet has been credited with the reward.
-                        </p>
-                        <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 font-bold text-sm mx-auto">
-                          <Coins className="w-4 h-4" />
-                          <span>+{activeSurvey.rewardPoints.toLocaleString()} Evo Points</span>
-                        </div>
-                        <button
-                          onClick={handleCloseSurvey}
-                          className="w-full py-3 rounded-xl bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white font-bold uppercase tracking-wider text-xs transition-all"
-                        >
-                          Close & Return to Dashboard
-                        </button>
-                      </div>
-                    )}
-                  </>
-                );
-              })()}
-            </motion.div>
+            {surveyStep === (surveyQuestions.length + 1) && (
+              <div className="text-center py-8 space-y-5">
+                <div className="w-20 h-20 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center mx-auto animate-bounce shadow-sm">
+                  <Sparkles className="w-10 h-10" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-zinc-900">Awesome!</h3>
+                  <p className="text-sm text-zinc-500 max-w-sm mx-auto">
+                    Your answers were submitted successfully. Your wallet has been credited.
+                  </p>
+                </div>
+                <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 font-bold text-base px-4 py-2 border-none">
+                  <Coins className="w-5 h-5 mr-2" />
+                  +{activeSurvey?.rewardPoints.toLocaleString()} Evo Points
+                </Badge>
+                <div className="pt-6">
+                  <Button
+                    variant="outline"
+                    onClick={handleCloseSurvey}
+                    className="w-full h-12 rounded-xl border-zinc-200 text-zinc-700 font-bold uppercase tracking-wider text-xs hover:bg-zinc-50"
+                  >
+                    Close & Return to Dashboard
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </AnimatePresence>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

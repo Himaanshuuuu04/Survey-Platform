@@ -26,6 +26,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Toaster, toast } from "sonner";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Survey {
   _id: string;
@@ -35,6 +37,11 @@ interface Survey {
   estimatedTimeMins: number;
   urlOrApiEndpoint?: string;
   status: string;
+  category?: string;
+  targetAgeRange?: string;
+  targetGender?: string;
+  countryEligibility?: string[];
+  deviceCompatibility?: string[];
   questions?: Array<{
     questionText: string;
     options: string[];
@@ -55,12 +62,12 @@ export default function SurveysPage() {
     estimatedTimeMins: "",
     urlOrApiEndpoint: "",
     status: "active",
-    q1Text: "",
-    q1Options: "",
-    q2Text: "",
-    q2Options: "",
-    q3Text: "",
-    q3Options: "",
+    category: "Other",
+    targetAgeRange: "All",
+    targetGender: "All",
+    countryEligibility: "ALL",
+    deviceCompatibility: ["desktop", "mobile", "ios", "android"],
+    questions: [] as { questionText: string, options: string }[],
   });
 
   // Edit & Delete States
@@ -74,12 +81,12 @@ export default function SurveysPage() {
     estimatedTimeMins: "",
     urlOrApiEndpoint: "",
     status: "active",
-    q1Text: "",
-    q1Options: "",
-    q2Text: "",
-    q2Options: "",
-    q3Text: "",
-    q3Options: "",
+    category: "Other",
+    targetAgeRange: "All",
+    targetGender: "All",
+    countryEligibility: "ALL",
+    deviceCompatibility: ["desktop", "mobile", "ios", "android"],
+    questions: [] as { questionText: string, options: string }[],
   });
 
   const [deleteConfirmSurvey, setDeleteConfirmSurvey] = useState<Survey | null>(null);
@@ -94,12 +101,12 @@ export default function SurveysPage() {
       estimatedTimeMins: String(survey.estimatedTimeMins),
       urlOrApiEndpoint: survey.urlOrApiEndpoint || "",
       status: survey.status,
-      q1Text: survey.questions?.[0]?.questionText || "",
-      q1Options: survey.questions?.[0]?.options?.join(", ") || "",
-      q2Text: survey.questions?.[1]?.questionText || "",
-      q2Options: survey.questions?.[1]?.options?.join(", ") || "",
-      q3Text: survey.questions?.[2]?.questionText || "",
-      q3Options: survey.questions?.[2]?.options?.join(", ") || "",
+      category: survey.category || "Other",
+      targetAgeRange: survey.targetAgeRange || "All",
+      targetGender: survey.targetGender || "All",
+      countryEligibility: survey.countryEligibility?.join(", ") || "ALL",
+      deviceCompatibility: survey.deviceCompatibility || ["desktop", "mobile", "ios", "android"],
+      questions: (survey.questions || []).map(q => ({ questionText: q.questionText, options: q.options.join(", ") })),
     });
     setIsEditOpen(true);
   };
@@ -109,25 +116,10 @@ export default function SurveysPage() {
     if (!editingSurvey) return;
     setIsUpdating(true);
 
-    const questions = [];
-    if (editFormData.q1Text && editFormData.q1Options) {
-      questions.push({
-        questionText: editFormData.q1Text,
-        options: editFormData.q1Options.split(",").map(o => o.trim()).filter(Boolean)
-      });
-    }
-    if (editFormData.q2Text && editFormData.q2Options) {
-      questions.push({
-        questionText: editFormData.q2Text,
-        options: editFormData.q2Options.split(",").map(o => o.trim()).filter(Boolean)
-      });
-    }
-    if (editFormData.q3Text && editFormData.q3Options) {
-      questions.push({
-        questionText: editFormData.q3Text,
-        options: editFormData.q3Options.split(",").map(o => o.trim()).filter(Boolean)
-      });
-    }
+    const questions = editFormData.questions.filter(q => q.questionText && q.options).map(q => ({
+      questionText: q.questionText,
+      options: q.options.split(",").map(o => o.trim()).filter(Boolean)
+    }));
 
     try {
       const res = await fetch(`/api/admin/surveys/${editingSurvey._id}`, {
@@ -142,6 +134,11 @@ export default function SurveysPage() {
           estimatedTimeMins: Number(editFormData.estimatedTimeMins),
           urlOrApiEndpoint: editFormData.urlOrApiEndpoint,
           status: editFormData.status,
+          category: editFormData.category,
+          targetAgeRange: editFormData.targetAgeRange,
+          targetGender: editFormData.targetGender,
+          countryEligibility: editFormData.countryEligibility.split(",").map(c => c.trim()).filter(Boolean),
+          deviceCompatibility: editFormData.deviceCompatibility,
           questions
         }),
       });
@@ -209,25 +206,10 @@ export default function SurveysPage() {
     e.preventDefault();
     setIsCreating(true);
 
-    const questions = [];
-    if (formData.q1Text && formData.q1Options) {
-      questions.push({
-        questionText: formData.q1Text,
-        options: formData.q1Options.split(",").map(o => o.trim()).filter(Boolean)
-      });
-    }
-    if (formData.q2Text && formData.q2Options) {
-      questions.push({
-        questionText: formData.q2Text,
-        options: formData.q2Options.split(",").map(o => o.trim()).filter(Boolean)
-      });
-    }
-    if (formData.q3Text && formData.q3Options) {
-      questions.push({
-        questionText: formData.q3Text,
-        options: formData.q3Options.split(",").map(o => o.trim()).filter(Boolean)
-      });
-    }
+    const questions = formData.questions.filter(q => q.questionText && q.options).map(q => ({
+      questionText: q.questionText,
+      options: q.options.split(",").map(o => o.trim()).filter(Boolean)
+    }));
 
     try {
       const res = await fetch("/api/admin/surveys", {
@@ -242,8 +224,11 @@ export default function SurveysPage() {
           estimatedTimeMins: Number(formData.estimatedTimeMins),
           urlOrApiEndpoint: formData.urlOrApiEndpoint,
           status: formData.status,
-          countryEligibility: ["ALL"],
-          deviceCompatibility: ["desktop", "mobile", "ios", "android"], 
+          category: formData.category,
+          targetAgeRange: formData.targetAgeRange,
+          targetGender: formData.targetGender,
+          countryEligibility: formData.countryEligibility.split(",").map(c => c.trim()).filter(Boolean),
+          deviceCompatibility: formData.deviceCompatibility,
           questions
         }),
       });
@@ -259,12 +244,12 @@ export default function SurveysPage() {
           estimatedTimeMins: "",
           urlOrApiEndpoint: "",
           status: "active",
-          q1Text: "",
-          q1Options: "",
-          q2Text: "",
-          q2Options: "",
-          q3Text: "",
-          q3Options: "",
+          category: "Other",
+          targetAgeRange: "All",
+          targetGender: "All",
+          countryEligibility: "ALL",
+          deviceCompatibility: ["desktop", "mobile", "ios", "android"],
+          questions: [],
         });
         fetchSurveys(); 
       } else {
@@ -280,11 +265,11 @@ export default function SurveysPage() {
 
   return (
     <div className="space-y-6">
-      <Toaster richColors position="top-right" />
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-ink">Surveys</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl font-bold tracking-tight text-ink">Surveys</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">
             Manage available surveys and their reward points.
           </p>
         </div>
@@ -302,102 +287,132 @@ export default function SurveysPage() {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleCreateSurvey} className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="provider">Provider (e.g. BitLabs)</Label>
-                <Input
-                  id="provider"
-                  required
-                  value={formData.provider}
-                  onChange={(e) => setFormData({ ...formData, provider: e.target.value })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="rewardPoints">Reward Points</Label>
-                  <Input
-                    id="rewardPoints"
-                    type="number"
-                    required
-                    value={formData.rewardPoints}
-                    onChange={(e) => setFormData({ ...formData, rewardPoints: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="estimatedTimeMins">Est. Time (Mins)</Label>
-                  <Input
-                    id="estimatedTimeMins"
-                    type="number"
-                    required
-                    value={formData.estimatedTimeMins}
-                    onChange={(e) => setFormData({ ...formData, estimatedTimeMins: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="urlOrApiEndpoint">URL / API Endpoint</Label>
-                <Input
-                  id="urlOrApiEndpoint"
-                  type="url"
-                  required
-                  value={formData.urlOrApiEndpoint}
-                  onChange={(e) => setFormData({ ...formData, urlOrApiEndpoint: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Custom Questions (Optional)</h4>
+              <Tabs defaultValue="basic" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                  <TabsTrigger value="targeting">Targeting</TabsTrigger>
+                  <TabsTrigger value="questions">Questions</TabsTrigger>
+                </TabsList>
                 
-                <div className="space-y-2">
-                  <Label>Question 1</Label>
-                  <Input
-                    placeholder="Question Text (e.g. How often do you buy gadgets?)"
-                    value={formData.q1Text}
-                    onChange={(e) => setFormData({ ...formData, q1Text: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Options (comma-separated, e.g. Daily, Weekly, Monthly)"
-                    value={formData.q1Options}
-                    onChange={(e) => setFormData({ ...formData, q1Options: e.target.value })}
-                  />
-                </div>
+                <TabsContent value="basic" className="space-y-4 mt-4">
+                  <div className="space-y-2">
+                    <Label>Title</Label>
+                    <Input required value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Provider (e.g. BitLabs)</Label>
+                    <Input required value={formData.provider} onChange={(e) => setFormData({ ...formData, provider: e.target.value })} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Reward Points</Label>
+                      <Input type="number" required value={formData.rewardPoints} onChange={(e) => setFormData({ ...formData, rewardPoints: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Est. Time (Mins)</Label>
+                      <Input type="number" required value={formData.estimatedTimeMins} onChange={(e) => setFormData({ ...formData, estimatedTimeMins: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>URL / API Endpoint</Label>
+                    <Input type="url" required value={formData.urlOrApiEndpoint} onChange={(e) => setFormData({ ...formData, urlOrApiEndpoint: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <NativeSelect value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value })}>
+                      <NativeSelectOption value="active">Active</NativeSelectOption>
+                      <NativeSelectOption value="inactive">Inactive</NativeSelectOption>
+                    </NativeSelect>
+                  </div>
+                </TabsContent>
 
-                <div className="space-y-2">
-                  <Label>Question 2</Label>
-                  <Input
-                    placeholder="Question Text (e.g. Which platform do you prefer?)"
-                    value={formData.q2Text}
-                    onChange={(e) => setFormData({ ...formData, q2Text: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Options (comma-separated, e.g. Amazon, Apple, Google)"
-                    value={formData.q2Options}
-                    onChange={(e) => setFormData({ ...formData, q2Options: e.target.value })}
-                  />
-                </div>
+                <TabsContent value="targeting" className="space-y-4 mt-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Category</Label>
+                      <NativeSelect value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })}>
+                        <NativeSelectOption value="Other">Other</NativeSelectOption>
+                        <NativeSelectOption value="Technology">Technology</NativeSelectOption>
+                        <NativeSelectOption value="Gaming">Gaming</NativeSelectOption>
+                        <NativeSelectOption value="Lifestyle">Lifestyle</NativeSelectOption>
+                        <NativeSelectOption value="Finance">Finance</NativeSelectOption>
+                        <NativeSelectOption value="Health">Health</NativeSelectOption>
+                      </NativeSelect>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Target Age Range</Label>
+                      <NativeSelect value={formData.targetAgeRange} onChange={(e) => setFormData({ ...formData, targetAgeRange: e.target.value })}>
+                        <NativeSelectOption value="All">All Ages</NativeSelectOption>
+                        <NativeSelectOption value="18-24">18-24</NativeSelectOption>
+                        <NativeSelectOption value="25-34">25-34</NativeSelectOption>
+                        <NativeSelectOption value="35-44">35-44</NativeSelectOption>
+                        <NativeSelectOption value="45+">45+</NativeSelectOption>
+                      </NativeSelect>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Target Gender</Label>
+                      <NativeSelect value={formData.targetGender} onChange={(e) => setFormData({ ...formData, targetGender: e.target.value })}>
+                        <NativeSelectOption value="All">All Genders</NativeSelectOption>
+                        <NativeSelectOption value="Male">Male</NativeSelectOption>
+                        <NativeSelectOption value="Female">Female</NativeSelectOption>
+                      </NativeSelect>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Country Eligibility</Label>
+                      <Input placeholder="ALL, US, UK..." value={formData.countryEligibility} onChange={(e) => setFormData({ ...formData, countryEligibility: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="space-y-3 pt-2">
+                    <Label>Device Compatibility</Label>
+                    <div className="flex flex-wrap gap-4">
+                      {['desktop', 'mobile', 'ios', 'android'].map(device => (
+                        <div key={device} className="flex items-center space-x-2">
+                          <Checkbox checked={formData.deviceCompatibility.includes(device)} onCheckedChange={(checked) => {
+                            if (checked) {
+                              setFormData({ ...formData, deviceCompatibility: [...formData.deviceCompatibility, device] });
+                            } else {
+                              setFormData({ ...formData, deviceCompatibility: formData.deviceCompatibility.filter(d => d !== device) });
+                            }
+                          }} />
+                          <Label className="capitalize font-normal">{device}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
 
-                <div className="space-y-2">
-                  <Label>Question 3</Label>
-                  <Input
-                    placeholder="Question Text (e.g. Rate your experience from 1 to 5)"
-                    value={formData.q3Text}
-                    onChange={(e) => setFormData({ ...formData, q3Text: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Options (comma-separated, e.g. 1, 2, 3, 4, 5)"
-                    value={formData.q3Options}
-                    onChange={(e) => setFormData({ ...formData, q3Options: e.target.value })}
-                  />
-                </div>
-              </div>
+                <TabsContent value="questions" className="space-y-4 mt-4">
+                  {formData.questions.map((q, idx) => (
+                    <div key={idx} className="space-y-2 border border-zinc-200 dark:border-zinc-800 p-3 rounded-lg relative">
+                      <div className="flex justify-between items-center mb-1">
+                        <Label className="font-bold">Question {idx + 1}</Label>
+                        <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => {
+                          const newQ = [...formData.questions];
+                          newQ.splice(idx, 1);
+                          setFormData({ ...formData, questions: newQ });
+                        }}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <Input placeholder="Question Text (e.g. Which is your favorite color?)" value={q.questionText} onChange={(e) => {
+                        const newQ = [...formData.questions];
+                        newQ[idx].questionText = e.target.value;
+                        setFormData({ ...formData, questions: newQ });
+                      }} />
+                      <Input placeholder="Options (comma-separated, e.g. Red, Blue, Green)" value={q.options} onChange={(e) => {
+                        const newQ = [...formData.questions];
+                        newQ[idx].options = e.target.value;
+                        setFormData({ ...formData, questions: newQ });
+                      }} />
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" className="w-full mt-2 border-dashed" onClick={() => {
+                    setFormData({ ...formData, questions: [...formData.questions, { questionText: "", options: "" }] });
+                  }}>
+                    <Plus className="h-4 w-4 mr-2" /> Add Question
+                  </Button>
+                </TabsContent>
+              </Tabs>
 
               <div className="pt-4 flex justify-end gap-2">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
@@ -494,123 +509,142 @@ export default function SurveysPage() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleUpdateSurvey} className="space-y-4 pt-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-title">Title</Label>
-              <Input
-                id="edit-title"
-                required
-                value={editFormData.title}
-                onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-provider">Provider</Label>
-              <Input
-                id="edit-provider"
-                required
-                value={editFormData.provider}
-                onChange={(e) => setEditFormData({ ...editFormData, provider: e.target.value })}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="edit-rewardPoints">Reward Points</Label>
-                <Input
-                  id="edit-rewardPoints"
-                  type="number"
-                  required
-                  value={editFormData.rewardPoints}
-                  onChange={(e) => setEditFormData({ ...editFormData, rewardPoints: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="edit-estimatedTimeMins">Est. Time (Mins)</Label>
-                <Input
-                  id="edit-estimatedTimeMins"
-                  type="number"
-                  required
-                  value={editFormData.estimatedTimeMins}
-                  onChange={(e) => setEditFormData({ ...editFormData, estimatedTimeMins: e.target.value })}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-urlOrApiEndpoint">URL / API Endpoint</Label>
-              <Input
-                id="edit-urlOrApiEndpoint"
-                type="url"
-                required
-                value={editFormData.urlOrApiEndpoint}
-                onChange={(e) => setEditFormData({ ...editFormData, urlOrApiEndpoint: e.target.value })}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-status">Status</Label>
-              <NativeSelect
-                id="edit-status"
-                value={editFormData.status}
-                onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}
-              >
-                <NativeSelectOption value="active">Active</NativeSelectOption>
-                <NativeSelectOption value="inactive">Inactive</NativeSelectOption>
-              </NativeSelect>
-            </div>
+              <Tabs defaultValue="basic" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                  <TabsTrigger value="targeting">Targeting</TabsTrigger>
+                  <TabsTrigger value="questions">Questions</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="basic" className="space-y-4 mt-4">
+                  <div className="space-y-2">
+                    <Label>Title</Label>
+                    <Input required value={editFormData.title} onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Provider (e.g. BitLabs)</Label>
+                    <Input required value={editFormData.provider} onChange={(e) => setEditFormData({ ...editFormData, provider: e.target.value })} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Reward Points</Label>
+                      <Input type="number" required value={editFormData.rewardPoints} onChange={(e) => setEditFormData({ ...editFormData, rewardPoints: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Est. Time (Mins)</Label>
+                      <Input type="number" required value={editFormData.estimatedTimeMins} onChange={(e) => setEditFormData({ ...editFormData, estimatedTimeMins: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>URL / API Endpoint</Label>
+                    <Input type="url" required value={editFormData.urlOrApiEndpoint} onChange={(e) => setEditFormData({ ...editFormData, urlOrApiEndpoint: e.target.value })} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <NativeSelect value={editFormData.status} onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value })}>
+                      <NativeSelectOption value="active">Active</NativeSelectOption>
+                      <NativeSelectOption value="inactive">Inactive</NativeSelectOption>
+                    </NativeSelect>
+                  </div>
+                </TabsContent>
 
-            <div className="space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Custom Questions (Optional)</h4>
-              
-              <div className="space-y-2">
-                <Label>Question 1</Label>
-                <Input
-                  placeholder="Question Text"
-                  value={editFormData.q1Text}
-                  onChange={(e) => setEditFormData({ ...editFormData, q1Text: e.target.value })}
-                />
-                <Input
-                  placeholder="Options (comma-separated)"
-                  value={editFormData.q1Options}
-                  onChange={(e) => setEditFormData({ ...editFormData, q1Options: e.target.value })}
-                />
-              </div>
+                <TabsContent value="targeting" className="space-y-4 mt-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Category</Label>
+                      <NativeSelect value={editFormData.category} onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}>
+                        <NativeSelectOption value="Other">Other</NativeSelectOption>
+                        <NativeSelectOption value="Technology">Technology</NativeSelectOption>
+                        <NativeSelectOption value="Gaming">Gaming</NativeSelectOption>
+                        <NativeSelectOption value="Lifestyle">Lifestyle</NativeSelectOption>
+                        <NativeSelectOption value="Finance">Finance</NativeSelectOption>
+                        <NativeSelectOption value="Health">Health</NativeSelectOption>
+                      </NativeSelect>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Target Age Range</Label>
+                      <NativeSelect value={editFormData.targetAgeRange} onChange={(e) => setEditFormData({ ...editFormData, targetAgeRange: e.target.value })}>
+                        <NativeSelectOption value="All">All Ages</NativeSelectOption>
+                        <NativeSelectOption value="18-24">18-24</NativeSelectOption>
+                        <NativeSelectOption value="25-34">25-34</NativeSelectOption>
+                        <NativeSelectOption value="35-44">35-44</NativeSelectOption>
+                        <NativeSelectOption value="45+">45+</NativeSelectOption>
+                      </NativeSelect>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Target Gender</Label>
+                      <NativeSelect value={editFormData.targetGender} onChange={(e) => setEditFormData({ ...editFormData, targetGender: e.target.value })}>
+                        <NativeSelectOption value="All">All Genders</NativeSelectOption>
+                        <NativeSelectOption value="Male">Male</NativeSelectOption>
+                        <NativeSelectOption value="Female">Female</NativeSelectOption>
+                      </NativeSelect>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Country Eligibility</Label>
+                      <Input placeholder="ALL, US, UK..." value={editFormData.countryEligibility} onChange={(e) => setEditFormData({ ...editFormData, countryEligibility: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="space-y-3 pt-2">
+                    <Label>Device Compatibility</Label>
+                    <div className="flex flex-wrap gap-4">
+                      {['desktop', 'mobile', 'ios', 'android'].map(device => (
+                        <div key={device} className="flex items-center space-x-2">
+                          <Checkbox checked={editFormData.deviceCompatibility.includes(device)} onCheckedChange={(checked) => {
+                            if (checked) {
+                              setEditFormData({ ...editFormData, deviceCompatibility: [...editFormData.deviceCompatibility, device] });
+                            } else {
+                              setEditFormData({ ...editFormData, deviceCompatibility: editFormData.deviceCompatibility.filter(d => d !== device) });
+                            }
+                          }} />
+                          <Label className="capitalize font-normal">{device}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
 
-              <div className="space-y-2">
-                <Label>Question 2</Label>
-                <Input
-                  placeholder="Question Text"
-                  value={editFormData.q2Text}
-                  onChange={(e) => setEditFormData({ ...editFormData, q2Text: e.target.value })}
-                />
-                <Input
-                  placeholder="Options (comma-separated)"
-                  value={editFormData.q2Options}
-                  onChange={(e) => setEditFormData({ ...editFormData, q2Options: e.target.value })}
-                />
-              </div>
+                <TabsContent value="questions" className="space-y-4 mt-4">
+                  {editFormData.questions.map((q, idx) => (
+                    <div key={idx} className="space-y-2 border border-zinc-200 dark:border-zinc-800 p-3 rounded-lg relative">
+                      <div className="flex justify-between items-center mb-1">
+                        <Label className="font-bold">Question {idx + 1}</Label>
+                        <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => {
+                          const newQ = [...editFormData.questions];
+                          newQ.splice(idx, 1);
+                          setEditFormData({ ...editFormData, questions: newQ });
+                        }}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <Input placeholder="Question Text (e.g. Which is your favorite color?)" value={q.questionText} onChange={(e) => {
+                        const newQ = [...editFormData.questions];
+                        newQ[idx].questionText = e.target.value;
+                        setEditFormData({ ...editFormData, questions: newQ });
+                      }} />
+                      <Input placeholder="Options (comma-separated, e.g. Red, Blue, Green)" value={q.options} onChange={(e) => {
+                        const newQ = [...editFormData.questions];
+                        newQ[idx].options = e.target.value;
+                        setEditFormData({ ...editFormData, questions: newQ });
+                      }} />
+                    </div>
+                  ))}
+                  <Button type="button" variant="outline" className="w-full mt-2 border-dashed" onClick={() => {
+                    setEditFormData({ ...editFormData, questions: [...editFormData.questions, { questionText: "", options: "" }] });
+                  }}>
+                    <Plus className="h-4 w-4 mr-2" /> Add Question
+                  </Button>
+                </TabsContent>
+              </Tabs>
 
-              <div className="space-y-2">
-                <Label>Question 3</Label>
-                <Input
-                  placeholder="Question Text"
-                  value={editFormData.q3Text}
-                  onChange={(e) => setEditFormData({ ...editFormData, q3Text: e.target.value })}
-                />
-                <Input
-                  placeholder="Options (comma-separated)"
-                  value={editFormData.q3Options}
-                  onChange={(e) => setEditFormData({ ...editFormData, q3Options: e.target.value })}
-                />
+              <div className="pt-4 flex justify-end gap-2">
+                <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isUpdating} className="bg-brand text-white hover:bg-brand-dark">
+                  {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Survey"}
+                </Button>
               </div>
-            </div>
-
-            <div className="pt-4 flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={isUpdating} className="bg-brand text-white hover:bg-brand-dark">
-                {isUpdating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
-              </Button>
-            </div>
-          </form>
+            </form>
         </DialogContent>
       </Dialog>
 

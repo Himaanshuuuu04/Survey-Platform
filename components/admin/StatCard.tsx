@@ -13,6 +13,7 @@ interface StatCardProps {
   trend?: "up" | "down" | "neutral";
   trendValue?: string;
   className?: string;
+  size?: "default" | "sm";
 }
 
 export function StatCard({
@@ -23,6 +24,7 @@ export function StatCard({
   trend,
   trendValue,
   className,
+  size = "sm",
 }: StatCardProps) {
   return (
     <motion.div
@@ -30,18 +32,18 @@ export function StatCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className={cn("glass overflow-hidden relative group", className)}>
+      <Card size={size} className={cn("glass overflow-hidden relative group border-l-4 border-l-brand/30", className)}>
         <div className="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
-          <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-          <div className="h-8 w-8 rounded-full bg-brand/10 flex items-center justify-center">
-            <Icon className="h-4 w-4 text-brand" />
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 relative z-10">
+          <CardTitle className="text-xs font-medium text-muted-foreground tracking-wide uppercase">{title}</CardTitle>
+          <div className="h-7 w-7 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+            <Icon className="h-3.5 w-3.5 text-brand" />
           </div>
         </CardHeader>
         <CardContent className="relative z-10">
-          <div className="text-3xl font-bold font-sharp">{value}</div>
+          <div className="text-xl md:text-2xl font-bold font-sharp leading-tight">{value}</div>
           {(description || trendValue) && (
-            <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+            <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1">
               {trendValue && (
                 <span
                   className={cn(

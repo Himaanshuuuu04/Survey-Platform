@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Loader2, Check, X, AlertCircle } from "lucide-react";
+import { Loader2, Check, X, AlertCircle, Coins } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import {
@@ -48,6 +48,25 @@ interface Redemption {
   status: string;
   createdAt: string;
 }
+
+const getBrandBadge = (brand: string) => {
+  const colors: Record<string, string> = {
+    amazon: "bg-orange-500/10 text-orange-600 border-orange-500/20 dark:text-orange-400 dark:border-orange-500/30",
+    "google play": "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 dark:text-emerald-400 dark:border-emerald-500/30",
+    apple: "bg-neutral-500/10 text-neutral-600 border-neutral-500/20 dark:text-neutral-400 dark:border-neutral-500/30",
+    steam: "bg-sky-500/10 text-sky-600 border-sky-500/20 dark:text-sky-400 dark:border-sky-500/30",
+    flipkart: "bg-blue-500/10 text-blue-600 border-blue-500/20 dark:text-blue-400 dark:border-blue-500/30",
+    paypal: "bg-indigo-500/10 text-indigo-600 border-indigo-500/20 dark:text-indigo-400 dark:border-indigo-500/30",
+  };
+  
+  const normalized = (brand || "").toLowerCase();
+  const colorClass = colors[normalized] || "bg-muted text-muted-foreground border-muted-foreground/20";
+  return (
+    <Badge variant="outline" className={`${colorClass} font-medium capitalize text-[10px] px-2 py-0.5 rounded-full`}>
+      {brand}
+    </Badge>
+  );
+};
 
 export default function RedemptionsPage() {
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
@@ -135,8 +154,15 @@ export default function RedemptionsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-ink">Pending Redemptions</h1>
-          <p className="text-muted-foreground mt-1">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold tracking-tight text-ink">Pending Redemptions</h1>
+            {redemptions.length > 0 && (
+              <Badge className="bg-brand/10 text-brand hover:bg-brand/20 border-brand/20 text-xs px-2.5 py-0.5 rounded-full font-semibold">
+                {redemptions.length} Request{redemptions.length > 1 ? "s" : ""}
+              </Badge>
+            )}
+          </div>
+          <p className="text-muted-foreground text-xs mt-0.5">
             Review and approve or reject user reward redemptions.
           </p>
         </div>
@@ -164,9 +190,11 @@ export default function RedemptionsPage() {
                 </TableRow>
               ) : redemptions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground flex flex-col items-center justify-center">
-                    <AlertCircle className="h-8 w-8 text-muted-foreground/50 mb-2 mt-4" />
-                    <p className="mb-4">No pending redemptions.</p>
+                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                    <div className="flex flex-col items-center justify-center py-4">
+                      <AlertCircle className="h-8 w-8 text-muted-foreground/50 mb-2" />
+                      <p className="text-sm">No pending redemptions.</p>
+                    </div>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -181,40 +209,47 @@ export default function RedemptionsPage() {
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell className="capitalize">{redemption.requestedBrand}</TableCell>
+                    <TableCell>
+                      {getBrandBadge(redemption.requestedBrand)}
+                    </TableCell>
                     <TableCell className="font-sharp font-semibold text-success">
                       ${redemption.usdAmount}
                     </TableCell>
                     <TableCell className="font-sharp font-semibold text-brand">
-                      {redemption.pointsDeducted?.toLocaleString()}
+                      <div className="flex items-center gap-1">
+                        <Coins className="h-3.5 w-3.5 text-brand shrink-0" />
+                        <span>{redemption.pointsDeducted?.toLocaleString()}</span>
+                      </div>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="text-xs text-muted-foreground">
                       {new Date(redemption.createdAt).toLocaleDateString()}
                     </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-success text-success hover:bg-success hover:text-white"
-                        disabled={actionLoading === redemption._id}
-                        onClick={() => openApproveDialog(redemption)}
-                      >
-                        {actionLoading === redemption._id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4 mr-1" />}
-                        Approve
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-destructive text-destructive hover:bg-destructive hover:text-white"
-                        disabled={actionLoading === redemption._id}
-                        onClick={() => {
-                          setRejectReason("");
-                          setRejectDialog({ isOpen: true, id: redemption._id });
-                        }}
-                      >
-                        <X className="h-4 w-4 mr-1" />
-                        Reject
-                      </Button>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 border-success text-success hover:bg-success hover:text-white"
+                          disabled={actionLoading === redemption._id}
+                          onClick={() => openApproveDialog(redemption)}
+                        >
+                          {actionLoading === redemption._id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5 mr-1" />}
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 border-destructive text-destructive hover:bg-destructive hover:text-white"
+                          disabled={actionLoading === redemption._id}
+                          onClick={() => {
+                            setRejectReason("");
+                            setRejectDialog({ isOpen: true, id: redemption._id });
+                          }}
+                        >
+                          <X className="h-3.5 w-3.5 mr-1" />
+                          Reject
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

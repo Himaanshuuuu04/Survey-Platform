@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/admin/AppSidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "sonner";
 
 export const metadata = {
   title: "Admin Panel | EvoGlobalInsight",
@@ -21,7 +22,8 @@ export default function AdminLayout({
             <div className="flex-1" />
             <div className="text-sm text-muted-foreground">Admin Mode</div>
           </header>
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-4 md:p-6 pt-4 md:pt-6 overflow-auto">
+            <Toaster richColors position="top-right" />
             {children}
           </main>
         </SidebarInset>

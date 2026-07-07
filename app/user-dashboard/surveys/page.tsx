@@ -17,6 +17,23 @@ import {
   ArrowRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle,
+  CardFooter
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface SurveyType {
   _id: string;
@@ -146,78 +163,82 @@ export default function SurveysPage() {
   });
 
   const providers = Array.from(new Set(surveys.map((s) => s.provider)));
+  const currentQuestions = activeSurvey?.questions && activeSurvey.questions.length > 0
+    ? activeSurvey.questions
+    : DEFAULT_QUESTIONS;
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-8 pb-12 max-w-7xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-          <ClipboardList className="w-8 h-8 text-[#5C8EFF]" />
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight flex items-center gap-3">
+          <ClipboardList className="w-8 h-8 text-blue-600" />
           <span>Available Surveys</span>
         </h1>
-        <p className="mt-2 text-sm text-zinc-400 max-w-xl">
+        <p className="mt-2 text-sm text-zinc-600 max-w-xl">
           Participate in high-yielding research surveys curated for your profile. Complete fully to earn points.
         </p>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 items-center bg-zinc-900/20 border border-zinc-850 p-4 rounded-2xl backdrop-blur-md">
-        <div className="space-y-1">
-          <label className="text-[10px] uppercase font-bold text-zinc-550 tracking-wider block">Duration</label>
-          <select 
-            value={filterTime} 
-            onChange={(e) => setFilterTime(e.target.value)}
-            className="bg-zinc-850 border border-zinc-800 text-zinc-300 rounded-xl px-3 py-1.5 text-xs focus:ring-1 focus:ring-[#5C8EFF] focus:border-[#5C8EFF] outline-none"
-          >
-            <option value="all">All Durations</option>
-            <option value="short">Short (≤ 10 mins)</option>
-            <option value="long">Long (&gt; 10 mins)</option>
-          </select>
-        </div>
+      <Card className="bg-white border-zinc-200 shadow-sm">
+        <CardContent className="p-4 flex flex-wrap gap-4 items-center">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">Duration</label>
+            <select 
+              value={filterTime} 
+              onChange={(e) => setFilterTime(e.target.value)}
+              className="bg-zinc-50 border border-zinc-200 text-zinc-700 rounded-lg px-3 py-2 text-sm font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none w-40"
+            >
+              <option value="all">All Durations</option>
+              <option value="short">Short (≤ 10 mins)</option>
+              <option value="long">Long (&gt; 10 mins)</option>
+            </select>
+          </div>
 
-        <div className="space-y-1">
-          <label className="text-[10px] uppercase font-bold text-zinc-550 tracking-wider block">Provider</label>
-          <select 
-            value={filterProvider} 
-            onChange={(e) => setFilterProvider(e.target.value)}
-            className="bg-zinc-850 border border-zinc-800 text-zinc-300 rounded-xl px-3 py-1.5 text-xs focus:ring-1 focus:ring-[#5C8EFF] focus:border-[#5C8EFF] outline-none"
-          >
-            <option value="all">All Providers</option>
-            {providers.map((p) => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
-        </div>
-      </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider block">Provider</label>
+            <select 
+              value={filterProvider} 
+              onChange={(e) => setFilterProvider(e.target.value)}
+              className="bg-zinc-50 border border-zinc-200 text-zinc-700 rounded-lg px-3 py-2 text-sm font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none w-40"
+            >
+              <option value="all">All Providers</option>
+              {providers.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Surveys List */}
       {loading ? (
         <div className="h-64 flex flex-col items-center justify-center text-zinc-500 text-sm">
-          <div className="w-10 h-10 border-2 border-[#5C8EFF] border-t-transparent animate-spin rounded-full mb-4" />
+          <div className="w-10 h-10 border-2 border-blue-600 border-t-transparent animate-spin rounded-full mb-4" />
           <span>Searching active survey routers...</span>
         </div>
       ) : filteredSurveys.length === 0 ? (
-        <div className="h-64 border border-dashed border-zinc-800 rounded-2xl flex flex-col items-center justify-center text-center p-6 text-zinc-500">
-          <HelpCircle className="w-12 h-12 text-zinc-700 mb-2" />
-          <p className="font-medium text-white">No Surveys Found</p>
-          <p className="text-xs text-zinc-450 mt-1">Try resetting your filters or check back later.</p>
+        <div className="h-64 border-2 border-dashed border-zinc-200 bg-zinc-50 rounded-2xl flex flex-col items-center justify-center text-center p-6 text-zinc-500">
+          <HelpCircle className="w-12 h-12 text-zinc-400 mb-3" />
+          <p className="font-bold text-zinc-700">No Surveys Found</p>
+          <p className="text-sm text-zinc-500 mt-1">Try resetting your filters or check back later.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSurveys.map((survey) => (
-            <motion.div
-              layout
+            <Card 
               key={survey._id}
-              className="rounded-2xl border border-zinc-800/80 bg-zinc-900/30 backdrop-blur-md p-6 flex flex-col justify-between hover:bg-zinc-900/50 hover:border-zinc-700/60 transition-all duration-300 group"
+              className="group hover:border-blue-300 hover:shadow-md transition-all duration-300 bg-white flex flex-col justify-between"
             >
-              <div>
+              <CardHeader className="pb-4">
                 {/* Provider Tag & Platform Support */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className="px-2.5 py-0.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-400 text-[10px] font-bold tracking-wider uppercase">
+                <div className="flex items-center justify-between mb-2">
+                  <Badge variant="secondary" className="text-[10px] font-bold tracking-wider uppercase bg-zinc-100 text-zinc-600">
                     {survey.provider}
-                  </span>
+                  </Badge>
                   
-                  <div className="flex gap-2 text-zinc-500">
+                  <div className="flex gap-2 text-zinc-400">
                     {survey.deviceCompatibility.includes("desktop") && (
                       <span title="Desktop compatible">
                         <Monitor className="w-4 h-4" />
@@ -229,185 +250,167 @@ export default function SurveysPage() {
                       </span>
                     )}
                     <span title="Global Eligibility">
-                      <Globe className="w-4 h-4 text-zinc-650" />
+                      <Globe className="w-4 h-4" />
                     </span>
                   </div>
                 </div>
-
-                <h3 className="text-md font-bold text-white group-hover:text-[#5C8EFF] transition-colors leading-snug">
+                <CardTitle className="text-lg font-bold text-zinc-900 group-hover:text-blue-600 transition-colors leading-snug">
                   {survey.title}
-                </h3>
-              </div>
+                </CardTitle>
+              </CardHeader>
 
-              {/* Timing, Rewards, CTA */}
-              <div className="mt-8 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-medium">
-                    <Clock className="w-4 h-4 text-zinc-500" />
+              <CardFooter className="pt-4 border-t border-zinc-100 flex items-center justify-between mt-auto">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-medium">
+                    <Clock className="w-4 h-4" />
                     <span>{survey.estimatedTimeMins} mins</span>
                   </div>
-                  
-                  <div className="flex items-center gap-1.5 text-xs text-amber-400 font-bold bg-amber-400/5 border border-amber-400/10 px-2.5 py-1 rounded-xl">
+                  <div className="flex items-center gap-1.5 text-xs text-amber-600 font-bold bg-amber-50 px-2 py-1 rounded-md">
                     <Coins className="w-4 h-4" />
                     <span>{survey.rewardPoints.toLocaleString()} PTS</span>
                   </div>
                 </div>
 
-                <button
+                <Button
                   onClick={() => handleStartSurvey(survey)}
-                  className="px-4 py-2 rounded-xl bg-[#5C8EFF] hover:bg-[#5C8EFF]/90 text-white font-bold text-xs uppercase tracking-wider shadow-md hover:scale-[1.02] transition-all"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider"
+                  size="sm"
                 >
                   Start
-                </button>
-              </div>
-            </motion.div>
+                </Button>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       )}
 
-      {/* Survey Completion Modal / Wizard */}
-      <AnimatePresence>
-        {activeSurvey && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
-              exit={{ opacity: 0 }}
-              onClick={handleCloseSurvey}
-              className="absolute inset-0 bg-black"
-            />
-            
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl p-6 sm:p-8"
-            >
+      {/* Survey Completion Dialog */}
+      <Dialog open={!!activeSurvey} onOpenChange={(open) => !open && handleCloseSurvey()}>
+        <DialogContent className="sm:max-w-lg bg-white border-zinc-200">
+          {activeSurvey && (
+            <>
+              {/* Progress Dot Indicator */}
+              {surveyStep > 0 && surveyStep <= currentQuestions.length && (
+                <div className="flex gap-1.5 mb-2 mt-4">
+                  {currentQuestions.map((_, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`h-1.5 flex-1 rounded-full transition-colors ${
+                        surveyStep >= (idx + 1) ? "bg-blue-500" : "bg-zinc-100"
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
 
+              {/* Step Contents */}
+              {surveyStep === 0 && (
+                <div className="text-center py-6 space-y-5">
+                  <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto shadow-sm">
+                    <ClipboardList className="w-8 h-8" />
+                  </div>
+                  <DialogTitle className="text-xl font-bold text-zinc-900">{activeSurvey.title}</DialogTitle>
+                  <DialogDescription className="text-sm text-zinc-600 max-w-sm mx-auto">
+                    This is a market research survey. Please answer all questions honestly. It will take approximately {activeSurvey.estimatedTimeMins} minutes.
+                  </DialogDescription>
+                  <div className="flex justify-center items-center gap-2 text-sm font-semibold py-3 bg-zinc-50 rounded-xl mx-auto w-fit px-6 border border-zinc-200">
+                    <span className="text-zinc-600 font-bold">Reward:</span>
+                    <span className="text-amber-600 font-bold flex items-center gap-1">
+                      <Coins className="w-4 h-4" />
+                      {activeSurvey.rewardPoints.toLocaleString()} Evo Points (${(activeSurvey.rewardPoints / 1000).toFixed(2)})
+                    </span>
+                  </div>
+                  <Button
+                    onClick={() => setSurveyStep(1)}
+                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 text-white font-bold uppercase tracking-wider text-sm shadow-md"
+                  >
+                    Agree & Begin Survey
+                  </Button>
+                </div>
+              )}
 
-              {(() => {
-                const surveyQuestions = activeSurvey.questions && activeSurvey.questions.length > 0
-                  ? activeSurvey.questions
-                  : DEFAULT_QUESTIONS;
+              {surveyStep >= 1 && surveyStep <= currentQuestions.length && (() => {
+                const currentQuestion = currentQuestions[surveyStep - 1];
+                const key = `q${surveyStep}`;
+                const isLastQuestion = surveyStep === currentQuestions.length;
 
                 return (
-                  <>
-                    {/* Progress Dot Indicator */}
-                    {surveyStep > 0 && surveyStep <= surveyQuestions.length && (
-                      <div className="flex gap-1.5 mb-6">
-                        {surveyQuestions.map((_, idx) => (
-                          <div 
-                            key={idx} 
-                            className={`h-1.5 flex-1 rounded-full ${
-                              surveyStep >= (idx + 1) ? "bg-[#5C8EFF]" : "bg-zinc-800"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Step Contents */}
-                    {surveyStep === 0 && (
-                      <div className="text-center py-4 space-y-4">
-                        <div className="w-12 h-12 rounded-full bg-[#5C8EFF]/10 text-[#5C8EFF] flex items-center justify-center mx-auto">
-                          <ClipboardList className="w-6 h-6" />
-                        </div>
-                        <h3 className="text-lg font-bold text-white">{activeSurvey.title}</h3>
-                        <p className="text-xs text-zinc-450 max-w-sm mx-auto">
-                          This is a market research survey. Please answer all questions honestly. It will take approximately {activeSurvey.estimatedTimeMins} minutes.
-                        </p>
-                        <div className="flex justify-center gap-4 text-xs font-semibold py-2">
-                          <span className="text-zinc-505 font-bold">Reward:</span>
-                          <span className="text-amber-400 font-bold">{activeSurvey.rewardPoints.toLocaleString()} Evo Points ($${(activeSurvey.rewardPoints / 1000).toFixed(2)})</span>
-                        </div>
-                        <button
-                          onClick={() => setSurveyStep(1)}
-                          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold uppercase tracking-wider text-xs shadow-lg hover:scale-[1.01] transition-transform"
+                  <div className="space-y-6 py-4">
+                    <div className="space-y-1.5">
+                      <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+                        Question {surveyStep} of {currentQuestions.length}
+                      </span>
+                      <h4 className="text-lg font-bold text-zinc-900 leading-tight">{currentQuestion.questionText}</h4>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {currentQuestion.options.map((opt) => (
+                        <Button
+                          key={opt}
+                          variant="outline"
+                          onClick={() => handleAnswerSelect(key, opt)}
+                          className={`w-full justify-start h-auto py-4 px-5 text-left text-sm transition-all ${
+                            answers[key] === opt 
+                              ? "bg-blue-50 border-blue-400 text-blue-700 ring-1 ring-blue-400 font-bold" 
+                              : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 font-medium"
+                          }`}
                         >
-                          Agree & Begin Survey
-                        </button>
-                      </div>
-                    )}
-
-                    {surveyStep >= 1 && surveyStep <= surveyQuestions.length && (() => {
-                      const currentQuestion = surveyQuestions[surveyStep - 1];
-                      const key = `q${surveyStep}`;
-                      const isLastQuestion = surveyStep === surveyQuestions.length;
-
-                      return (
-                        <div className="space-y-6">
-                          <span className="text-[10px] font-bold text-[#5C8EFF] uppercase tracking-widest">
-                            Question {surveyStep} of {surveyQuestions.length}
-                          </span>
-                          <h4 className="text-md font-bold text-white">{currentQuestion.questionText}</h4>
-                          <div className="space-y-2.5">
-                            {currentQuestion.options.map((opt) => (
-                              <button
-                                key={opt}
-                                onClick={() => handleAnswerSelect(key, opt)}
-                                className={`w-full text-left px-4 py-3.5 rounded-xl border text-sm font-medium transition-all ${
-                                  answers[key] === opt 
-                                    ? "bg-[#5C8EFF]/10 border-[#5C8EFF] text-white font-semibold" 
-                                    : "bg-zinc-850/50 border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-850"
-                                }`}
-                              >
-                                {opt}
-                              </button>
-                            ))}
-                          </div>
-                          <button
-                            disabled={!answers[key] || (isLastQuestion && completing)}
-                            onClick={isLastQuestion ? handleSubmitSurveyAnswers : () => setSurveyStep(surveyStep + 1)}
-                            className="w-full py-3 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold uppercase tracking-wider text-xs disabled:opacity-50 disabled:pointer-events-none transition-all flex items-center justify-center gap-2"
-                          >
-                            {isLastQuestion ? (
-                              completing ? (
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" />
-                              ) : (
-                                <>
-                                  <span>Submit Survey</span>
-                                  <CheckCircle className="w-4 h-4" />
-                                </>
-                              )
-                            ) : (
-                              <>
-                                <span>Next Question</span>
-                                <ArrowRight className="w-3.5 h-3.5" />
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      );
-                    })()}
-
-                    {surveyStep === (surveyQuestions.length + 1) && (
-                      <div className="text-center py-6 space-y-4">
-                        <div className="w-16 h-16 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto animate-bounce">
-                          <Sparkles className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-xl font-bold text-white">Survey Completed!</h3>
-                        <p className="text-xs text-zinc-450 max-w-xs mx-auto">
-                          Your answers were submitted successfully. Your wallet has been credited with the reward.
-                        </p>
-                        <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 font-bold text-sm mx-auto">
-                          <Coins className="w-4 h-4" />
-                          <span>+{activeSurvey.rewardPoints.toLocaleString()} Evo Points</span>
-                        </div>
-                        <button
-                          onClick={handleCloseSurvey}
-                          className="w-full py-3 rounded-xl bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white font-bold uppercase tracking-wider text-xs transition-all"
-                        >
-                          Back to Surveys
-                        </button>
-                      </div>
-                    )}
-                  </>
+                          {opt}
+                        </Button>
+                      ))}
+                    </div>
+                    
+                    <Button
+                      disabled={!answers[key] || (isLastQuestion && completing)}
+                      onClick={isLastQuestion ? handleSubmitSurveyAnswers : () => setSurveyStep(surveyStep + 1)}
+                      className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 text-white font-bold uppercase tracking-wider text-sm shadow-md"
+                    >
+                      {isLastQuestion ? (
+                        completing ? (
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                        ) : (
+                          <>
+                            <span>Submit Survey</span>
+                            <CheckCircle className="w-4 h-4 ml-2" />
+                          </>
+                        )
+                      ) : (
+                        <>
+                          <span>Next Question</span>
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 );
               })()}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+
+              {surveyStep === (currentQuestions.length + 1) && (
+                <div className="text-center py-8 space-y-5">
+                  <div className="w-20 h-20 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mx-auto animate-bounce shadow-sm">
+                    <Sparkles className="w-10 h-10" />
+                  </div>
+                  <DialogTitle className="text-2xl font-bold text-zinc-900">Survey Completed!</DialogTitle>
+                  <DialogDescription className="text-sm text-zinc-600 max-w-sm mx-auto">
+                    Your answers were submitted successfully. Your wallet has been credited with the reward.
+                  </DialogDescription>
+                  <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 font-bold text-sm mx-auto shadow-sm">
+                    <Coins className="w-5 h-5 text-amber-500" />
+                    <span>+{activeSurvey.rewardPoints.toLocaleString()} Evo Points</span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={handleCloseSurvey}
+                    className="w-full h-12 border-zinc-200 text-zinc-700 font-bold uppercase tracking-wider text-sm hover:bg-zinc-50 mt-4"
+                  >
+                    Back to Surveys
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -13,6 +13,24 @@ import {
   Share2 
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 interface ReferredUser {
   _id: string;
@@ -71,14 +89,14 @@ export default function ReferralsPage() {
   };
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-8 pb-12 max-w-7xl mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-          <Users className="w-8 h-8 text-[#5C8EFF]" />
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight flex items-center gap-3">
+          <Users className="w-8 h-8 text-blue-600" />
           <span>Referral System</span>
         </h1>
-        <p className="mt-2 text-sm text-zinc-400 max-w-xl">
+        <p className="mt-2 text-sm text-zinc-600 max-w-xl">
           Invite friends to join Evo Rewards and earn bonus points when they register and participate in activities.
         </p>
       </div>
@@ -86,110 +104,123 @@ export default function ReferralsPage() {
       {/* Share Widget Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Referral Program Info */}
-        <div className="lg:col-span-1 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between">
-          <div className="space-y-4">
-            <div className="p-3 rounded-2xl bg-[#5C8EFF]/10 border border-[#5C8EFF]/20 text-[#5C8EFF] w-fit">
-              <Gift className="w-6 h-6" />
+        <Card className="lg:col-span-1 bg-white border-zinc-200 shadow-sm flex flex-col justify-between">
+          <CardContent className="p-6 h-full flex flex-col">
+            <div className="space-y-4 flex-grow">
+              <div className="p-3 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 w-fit">
+                <Gift className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-zinc-900 leading-tight">Refer & Earn Points</h3>
+              <p className="text-sm text-zinc-600 leading-relaxed">
+                Earn an instant <span className="font-bold text-zinc-900">500 Evo Points ($0.50)</span> for every friend who signs up using your link and completes their first survey!
+              </p>
             </div>
-            <h3 className="text-lg font-bold text-white leading-tight">Refer & Earn Points</h3>
-            <p className="text-xs text-zinc-450 leading-relaxed">
-              Earn an instant <span className="font-bold text-white">500 Evo Points ($0.50)</span> for every friend who signs up using your link and completes their first survey!
-            </p>
-          </div>
-          
-          <div className="mt-6 p-4 rounded-xl bg-zinc-950 border border-zinc-850 flex justify-between items-center text-xs">
-            <span className="text-zinc-550">Total Referral Earnings</span>
-            <span className="font-bold text-amber-400 flex items-center gap-1">
-              <Coins className="w-4.5 h-4.5" />
-              {(data?.referralEarnings || dbUser?.referralEarnings || 0).toLocaleString()} PTS
-            </span>
-          </div>
-        </div>
+            
+            <div className="mt-6 p-4 rounded-xl bg-zinc-50 border border-zinc-200 flex justify-between items-center text-sm">
+              <span className="text-zinc-600 font-medium">Total Referral Earnings</span>
+              <span className="font-bold text-amber-600 flex items-center gap-1.5">
+                <Coins className="w-5 h-5 text-amber-500" />
+                {(data?.referralEarnings || dbUser?.referralEarnings || 0).toLocaleString()} PTS
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Copy Link / Code widgets */}
-        <div className="lg:col-span-2 rounded-2xl border border-zinc-800/80 bg-zinc-900/20 backdrop-blur-md p-6 space-y-6">
-          <h3 className="text-sm font-bold text-white">Your Shareable Credentials</h3>
-
-
-
-          {/* Referral Link */}
-          <div className="space-y-2">
-            <label className="text-[10px] uppercase font-bold text-zinc-550 tracking-wider">Unique Referral Link</label>
-            <div className="flex gap-2">
-              <div className="flex-1 bg-zinc-950 border border-zinc-850 rounded-xl px-4 py-3 text-sm text-zinc-400 truncate select-all flex items-center">
-                {referralLink}
+        <Card className="lg:col-span-2 bg-white border-zinc-200 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-zinc-900">Your Shareable Credentials</CardTitle>
+            <CardDescription>Share this link with your friends to start earning.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Referral Link */}
+            <div className="space-y-2.5">
+              <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Unique Referral Link</label>
+              <div className="flex gap-3">
+                <Input 
+                  value={referralLink}
+                  readOnly
+                  className="bg-zinc-50 border-zinc-200 text-zinc-700 font-medium font-mono text-sm h-12"
+                />
+                <Button 
+                  onClick={handleCopyLink}
+                  className="h-12 px-6 bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 text-white font-bold text-xs uppercase tracking-wider shadow-md min-w-[120px]"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4 mr-2" />
+                      <span>Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-4 h-4 mr-2" />
+                      <span>Copy Link</span>
+                    </>
+                  )}
+                </Button>
               </div>
-              <button 
-                onClick={handleCopyLink}
-                className="px-5 rounded-xl bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:scale-[1.01] transition-transform flex items-center justify-center gap-1.5"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-4 h-4 text-white" />
-                    <span>Copied</span>
-                  </>
-                ) : (
-                  <>
-                    <Share2 className="w-4 h-4" />
-                    <span>Copy</span>
-                  </>
-                )}
-              </button>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Referrals Table */}
-      <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/20 backdrop-blur-md p-6">
-        <h2 className="text-md font-bold text-white mb-6">Referred Friends ({data?.referredUsersCount || 0})</h2>
-
-        {loading ? (
-          <div className="h-32 flex items-center justify-center text-zinc-550 text-xs">
-            Loading referred members registry...
-          </div>
-        ) : !data || data.referredUsers.length === 0 ? (
-          <div className="h-32 border border-dashed border-zinc-850 rounded-xl flex flex-col items-center justify-center text-zinc-550 text-xs">
-            <Users className="w-8 h-8 text-zinc-700 mb-2" />
-            <p>You haven't referred any friends yet. Share your link to start earning commissions!</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm border-collapse">
-              <thead>
-                <tr className="border-b border-zinc-850 text-zinc-500 font-bold text-xs uppercase tracking-wider">
-                  <th className="pb-3 font-semibold">Name</th>
-                  <th className="pb-3 font-semibold">Email</th>
-                  <th className="pb-3 font-semibold">Status</th>
-                  <th className="pb-3 font-semibold text-right">Date Joined</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-850/50">
+      <Card className="bg-white border-zinc-200 shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold text-zinc-900">Referred Friends ({data?.referredUsersCount || 0})</CardTitle>
+          <CardDescription>Track the status of users who joined via your referral link.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="h-32 flex items-center justify-center text-zinc-500 text-sm">
+              <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent animate-spin rounded-full mr-3" />
+              Loading referred members registry...
+            </div>
+          ) : !data || data.referredUsers.length === 0 ? (
+            <div className="h-32 border-2 border-dashed border-zinc-200 rounded-xl flex flex-col items-center justify-center text-zinc-500 text-sm bg-zinc-50">
+              <Users className="w-8 h-8 text-zinc-400 mb-3" />
+              <p className="font-bold text-zinc-700">No Referrals Yet</p>
+              <p>You haven't referred any friends yet. Share your link to start earning commissions!</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-zinc-200 hover:bg-transparent">
+                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Name</TableHead>
+                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Email</TableHead>
+                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
+                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date Joined</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {data.referredUsers.map((friend) => (
-                  <tr key={friend._id} className="text-zinc-350 hover:bg-zinc-900/10 transition-colors">
-                    <td className="py-3.5 font-medium text-white">{friend.fullName}</td>
-                    <td className="py-3.5 text-xs font-mono">{friend.email}</td>
-                    <td className="py-3.5">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        friend.status === "active" 
-                          ? "bg-emerald-500/10 text-emerald-400" 
-                          : friend.status === "suspended"
-                          ? "bg-amber-500/10 text-amber-400"
-                          : "bg-rose-500/10 text-rose-450"
-                      }`}>
+                  <TableRow key={friend._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                    <TableCell className="font-semibold text-sm text-zinc-900">{friend.fullName}</TableCell>
+                    <TableCell className="text-xs font-mono text-zinc-600">{friend.email}</TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant="outline" 
+                        className={`text-[10px] font-bold uppercase tracking-wider ${
+                          friend.status === "active" 
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                            : friend.status === "suspended"
+                            ? "bg-amber-50 text-amber-700 border-amber-200"
+                            : "bg-rose-50 text-rose-700 border-rose-200"
+                        }`}
+                      >
                         {friend.status}
-                      </span>
-                    </td>
-                    <td className="py-3.5 text-right text-xs text-zinc-500">
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right text-xs text-zinc-500 font-medium">
                       {new Date(friend.createdAt).toLocaleDateString()}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
