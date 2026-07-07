@@ -26,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 export default function ProfilePage() {
   const { user } = useUser();
@@ -133,11 +134,16 @@ export default function ProfilePage() {
           <Card className="bg-white border-zinc-200 shadow-sm overflow-hidden text-center p-6">
             <CardContent className="pt-6 space-y-4">
               <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden border-2 border-blue-500 shadow-sm">
-                <img 
-                  src={user?.imageUrl} 
-                  alt={dbUser?.fullName || "User"} 
-                  className="w-full h-full object-cover"
-                />
+                {user?.imageUrl && (
+                  <Image 
+                    src={user.imageUrl} 
+                    alt={dbUser?.fullName || "User"} 
+                    width={96}
+                    height={96}
+                    unoptimized
+                    className="w-full h-full object-cover"
+                  />
+                )}
               </div>
 
               <div>
