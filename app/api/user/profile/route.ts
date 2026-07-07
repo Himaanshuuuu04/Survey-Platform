@@ -132,3 +132,46 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    await dbConnect();
+
+    // Verify authentication header
+    const clerkId = req.headers.get("x-clerk-user-id");
+    if (!clerkId) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { fullName, country, preferences } = body;
+
+    const user = await User.findOne({ clerkId });
+    if (!user) {
+      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+    }
+
+    if (fullName) user.fullName = fullName;
+    if (country !== undefined) user.country = country;
+    if (preferences) {
+      user.preferences = {
+        ...user.preferences,
+        ...preferences
+      };
+    }
+
+    await user.save();
+
+    return NextResponse.json({
+      success: true,
+      message: "Profile updated successfully",
+      data: user,
+    });
+  } catch (error: any) {
+    console.error("Error in User Profile PUT API:", error);
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to update profile" },
+      { status: 500 }
+    );
+  }
+}

@@ -16,7 +16,8 @@ import {
   Menu, 
   X, 
   Coins,
-  MenuIcon
+  MenuIcon,
+  User
 } from "lucide-react";
 import {
   Sidebar,
@@ -45,6 +46,7 @@ function DashboardSidebar() {
     { label: "Redeem Gift Cards", href: "/user-dashboard/redeem", icon: Gift },
     { label: "Referrals", href: "/user-dashboard/referrals", icon: Users },
     { label: "Notifications", href: "/user-dashboard/notifications", icon: Bell },
+    { label: "My Profile", href: "/user-dashboard/profile", icon: User },
   ];
 
   return (
