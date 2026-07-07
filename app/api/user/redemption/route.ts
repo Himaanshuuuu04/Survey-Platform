@@ -20,8 +20,8 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10", 10);
     const skip = (page - 1) * limit;
 
-    const totalRedemptions = await Redemption.countDocuments({ user: user._id });
-    const redemptions = await Redemption.find({ user: user._id })
+    const totalRedemptions = await Redemption.countDocuments({ user: user._id, requestedBrand: { $ne: "PayPal" } });
+    const redemptions = await Redemption.find({ user: user._id, requestedBrand: { $ne: "PayPal" } })
       .populate("deliveredGiftCard")
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const allowedBrands = ["Amazon", "Google Play", "Apple", "Steam", "Flipkart", "PayPal"];
+    const allowedBrands = ["Amazon", "Google Play", "Apple", "Steam", "Flipkart"];
     if (!allowedBrands.includes(brand)) {
       return NextResponse.json(
         { success: false, error: `Invalid brand. Must be one of: ${allowedBrands.join(", ")}` },

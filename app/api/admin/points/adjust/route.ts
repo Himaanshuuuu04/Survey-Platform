@@ -13,7 +13,8 @@ export async function POST(req: NextRequest) {
 
     const { userId, amount, rationale, adminId } = body;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    // Validation of inputs will be done against either clerkId or ObjectId
+    if (!userId || typeof userId !== "string") {
       return NextResponse.json({ success: false, error: "Invalid User ID" }, { status: 400 });
     }
 
@@ -29,7 +30,12 @@ export async function POST(req: NextRequest) {
     session = await mongoose.startSession();
     session.startTransaction();
 
-    const user = await User.findById(userId).session(session);
+    let user = null;
+    if (mongoose.Types.ObjectId.isValid(userId)) {
+      user = await User.findById(userId).session(session);
+    } else {
+      user = await User.findOne({ clerkId: userId }).session(session);
+    }
 
     if (!user) {
       await session.abortTransaction();
@@ -38,13 +44,13 @@ export async function POST(req: NextRequest) {
     }
 
     // 1. Update User Balance
-    user.pointsBalance += amount;
+    user.currentPoints += amount;
     if (amount > 0) {
-      user.lifetimePoints += amount;
+      user.lifetimeEarnings += amount;
     }
     
     // Ensure balance doesn't go below 0 (optional)
-    if (user.pointsBalance < 0) {
+    if (user.currentPoints < 0) {
       await session.abortTransaction();
       session.endSession();
       return NextResponse.json({ success: false, error: "User balance cannot go below zero" }, { status: 400 });
@@ -54,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Create Transaction Ledger
     const transactionRecord = new Transaction({
-      user: userId,
+      user: user._id,
       type: amount > 0 ? "credit" : "debit",
       amount: Math.abs(amount),
       category: "admin_adjustment",
@@ -67,13 +73,13 @@ export async function POST(req: NextRequest) {
     const auditLog = new AdminAuditLog({
       adminId: adminId || new mongoose.Types.ObjectId(), 
       action: "MANUAL_POINTS_ADJUSTMENT",
-      targetEntityId: userId,
+      targetEntityId: user._id,
       targetEntityType: "User",
       details: {
         amount,
         rationale,
-        previousBalance: user.pointsBalance - amount,
-        newBalance: user.pointsBalance
+        previousBalance: user.currentPoints - amount,
+        newBalance: user.currentPoints
       }
     });
     await auditLog.save({ session });
@@ -86,7 +92,7 @@ export async function POST(req: NextRequest) {
       success: true,
       message: "Points adjusted successfully",
       data: {
-        newBalance: user.pointsBalance,
+        newBalance: user.currentPoints,
         transactionId: transactionRecord._id
       }
     });

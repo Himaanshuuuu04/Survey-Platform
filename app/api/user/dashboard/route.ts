@@ -28,9 +28,9 @@ export async function GET(req: NextRequest) {
       status: user.status,
     };
 
-    // 2. Fetch available gift cards count by brand
+    // 2. Fetch available gift cards count by brand (excluding PayPal)
     const availableGiftCards = await GiftCard.aggregate([
-      { $match: { status: "available" } },
+      { $match: { status: "available", brand: { $ne: "PayPal" } } },
       { $group: { _id: "$brand", count: { $sum: 1 } } }
     ]);
 

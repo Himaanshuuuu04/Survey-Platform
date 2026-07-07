@@ -15,6 +15,10 @@ interface UserPreview {
   email: string;
   pointsBalance?: number;
   currentPoints?: number;
+  status?: string;
+  lifetimeEarnings?: number;
+  clerkId?: string;
+  surveysCompleted?: number;
 }
 
 export default function PointsAdjustmentPage() {
@@ -41,7 +45,8 @@ export default function PointsAdjustmentPage() {
       const data = await res.json();
       
       if (res.ok && data.success) {
-        setUserPreview(data.data);
+        // The API returns data: { profile: user, history: ... }
+        setUserPreview(data.data.profile || data.data);
       } else {
         toast.error(data.error || "User not found");
       }
@@ -165,12 +170,26 @@ export default function PointsAdjustmentPage() {
                   <UserIcon className="h-10 w-10 text-brand" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">{userPreview.fullName}</h3>
-                  <p className="text-muted-foreground">{userPreview.email}</p>
+                  <h3 className="text-xl font-bold flex items-center justify-center gap-2">
+                    {userPreview.fullName}
+                    {userPreview.status && (
+                      <Badge variant={userPreview.status === "active" ? "default" : "destructive"} className="text-[10px]">
+                        {userPreview.status}
+                      </Badge>
+                    )}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">{userPreview.email}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">Clerk ID: {userPreview.clerkId}</p>
                 </div>
-                <div className="flex items-center gap-2 mt-4">
-                  <Badge variant="outline" className="text-sm px-4 py-1 font-sharp">
+                <div className="flex flex-wrap justify-center items-center gap-2 mt-4">
+                  <Badge variant="outline" className="text-sm px-4 py-1 font-sharp bg-brand/5 border-brand/20">
                     Current Balance: {userPreview.pointsBalance ?? userPreview.currentPoints ?? 0} pts
+                  </Badge>
+                  <Badge variant="outline" className="text-sm px-4 py-1 font-sharp">
+                    Lifetime: {userPreview.lifetimeEarnings ?? 0} pts
+                  </Badge>
+                  <Badge variant="outline" className="text-sm px-4 py-1 font-sharp">
+                    Surveys: {userPreview.surveysCompleted ?? 0}
                   </Badge>
                 </div>
               </div>

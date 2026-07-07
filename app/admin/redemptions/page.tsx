@@ -23,6 +23,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner"; // Using sonner for notifications as it's in package.json
 
 interface User {
@@ -35,9 +42,9 @@ interface User {
 interface Redemption {
   _id: string;
   user: User;
-  rewardType: string;
+  requestedBrand: string;
   usdAmount: number;
-  pointsCost: number;
+  pointsDeducted: number;
   status: string;
   createdAt: string;
 }
@@ -46,6 +53,12 @@ export default function RedemptionsPage() {
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  // Approve Dialog State
+  const [approveDialog, setApproveDialog] = useState<{ isOpen: boolean; redemption: Redemption | null }>({ isOpen: false, redemption: null });
+  const [availableCards, setAvailableCards] = useState<any[]>([]);
+  const [selectedCardId, setSelectedCardId] = useState<string>("");
+  const [cardsLoading, setCardsLoading] = useState(false);
 
   // Reject Dialog State
   const [rejectDialog, setRejectDialog] = useState<{ isOpen: boolean; id: string | null }>({ isOpen: false, id: null });
@@ -70,13 +83,36 @@ export default function RedemptionsPage() {
     fetchRedemptions();
   }, []);
 
-  const handleAction = async (id: string, action: "approve" | "reject", reason?: string) => {
+  const fetchAvailableCards = async (brand: string, amount: number) => {
+    setCardsLoading(true);
+    try {
+      const res = await fetch(`/api/admin/gift-cards/list?brand=${encodeURIComponent(brand)}&usdAmount=${amount}`);
+      const data = await res.json();
+      if (data.success) {
+        setAvailableCards(data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch available gift cards", error);
+      toast.error("Failed to fetch available gift cards");
+    } finally {
+      setCardsLoading(false);
+    }
+  };
+
+  const openApproveDialog = (redemption: Redemption) => {
+    setApproveDialog({ isOpen: true, redemption });
+    setSelectedCardId("");
+    setAvailableCards([]);
+    fetchAvailableCards(redemption.requestedBrand, redemption.usdAmount);
+  };
+
+  const handleAction = async (id: string, action: "approve" | "reject", reason?: string, giftCardId?: string) => {
     setActionLoading(id);
     try {
       const res = await fetch(`/api/admin/redemptions/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, reason }),
+        body: JSON.stringify({ action, reason, giftCardId }),
       });
       const data = await res.json();
 
@@ -84,6 +120,7 @@ export default function RedemptionsPage() {
         toast.success(data.message || `Redemption ${action}d successfully`);
         fetchRedemptions();
         if (action === "reject") setRejectDialog({ isOpen: false, id: null });
+        if (action === "approve") setApproveDialog({ isOpen: false, redemption: null });
       } else {
         toast.error(data.error || `Failed to ${action} redemption`);
       }
@@ -144,12 +181,12 @@ export default function RedemptionsPage() {
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell className="capitalize">{redemption.rewardType}</TableCell>
+                    <TableCell className="capitalize">{redemption.requestedBrand}</TableCell>
                     <TableCell className="font-sharp font-semibold text-success">
                       ${redemption.usdAmount}
                     </TableCell>
                     <TableCell className="font-sharp font-semibold text-brand">
-                      {redemption.pointsCost?.toLocaleString()}
+                      {redemption.pointsDeducted?.toLocaleString()}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {new Date(redemption.createdAt).toLocaleDateString()}
@@ -160,7 +197,7 @@ export default function RedemptionsPage() {
                         variant="outline"
                         className="border-success text-success hover:bg-success hover:text-white"
                         disabled={actionLoading === redemption._id}
-                        onClick={() => handleAction(redemption._id, "approve")}
+                        onClick={() => openApproveDialog(redemption)}
                       >
                         {actionLoading === redemption._id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4 mr-1" />}
                         Approve
@@ -218,6 +255,57 @@ export default function RedemptionsPage() {
               }}
             >
               {actionLoading === rejectDialog.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm Reject"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={approveDialog.isOpen} onOpenChange={(open) => setApproveDialog({ isOpen: open, redemption: open ? approveDialog.redemption : null })}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Approve Redemption</DialogTitle>
+            <DialogDescription>
+              Select a gift card to assign for this redemption.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Available Gift Cards ({approveDialog.redemption?.requestedBrand} - ${approveDialog.redemption?.usdAmount})</Label>
+              {cardsLoading ? (
+                <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Loading cards...</span>
+                </div>
+              ) : availableCards.length === 0 ? (
+                <p className="text-sm text-destructive">No available gift cards for this brand and amount. Please add inventory first.</p>
+              ) : (
+                <Select value={selectedCardId} onValueChange={setSelectedCardId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a gift card to assign" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCards.map((card) => (
+                      <SelectItem key={card._id} value={card._id}>
+                        {card.code}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setApproveDialog({ isOpen: false, redemption: null })}>Cancel</Button>
+            <Button 
+              className="bg-success text-white hover:bg-success/90"
+              disabled={actionLoading === approveDialog.redemption?._id || !selectedCardId}
+              onClick={() => {
+                if (approveDialog.redemption) {
+                  handleAction(approveDialog.redemption._id, "approve", undefined, selectedCardId);
+                }
+              }}
+            >
+              {actionLoading === approveDialog.redemption?._id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm & Assign"}
             </Button>
           </DialogFooter>
         </DialogContent>

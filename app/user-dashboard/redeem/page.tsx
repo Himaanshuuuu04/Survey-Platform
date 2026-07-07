@@ -34,7 +34,6 @@ const GIFT_CARD_BRANDS = [
   { name: "Apple", logoColor: "from-zinc-400 to-zinc-650", desc: "Apps, subscriptions & hardware" },
   { name: "Steam", logoColor: "from-blue-600 to-indigo-800", desc: "PC gaming marketplace key" },
   { name: "Flipkart", logoColor: "from-blue-400 to-sky-600", desc: "Ecommerce shopping card" },
-  { name: "PayPal", logoColor: "from-indigo-500 to-blue-700", desc: "Direct wallet cash transfer" },
 ];
 
 export default function RedeemPage() {

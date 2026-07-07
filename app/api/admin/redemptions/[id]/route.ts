@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     }
 
     const body = await req.json();
-    const { action, adminId, reason } = body;
+    const { action, adminId, reason, giftCardId } = body;
 
     if (!['approve', 'reject'].includes(action)) {
       return NextResponse.json({ success: false, error: "Invalid action. Must be 'approve' or 'reject'" }, { status: 400 });
@@ -62,11 +62,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     let giftCardCodeData = null;
 
     if (action === "approve") {
-      // Step 2: Inventory Matching
+      if (!giftCardId) {
+        await session.abortTransaction();
+        session.endSession();
+        return NextResponse.json({ success: false, error: "giftCardId is required to approve redemption." }, { status: 400 });
+      }
+
+      // Step 2: Inventory Matching (Manual Selection)
       const availableGiftCard = await GiftCard.findOneAndUpdate(
-        { brand: redemption.requestedBrand, usdAmount: redemption.usdAmount, status: "available" },
-        { $set: { status: "assigned", assignedTo: user._id } },
-        { session, new: true }
+        { _id: giftCardId, status: "available" },
+        { $set: { status: "used", assignedTo: user._id, redemptionId: redemption._id, redeemedAt: new Date() } },
+        { session, returnDocument: 'after' }
       );
 
       if (!availableGiftCard) {
@@ -131,7 +137,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const notification = new Notification({
       user: user._id,
-      type: "system",
+      type: "redemption_update",
       title: action === "approve" ? "Redemption Approved!" : "Redemption Rejected",
       message: notificationContent,
       isRead: false

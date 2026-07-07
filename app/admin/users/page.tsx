@@ -61,6 +61,7 @@ interface User {
   currentPoints: number;
   createdAt: string;
   clerkId: string;
+  role?: string;
 }
 
 interface Pagination {
@@ -136,6 +137,7 @@ export default function UsersPage() {
   const [userDetail, setUserDetail] = useState<any | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [updatingRole, setUpdatingRole] = useState(false);
 
   // User delete states
   const [deleteConfirmUser, setDeleteConfirmUser] = useState<User | null>(null);
@@ -222,6 +224,41 @@ export default function UsersPage() {
       toast.error("Failed to update user status");
     } finally {
       setUpdatingStatus(false);
+    }
+  };
+
+  const handleRoleChange = async (newRole: string) => {
+    if (!selectedUser) return;
+    setUpdatingRole(true);
+    try {
+      const res = await fetch(`/api/admin/users/${selectedUser._id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role: newRole }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("User role updated successfully");
+        setUsers(users.map(u => u._id === selectedUser._id ? { ...u, role: newRole } : u));
+        if (userDetail) {
+          setUserDetail({
+            ...userDetail,
+            profile: {
+              ...userDetail.profile,
+              role: newRole
+            }
+          });
+        }
+      } else {
+        toast.error(data.error || "Failed to update user role");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update user role");
+    } finally {
+      setUpdatingRole(false);
     }
   };
 
@@ -320,7 +357,14 @@ export default function UsersPage() {
                     className="hover:bg-muted/30 transition-colors cursor-pointer"
                     onClick={() => handleViewDetails(user)}
                   >
-                    <TableCell className="font-medium">{user.fullName}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        {user.fullName}
+                        {user.role === "admin" && (
+                          <Shield className="h-3.5 w-3.5 text-brand" />
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>{user.country || "N/A"}</TableCell>
                     <TableCell className="font-sharp font-semibold text-brand">
@@ -499,7 +543,27 @@ export default function UsersPage() {
                         </div>
 
                         <DetailRow icon={Globe} label="Last Login IP" value={userDetail.profile.lastLoginIp || "N/A"} isMono isCopyable={!!userDetail.profile.lastLoginIp} />
-                        <DetailRow icon={UserIcon} label="Account Role" value={userDetail.profile.role || "user"} className="capitalize font-semibold text-brand" />
+                        
+                        {/* Interactive Role Selector */}
+                        <div className="flex items-center justify-between py-2 border-b border-border/40 last:border-0 hover:bg-muted/10 px-2 rounded-lg transition-colors">
+                          <div className="flex items-center gap-2">
+                            <UserIcon className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">Account Role</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <NativeSelect 
+                              value={userDetail.profile.role || "user"} 
+                              onChange={(e) => handleRoleChange(e.target.value)}
+                              disabled={updatingRole}
+                              size="sm"
+                              className="w-[120px]"
+                            >
+                              <NativeSelectOption value="user">User</NativeSelectOption>
+                              <NativeSelectOption value="admin">Admin</NativeSelectOption>
+                            </NativeSelect>
+                            {updatingRole && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
+                          </div>
+                        </div>
                       </div>
                     </Card>
                   </div>

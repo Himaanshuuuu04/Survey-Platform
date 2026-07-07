@@ -12,21 +12,26 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     
     const { id } = await params;
 
-    // Ensure the ID is valid
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json({ success: false, error: "Invalid User ID" }, { status: 400 });
-    }
+    let queryId = id;
+    let user = null;
 
-    // Run queries in parallel
-    const [user, pointHistory, redemptions] = await Promise.all([
-      User.findById(id).select("-password").lean(),
-      Transaction.find({ user: id }).sort({ createdAt: -1 }).limit(100).lean(),
-      Redemption.find({ user: id }).sort({ createdAt: -1 }).populate("deliveredGiftCard").lean()
-    ]);
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      user = await User.findById(id).select("-password").lean();
+    } else {
+      user = await User.findOne({ clerkId: id }).select("-password").lean();
+    }
 
     if (!user) {
       return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
     }
+
+    queryId = user._id;
+
+    // Run queries in parallel
+    const [pointHistory, redemptions] = await Promise.all([
+      Transaction.find({ user: queryId }).sort({ createdAt: -1 }).limit(100).lean(),
+      Redemption.find({ user: queryId }).sort({ createdAt: -1 }).populate("deliveredGiftCard").lean()
+    ]);
 
     // Extract completed offers from transactions
     const completedOffers = pointHistory.filter((tx: any) => 
@@ -66,7 +71,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const body = await req.json();
-    const { status, fullName, email } = body;
+    const { status, fullName, email, role } = body;
 
     const updates: Record<string, any> = {};
     
@@ -79,6 +84,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       }
       updates.status = status;
       // Note: If status is 'banned', any active JWTs should be invalidated by middleware checking this DB status
+    }
+
+    if (role) {
+      if (!["user", "admin"].includes(role)) {
+        return NextResponse.json(
+          { success: false, error: "Invalid role value" },
+          { status: 400 }
+        );
+      }
+      updates.role = role;
     }
 
     if (fullName) updates.fullName = fullName;

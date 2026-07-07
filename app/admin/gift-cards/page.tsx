@@ -10,8 +10,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Upload, Loader2, Gift, Plus } from "lucide-react";
+import { Upload, Loader2, Gift, Plus, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,6 +58,55 @@ export default function GiftCardsPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
 
+  // Card list and delete states
+  const [selectedInventory, setSelectedInventory] = useState<{ brand: string; usdAmount: number } | null>(null);
+  const [cardsList, setCardsList] = useState<any[]>([]);
+  const [loadingCards, setLoadingCards] = useState(false);
+  const [deletingCardId, setDeletingCardId] = useState<string | null>(null);
+
+  const fetchCards = async (brand: string, usdAmount: number) => {
+    setLoadingCards(true);
+    try {
+      const res = await fetch(`/api/admin/gift-cards/list?brand=${encodeURIComponent(brand)}&usdAmount=${usdAmount}`);
+      const data = await res.json();
+      if (data.success) {
+        setCardsList(data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch cards list", error);
+    } finally {
+      setLoadingCards(false);
+    }
+  };
+
+  const handleOpenCardsList = (brand: string, usdAmount: number) => {
+    setSelectedInventory({ brand, usdAmount });
+    fetchCards(brand, usdAmount);
+  };
+
+  const handleDeleteCard = async (cardId: string) => {
+    if (!confirm("Are you sure you want to delete this gift card?")) return;
+    setDeletingCardId(cardId);
+    try {
+      const res = await fetch(`/api/admin/gift-cards/${cardId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Gift card deleted successfully");
+        setCardsList((prev) => prev.filter((card) => card._id !== cardId));
+        fetchInventory();
+      } else {
+        toast.error(data.error || "Failed to delete gift card");
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || "Failed to delete gift card");
+    } finally {
+      setDeletingCardId(null);
+    }
+  };
+
   const fetchInventory = async () => {
     setLoading(true);
     try {
@@ -65,6 +128,10 @@ export default function GiftCardsPage() {
 
   const handleAddSingle = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!singleCard.brand) {
+      toast.error("Please select a brand");
+      return;
+    }
     setIsAddingSingle(true);
     try {
       const payload = {
@@ -141,7 +208,7 @@ export default function GiftCardsPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-ink">Gift Cards</h1>
         <p className="text-muted-foreground mt-1">
-          Manage your gift card inventory and upload new codes.
+          Manage your gift card inventory. Click on any inventory row to view and delete individual card codes.
         </p>
       </div>
 
@@ -175,7 +242,11 @@ export default function GiftCardsPage() {
                   </TableRow>
                 ) : (
                   inventory.map((item, idx) => (
-                    <TableRow key={idx}>
+                    <TableRow 
+                      key={idx} 
+                      className="cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => handleOpenCardsList(item.brand, item.usdAmount)}
+                    >
                       <TableCell className="font-medium flex items-center gap-2">
                         <Gift className="h-4 w-4 text-brand" />
                         {item.brand}
@@ -211,7 +282,21 @@ export default function GiftCardsPage() {
                   <form onSubmit={handleAddSingle} className="space-y-4">
                     <div className="space-y-2">
                       <Label>Brand</Label>
-                      <Input required placeholder="e.g. Amazon" value={singleCard.brand} onChange={(e) => setSingleCard({...singleCard, brand: e.target.value})} />
+                      <Select 
+                        value={singleCard.brand} 
+                        onValueChange={(val) => setSingleCard({ ...singleCard, brand: val })}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select brand" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Amazon">Amazon</SelectItem>
+                          <SelectItem value="Google Play">Google Play</SelectItem>
+                          <SelectItem value="Apple">Apple</SelectItem>
+                          <SelectItem value="Steam">Steam</SelectItem>
+                          <SelectItem value="Flipkart">Flipkart</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="space-y-2">
                       <Label>Amount (USD)</Label>
@@ -257,6 +342,64 @@ export default function GiftCardsPage() {
           </Card>
         </div>
       </div>
+
+      <Dialog open={!!selectedInventory} onOpenChange={(open) => { if (!open) setSelectedInventory(null); }}>
+        <DialogContent className="sm:max-w-lg max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedInventory?.brand} - ${selectedInventory?.usdAmount} Gift Cards
+            </DialogTitle>
+            <DialogDescription>
+              View and manage individual codes for this brand and value.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto pr-1 my-4 space-y-3">
+            {loadingCards ? (
+              <div className="flex justify-center items-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : cardsList.length === 0 ? (
+              <p className="text-center text-muted-foreground py-6">
+                No active gift cards for this denomination.
+              </p>
+            ) : (
+              <div className="divide-y divide-border">
+                {cardsList.map((card) => (
+                  <div key={card._id} className="flex justify-between items-center py-3">
+                    <div className="space-y-1">
+                      <div className="font-mono text-sm font-semibold tracking-wider text-foreground">
+                        Code: {card.code}
+                      </div>
+                      {card.pin && (
+                        <div className="font-mono text-xs text-muted-foreground">
+                          PIN: {card.pin}
+                        </div>
+                      )}
+                      <div className="text-xs text-muted-foreground/80">
+                        Added: {new Date(card.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteCard(card._id)}
+                      disabled={deletingCardId === card._id}
+                      className="text-destructive hover:bg-destructive/10"
+                    >
+                      {deletingCardId === card._id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
