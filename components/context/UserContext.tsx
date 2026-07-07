@@ -52,7 +52,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       const clerkId = clerkUser.id;
       const referredByCode = (clerkUser.unsafeMetadata?.referredByCode as string) || "";
 
-      if (!email) return;
+      if (!email) {
+        setLoading(false);
+        return;
+      }
 
       // Sync and retrieve DB user profile
       const res = await fetch(
