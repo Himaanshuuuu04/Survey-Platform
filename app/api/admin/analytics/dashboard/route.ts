@@ -5,10 +5,16 @@ import Survey from "@/models/Survey";
 import Game from "@/models/Game";
 import Redemption from "@/models/Redemption";
 import GiftCard from "@/models/Gift-Card";
+import { getAuthenticatedAdmin } from "@/lib/authHelper";
 
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
+
+    const admin = await getAuthenticatedAdmin(req);
+    if (!admin) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
 
     // Run count and aggregation queries in parallel for performance
     const [

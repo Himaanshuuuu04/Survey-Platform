@@ -4,14 +4,21 @@ import User from "@/models/User";
 import Transaction from "@/models/Transaction";
 import AdminAuditLog from "@/models/Adminlogs";
 import mongoose from "mongoose";
+import { getAuthenticatedAdmin } from "@/lib/authHelper";
 
 export async function POST(req: NextRequest) {
   let session;
   try {
     await dbConnect();
-    const body = await req.json();
 
-    const { userId, amount, rationale, adminId } = body;
+    const admin = await getAuthenticatedAdmin(req);
+    if (!admin) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { userId, amount, rationale } = body;
+    const adminId = admin._id;
 
     // Validation of inputs will be done against either clerkId or ObjectId
     if (!userId || typeof userId !== "string") {

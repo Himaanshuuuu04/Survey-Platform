@@ -13,7 +13,7 @@ const isAdminRoute = createRouteMatcher([
   "/admin(.*)"
 ]);
 
-export default clerkMiddleware(async (auth, req) => {
+export const proxy = clerkMiddleware(async (auth, req) => {
   const { userId, sessionClaims } = await auth();
   const isAuthPage = req.nextUrl.pathname.startsWith("/login") || req.nextUrl.pathname.startsWith("/register");
 
@@ -24,12 +24,27 @@ export default clerkMiddleware(async (auth, req) => {
 
   // Handle Admin Route Protection
   if (isAdminRoute(req)) {
+    const { userId, sessionClaims } = await auth();
     await auth.protect();
     
-    // Check role in public metadata.
-    // Ensure you assign `metadata: { role: 'admin' }` to your admin user in Clerk Dashboard.
-    const role = (sessionClaims?.metadata as any)?.role;
+    let role = (sessionClaims?.metadata as any)?.role || (sessionClaims?.publicMetadata as any)?.role;
+
+    // Fallback: Fetch Clerk user object if claim is not configured/present
+    if (!role && userId) {
+      try {
+        const { createClerkClient } = await import("@clerk/nextjs/server");
+        const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+        const clerkUser = await clerkClient.users.getUser(userId);
+        role = clerkUser.publicMetadata?.role;
+      } catch (err) {
+        console.error("Error fetching user from Clerk in middleware:", err);
+      }
+    }
+
     if (role !== "admin") {
+      if (req.nextUrl.pathname.startsWith("/api/")) {
+        return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+      }
       return NextResponse.redirect(new URL("/user-dashboard", req.url));
     }
   }
