@@ -124,7 +124,13 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen flex w-full bg-white text-zinc-900 font-sans">
         <DashboardSidebar />
         
-        <SidebarInset className="flex flex-col flex-1 min-w-0 bg-white">
+        <SidebarInset 
+          className="flex flex-col flex-1 min-w-0 bg-white"
+          style={{
+            backgroundImage: "radial-gradient(#E4E4E7 1.2px, transparent 1.2px)",
+            backgroundSize: "24px 24px",
+          }}
+        >
           <header className="lg:hidden h-16 border-b border-zinc-200 bg-white/80 backdrop-blur-xl px-4 flex items-center justify-between sticky top-0 z-40">
             <div className="flex items-center gap-3">
               <SidebarTrigger className="text-zinc-600 hover:text-zinc-900" />

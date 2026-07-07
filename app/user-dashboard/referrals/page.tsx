@@ -183,41 +183,43 @@ export default function ReferralsPage() {
               <p>You haven't referred any friends yet. Share your link to start earning commissions!</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow className="border-zinc-200 hover:bg-transparent">
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Name</TableHead>
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Email</TableHead>
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date Joined</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.referredUsers.map((friend) => (
-                  <TableRow key={friend._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
-                    <TableCell className="font-semibold text-sm text-zinc-900">{friend.fullName}</TableCell>
-                    <TableCell className="text-xs font-mono text-zinc-600">{friend.email}</TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant="outline" 
-                        className={`text-[10px] font-bold uppercase tracking-wider ${
-                          friend.status === "active" 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-                            : friend.status === "suspended"
-                            ? "bg-amber-50 text-amber-700 border-amber-200"
-                            : "bg-rose-50 text-rose-700 border-rose-200"
-                        }`}
-                      >
-                        {friend.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right text-xs text-zinc-500 font-medium">
-                      {new Date(friend.createdAt).toLocaleDateString()}
-                    </TableCell>
+            <div className="overflow-x-auto w-full">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-zinc-200 hover:bg-transparent">
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Name</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Email</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date Joined</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {data.referredUsers.map((friend) => (
+                    <TableRow key={friend._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                      <TableCell className="font-semibold text-sm text-zinc-900">{friend.fullName}</TableCell>
+                      <TableCell className="text-xs font-mono text-zinc-600">{friend.email}</TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant="outline" 
+                          className={`text-[10px] font-bold uppercase tracking-wider ${
+                            friend.status === "active" 
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                              : friend.status === "suspended"
+                              ? "bg-amber-50 text-amber-700 border-amber-200"
+                              : "bg-rose-50 text-rose-700 border-rose-200"
+                          }`}
+                        >
+                          {friend.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right text-xs text-zinc-500 font-medium">
+                        {new Date(friend.createdAt).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

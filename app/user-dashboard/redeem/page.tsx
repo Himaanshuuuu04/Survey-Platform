@@ -217,61 +217,63 @@ export default function RedeemPage() {
               <p>No past redemptions found. Redeem your first card once you hit 5,000 points!</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow className="border-zinc-200 hover:bg-transparent">
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Gift Card</TableHead>
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">USD Value</TableHead>
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Points Debited</TableHead>
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Gift Card Code</TableHead>
-                  <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {redemptions.map((red) => (
-                  <TableRow key={red._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
-                    <TableCell className="font-semibold text-sm text-zinc-900">{red.requestedBrand} Gift Card</TableCell>
-                    <TableCell className="font-bold text-sm text-zinc-700">${red.usdAmount.toFixed(2)}</TableCell>
-                    <TableCell className="font-semibold text-sm text-zinc-600">{red.pointsDeducted.toLocaleString()} pts</TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant="outline" 
-                        className={`text-[10px] font-bold uppercase tracking-wider ${
-                          red.status === "completed"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                            : red.status === "approved"
-                              ? "bg-teal-50 text-teal-700 border-teal-200"
-                              : red.status === "pending"
-                                ? "bg-blue-50 text-blue-700 border-blue-200"
-                                : "bg-rose-50 text-rose-700 border-rose-200"
-                        }`}
-                      >
-                        {red.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-mono text-xs text-zinc-500">
-                      {red.status === "completed" && red.deliveredGiftCard ? (
-                        <span className="bg-zinc-100 border border-zinc-200 px-2 py-1 rounded select-all font-bold text-emerald-600">
-                          {red.deliveredGiftCard.code}
-                        </span>
-                      ) : red.status === "completed" ? (
-                        <span className="text-zinc-500">Delivered</span>
-                      ) : red.status === "approved" ? (
-                        <span className="text-teal-600 italic">Code generation pending</span>
-                      ) : red.status === "rejected" ? (
-                        <span className="text-rose-500/70 line-through">Rejected</span>
-                      ) : (
-                        <span className="text-zinc-400">Awaiting admin review</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right text-xs text-zinc-500 font-medium">
-                      {new Date(red.createdAt).toLocaleDateString()}
-                    </TableCell>
+            <div className="overflow-x-auto w-full">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-zinc-200 hover:bg-transparent">
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Gift Card</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">USD Value</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Points Debited</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Gift Card Code</TableHead>
+                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {redemptions.map((red) => (
+                    <TableRow key={red._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                      <TableCell className="font-semibold text-sm text-zinc-900">{red.requestedBrand} Gift Card</TableCell>
+                      <TableCell className="font-bold text-sm text-zinc-700">${red.usdAmount.toFixed(2)}</TableCell>
+                      <TableCell className="font-semibold text-sm text-zinc-600">{red.pointsDeducted.toLocaleString()} pts</TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant="outline" 
+                          className={`text-[10px] font-bold uppercase tracking-wider ${
+                            red.status === "completed"
+                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              : red.status === "approved"
+                                ? "bg-teal-50 text-teal-700 border-teal-200"
+                                : red.status === "pending"
+                                  ? "bg-blue-50 text-blue-700 border-blue-200"
+                                  : "bg-rose-50 text-rose-700 border-rose-200"
+                          }`}
+                        >
+                          {red.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-mono text-xs text-zinc-500">
+                        {red.status === "completed" && red.deliveredGiftCard ? (
+                          <span className="bg-zinc-100 border border-zinc-200 px-2 py-1 rounded select-all font-bold text-emerald-600">
+                            {red.deliveredGiftCard.code}
+                          </span>
+                        ) : red.status === "completed" ? (
+                          <span className="text-zinc-500">Delivered</span>
+                        ) : red.status === "approved" ? (
+                          <span className="text-teal-600 italic">Code generation pending</span>
+                        ) : red.status === "rejected" ? (
+                          <span className="text-rose-500/70 line-through">Rejected</span>
+                        ) : (
+                          <span className="text-zinc-400">Awaiting admin review</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right text-xs text-zinc-500 font-medium">
+                        {new Date(red.createdAt).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>

@@ -207,47 +207,49 @@ export default function WalletPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-zinc-200 hover:bg-transparent">
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Description</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Category</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Type</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Amount</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {transactions.map((tx) => (
-                    <TableRow key={tx._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
-                      <TableCell className="font-semibold text-sm max-w-xs sm:max-w-sm truncate text-zinc-900">{tx.description}</TableCell>
-                      <TableCell className="text-xs capitalize font-medium text-zinc-600">{tx.category.replace("_", " ")}</TableCell>
-                      <TableCell className="text-xs font-semibold uppercase text-zinc-500">{tx.type}</TableCell>
-                      <TableCell className={`font-bold text-sm ${tx.type === "credit" ? "text-emerald-600" : "text-rose-600"}`}>
-                        {tx.type === "credit" ? "+" : "-"}{tx.amount.toLocaleString()} pts
-                      </TableCell>
-                      <TableCell>
-                        <Badge 
-                          variant="outline" 
-                          className={`text-[10px] font-bold uppercase tracking-wider ${
-                            tx.status === "completed" 
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-                              : tx.status === "pending"
-                              ? "bg-blue-50 text-blue-700 border-blue-200"
-                              : "bg-rose-50 text-rose-700 border-rose-200"
-                          }`}
-                        >
-                          {tx.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right text-xs text-zinc-500 font-medium">
-                        {new Date(tx.createdAt).toLocaleDateString() + " " + new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </TableCell>
+              <div className="overflow-x-auto w-full">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-zinc-200 hover:bg-transparent">
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Description</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Category</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Type</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Amount</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {transactions.map((tx) => (
+                      <TableRow key={tx._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                        <TableCell className="font-semibold text-sm max-w-xs sm:max-w-sm truncate text-zinc-900">{tx.description}</TableCell>
+                        <TableCell className="text-xs capitalize font-medium text-zinc-600">{tx.category.replace("_", " ")}</TableCell>
+                        <TableCell className="text-xs font-semibold uppercase text-zinc-500">{tx.type}</TableCell>
+                        <TableCell className={`font-bold text-sm ${tx.type === "credit" ? "text-emerald-600" : "text-rose-600"}`}>
+                          {tx.type === "credit" ? "+" : "-"}{tx.amount.toLocaleString()} pts
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant="outline" 
+                            className={`text-[10px] font-bold uppercase tracking-wider ${
+                              tx.status === "completed" 
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                                : tx.status === "pending"
+                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                : "bg-rose-50 text-rose-700 border-rose-200"
+                            }`}
+                          >
+                            {tx.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right text-xs text-zinc-500 font-medium">
+                          {new Date(tx.createdAt).toLocaleDateString() + " " + new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
               {/* Pagination controls */}
               {totalPages > 1 && (

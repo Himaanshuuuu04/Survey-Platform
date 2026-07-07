@@ -338,49 +338,51 @@ export default function DashboardPage() {
                 <p>No recent activity. Complete your first survey to start earning!</p>
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-zinc-200 hover:bg-transparent">
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Activity</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Category</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Amount</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
-                    <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data.recentActivity.map((activity) => (
-                    <TableRow key={activity._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
-                      <TableCell className="font-semibold text-sm max-w-xs sm:max-w-sm truncate text-zinc-900">
-                        {activity.description}
-                      </TableCell>
-                      <TableCell className="text-xs font-medium capitalize text-zinc-600">
-                        {activity.category.replace("_", " ")}
-                      </TableCell>
-                      <TableCell className={`font-bold text-sm ${activity.type === "credit" ? "text-emerald-600" : "text-rose-600"}`}>
-                        {activity.type === "credit" ? "+" : "-"}{activity.amount.toLocaleString()} pts
-                      </TableCell>
-                      <TableCell>
-                        <Badge 
-                          variant="outline" 
-                          className={`text-[10px] font-bold uppercase tracking-wider ${
-                            activity.status === "completed" 
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-                              : activity.status === "pending"
-                              ? "bg-blue-50 text-blue-700 border-blue-200"
-                              : "bg-rose-50 text-rose-700 border-rose-200"
-                          }`}
-                        >
-                          {activity.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right text-xs text-zinc-500 font-medium">
-                        {new Date(activity.createdAt).toLocaleDateString()}
-                      </TableCell>
+              <div className="overflow-x-auto w-full">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-zinc-200 hover:bg-transparent">
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Activity</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Category</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Amount</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Status</TableHead>
+                      <TableHead className="text-xs font-bold text-zinc-500 uppercase tracking-wider text-right">Date</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {data.recentActivity.map((activity) => (
+                      <TableRow key={activity._id} className="border-zinc-100 hover:bg-zinc-50/50 transition-colors">
+                        <TableCell className="font-semibold text-sm max-w-xs sm:max-w-sm truncate text-zinc-900">
+                          {activity.description}
+                        </TableCell>
+                        <TableCell className="text-xs font-medium capitalize text-zinc-600">
+                          {activity.category.replace("_", " ")}
+                        </TableCell>
+                        <TableCell className={`font-bold text-sm ${activity.type === "credit" ? "text-emerald-600" : "text-rose-600"}`}>
+                          {activity.type === "credit" ? "+" : "-"}{activity.amount.toLocaleString()} pts
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant="outline" 
+                            className={`text-[10px] font-bold uppercase tracking-wider ${
+                              activity.status === "completed" 
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                                : activity.status === "pending"
+                                ? "bg-blue-50 text-blue-700 border-blue-200"
+                                : "bg-rose-50 text-rose-700 border-rose-200"
+                            }`}
+                          >
+                            {activity.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right text-xs text-zinc-500 font-medium">
+                          {new Date(activity.createdAt).toLocaleDateString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>
