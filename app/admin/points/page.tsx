@@ -103,7 +103,7 @@ export default function PointsAdjustmentPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-ink">Points Adjustment</h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Manually credit or debit points from a user's account.
+            Manually credit or debit points from a user&apos;s account.
           </p>
         </div>
       </div>

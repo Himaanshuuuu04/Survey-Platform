@@ -353,7 +353,7 @@ export function Chatbot() {
     if (!trimmed) return;
 
     const userMsg: Message = {
-      id: Math.random().toString(),
+      id: crypto.randomUUID(),
       sender: "user",
       text: trimmed,
     };
@@ -364,7 +364,7 @@ export function Chatbot() {
 
   const handleOptionClick = (option: string) => {
     const userMsg: Message = {
-      id: Math.random().toString(),
+      id: crypto.randomUUID(),
       sender: "user",
       text: option,
     };
@@ -377,7 +377,7 @@ export function Chatbot() {
     if (!file) return;
 
     const fileMessage: Message = {
-      id: Math.random().toString(),
+      id: crypto.randomUUID(),
       sender: "user",
       text: `Uploaded file: ${file.name} (${(file.size / 1024).toFixed(1)} KB). Please review it.`,
       file: {

@@ -180,7 +180,7 @@ export default function ReferralsPage() {
             <div className="h-32 border-2 border-dashed border-zinc-200 rounded-xl flex flex-col items-center justify-center text-zinc-500 text-sm bg-zinc-50">
               <Users className="w-8 h-8 text-zinc-400 mb-3" />
               <p className="font-bold text-zinc-700">No Referrals Yet</p>
-              <p>You haven't referred any friends yet. Share your link to start earning commissions!</p>
+              <p>You haven&apos;t referred any friends yet. Share your link to start earning commissions!</p>
             </div>
           ) : (
             <div className="overflow-x-auto w-full">

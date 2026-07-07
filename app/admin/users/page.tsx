@@ -305,7 +305,7 @@ export default function UsersPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-ink">Users</h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Manage your platform's users, view their status, and points balance.
+            Manage your platform&apos;s users, view their status, and points balance.
           </p>
         </div>
       </div>
