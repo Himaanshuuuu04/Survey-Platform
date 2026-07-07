@@ -18,6 +18,8 @@ interface DBUser {
   referredBy?: string;
   referralEarnings: number;
   country?: string;
+  dateOfBirth?: string;
+  gender?: string;
   preferences: {
     darkMode: boolean;
     emailNotifications: boolean;
