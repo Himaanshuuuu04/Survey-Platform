@@ -9,13 +9,8 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
-# Pass Clerk public keys as build args so they are available for static generation
-ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-ARG NEXT_PUBLIC_CLERK_SIGN_IN_URL
-ARG NEXT_PUBLIC_CLERK_SIGN_UP_URL
-ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-ENV NEXT_PUBLIC_CLERK_SIGN_IN_URL=$NEXT_PUBLIC_CLERK_SIGN_IN_URL
-ENV NEXT_PUBLIC_CLERK_SIGN_UP_URL=$NEXT_PUBLIC_CLERK_SIGN_UP_URL
+# Force Next.js to read the local env file during production build
+RUN cp .env.local .env.production || true
 
 # Build Next.js app
 RUN npm run build
@@ -33,6 +28,8 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/next.config.ts ./
+# Also copy the production env file to the runner!
+COPY --from=builder /app/.env.production ./
 
 EXPOSE 3000
 
