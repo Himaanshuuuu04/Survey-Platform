@@ -14,6 +14,7 @@ const links = [
   { to: '/', label: 'Home' },
   { to: '/services', label: 'Services' },
   { to: '/industries', label: 'Industries' },
+  { to: '/case-studies', label: 'Case Studies' },
   { to: '/about', label: 'About' },
   { to: '/insights', label: 'Insights' },
 ];
@@ -50,6 +51,7 @@ export function Navbar() {
     { label: 'Home', ariaLabel: 'Go to home page', link: '/' },
     { label: 'Services', ariaLabel: 'View our services', link: '/services' },
     { label: 'Industries', ariaLabel: 'Learn about our industries', link: '/industries' },
+    { label: 'Case Studies', ariaLabel: 'View our case studies', link: '/case-studies' },
     { label: 'About', ariaLabel: 'Learn about us', link: '/about' },
     { label: 'Insights', ariaLabel: 'Read our insights', link: '/insights' },
     { label: 'Contact', ariaLabel: 'Get in touch', link: '/contact' }
@@ -72,18 +74,18 @@ export function Navbar() {
       >
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
           <div
-            className={`relative mx-auto flex items-center justify-between px-6 py-1 pointer-events-auto rounded-full border border-zinc-200 dark:border-zinc-800/60 bg-white/45 dark:bg-zinc-950/45 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.5)] max-w-5xl transition-all duration-300`}
+            className={`relative mx-auto flex items-center justify-between px-4 xl:px-6 py-1 pointer-events-auto rounded-full border border-zinc-200 dark:border-zinc-800/60 bg-white/45 dark:bg-zinc-950/45 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.5)] max-w-7xl transition-all duration-300`}
           >
             {/* Logo */}
             <Link href="/" className="group flex items-center gap-2 relative z-10 transition-transform duration-300 hover:scale-102">
               <EGILogo size={36} iconOnly={true} /> 
-              <span className="font-sans text-lg font-lg tracking-tight text-zinc-950 dark:text-white select-none">
+              <span className="font-sans text-sm xl:text-lg font-lg tracking-tight text-zinc-950 dark:text-white select-none whitespace-nowrap">
                 Evo<span className="text-brand uppercase">Global</span>Insight
               </span>
             </Link>
 
             {/* Desktop nav with active sliding glass pill and cursor tracking */}
-            <nav className="relative z-10 flex items-center gap-1.5">
+            <nav className="relative z-10 flex items-center gap-0.5 xl:gap-1.5">
               {links.map((l) => {
                 const isActive = l.to === '/' ? pathname === '/' : pathname.startsWith(l.to);
                 return (
@@ -93,7 +95,7 @@ export function Navbar() {
                   >
                     <Link
                       href={l.to}
-                      className={`relative z-10 px-4.5 py-1 text-xs font-semibold tracking-wider transition-colors duration-300 ${
+                      className={`relative z-10 px-2.5 xl:px-4.5 py-1 text-[11px] xl:text-xs font-semibold tracking-wider transition-colors duration-300 ${
                         isActive
                           ? 'text-zinc-950 dark:text-white font-bold'
                           : 'text-zinc-550 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white'
@@ -122,17 +124,17 @@ export function Navbar() {
             </nav>
 
             {/* Desktop CTA (Portal Button + Contact Button) */}
-            <div className="relative z-10 flex items-center gap-4.5">
+            <div className="relative z-10 flex items-center gap-2 xl:gap-4.5">
               <Link
                 href="/login"
-                className="px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 hover:text-[#5C8EFF] transition-colors border border-zinc-200 dark:border-zinc-800 rounded-full bg-white/50 dark:bg-zinc-900/50 hover:border-[#5C8EFF]/30 backdrop-blur-sm shadow-xs"
+                className="px-2.5 xl:px-4 py-1.5 text-[10px] xl:text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 hover:text-[#5C8EFF] transition-colors border border-zinc-200 dark:border-zinc-800 rounded-full bg-white/50 dark:bg-zinc-900/50 hover:border-[#5C8EFF]/30 backdrop-blur-sm shadow-xs whitespace-nowrap"
               >
                 Participant Portal
               </Link>
 
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] px-4.5 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-[0_4px_16px_rgba(92,142,255,0.25)] hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_6px_22px_rgba(92,142,255,0.4)] transition-all duration-300"
+                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#5C8EFF] to-[#02E8F8] px-3 xl:px-4.5 py-1.5 text-[10px] xl:text-xs font-bold uppercase tracking-wider text-white shadow-[0_4px_16px_rgba(92,142,255,0.25)] hover:scale-[1.03] hover:-translate-y-0.5 hover:shadow-[0_6px_22px_rgba(92,142,255,0.4)] transition-all duration-300 whitespace-nowrap"
               >
                 Contact
               </Link>
