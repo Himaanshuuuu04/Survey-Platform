@@ -200,7 +200,7 @@ export function HeroVisual() {
         </div>
       </motion.div>
 
-      {/* Card 4: 250K+ Responses */}
+      {/* Card 4: 1.8M+ Responses */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
@@ -220,7 +220,7 @@ export function HeroVisual() {
           </div>
           <div>
             <span className="block text-[7px] font-bold uppercase tracking-wider text-zinc-400 font-sans leading-none">Platform Scale</span>
-            <span className="text-[10.5px] font-black text-zinc-950">250K+ Responses</span>
+            <span className="text-[10.5px] font-black text-zinc-950">1.8M+ Responses</span>
           </div>
         </div>
       </motion.div>

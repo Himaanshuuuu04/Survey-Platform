@@ -12,7 +12,7 @@ interface CardItem {
 
 const items: CardItem[] = [
   {
-    value: '250K+',
+    value: '1.8M+',
     title: 'Responses Generated',
     desc: 'Verified Respondent Network',
     type: 'dark'

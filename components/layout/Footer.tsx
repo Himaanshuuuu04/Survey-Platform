@@ -106,7 +106,7 @@ export function Footer() {
                 </a>
               </li>
               <li className="text-zinc-400">
-                +91 XXXXX XXXXX
+                +91 95607 68490
               </li>
               <li className="text-zinc-400">
                 India
@@ -119,7 +119,7 @@ export function Footer() {
         {/* Thin Trust Row - Below footer columns */}
         <div className="mt-10 py-3 border-y border-zinc-900/60 flex flex-wrap items-center justify-between gap-4 text-xs relative z-10">
           {[
-            { val: '250K+', label: 'Responses Generated' },
+            { val: '1.8M+', label: 'Responses Generated' },
             { val: '500+', label: 'Campaigns Delivered' },
             { val: '50+', label: 'Countries Reached' },
             { val: '99.7%', label: 'Fraud Detection Accuracy' }
