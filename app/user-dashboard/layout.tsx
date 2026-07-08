@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UserProvider, useDBUser } from "@/components/context/UserContext";
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import { 
@@ -108,6 +108,14 @@ function DashboardSidebar() {
 function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
   const { dbUser, loading } = useDBUser();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (!loading && dbUser && dbUser.demographicsCompleted === false && pathname !== "/user-dashboard/demographics") {
+      router.push("/user-dashboard/demographics");
+    }
+  }, [loading, dbUser, pathname, router]);
 
   if (loading) {
     return (

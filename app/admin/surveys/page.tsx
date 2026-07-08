@@ -38,8 +38,15 @@ interface Survey {
   urlOrApiEndpoint?: string;
   status: string;
   category?: string;
-  targetAgeRange?: string;
-  targetGender?: string;
+  targetAgeRange?: string[];
+  targetGender?: string[];
+  targetEmploymentStatus?: string[];
+  targetOccupation?: string[];
+  targetEducationLevel?: string[];
+  targetState?: string[];
+  targetCity?: string[];
+  targetMaritalStatus?: string[];
+  targetHouseholdIncome?: string[];
   countryEligibility?: string[];
   deviceCompatibility?: string[];
   questions?: Array<{
@@ -47,6 +54,68 @@ interface Survey {
     options: string[];
   }>;
 }
+
+const GENDERS = ["Male", "Female", "Non-binary", "Prefer to self-describe", "Prefer not to say"];
+const EMPLOYMENT_STATUSES = [
+  "Employed full-time", "Employed part-time", "Self-employed", "Business owner",
+  "Freelancer / Independent contractor", "Student", "Homemaker", "Retired",
+  "Unemployed and looking for work", "Unemployed and not currently looking for work", "Prefer not to say"
+];
+const OCCUPATIONS = [
+  "Executive / Senior Management", "Manager / Team Leader", "Professional (Doctor, Lawyer, Engineer, Accountant, etc.)",
+  "Sales & Marketing", "Customer Service / Call Center", "Information Technology (IT)", "Finance & Banking",
+  "Human Resources", "Healthcare", "Education / Teaching", "Government / Public Sector", "Manufacturing / Production",
+  "Retail", "Hospitality & Tourism", "Transportation & Logistics", "Agriculture", "Skilled Trades / Technician",
+  "Administrative / Office Support", "Student", "Homemaker", "Retired", "Other"
+];
+const EDUCATION_LEVELS = [
+  "Less than High School", "High School / Secondary School", "Diploma / Vocational Qualification",
+  "Bachelor’s Degree", "Master’s Degree", "Doctorate / PhD", "Professional Degree", "Prefer not to say"
+];
+const MARITAL_STATUSES = [
+  "Single", "Married", "Living with Partner", "Divorced", "Widowed", "Prefer not to say"
+];
+const INCOME_LEVELS = [
+  "Less than $25,000", "$25,000–$49,999", "$50,000–$74,999", "$75,000–$99,999",
+  "$100,000–$149,999", "$150,000 or more", "Prefer not to say"
+];
+const AGE_RANGES = ["18-24", "25-34", "35-44", "45+"];
+
+const MultiSelectCheckboxes = ({ label, options, selected, onChange }: { label: string, options: string[], selected: string[], onChange: (val: string[]) => void }) => {
+  const toggle = (opt: string) => {
+    if (opt === "All") {
+      onChange(["All"]);
+      return;
+    }
+    
+    let newSelected = selected.filter(s => s !== "All");
+    if (newSelected.includes(opt)) {
+      newSelected = newSelected.filter(s => s !== opt);
+      if (newSelected.length === 0) newSelected = ["All"];
+    } else {
+      newSelected.push(opt);
+    }
+    onChange(newSelected);
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <div className="max-h-48 overflow-y-auto border border-zinc-200 dark:border-zinc-800 rounded-md p-3 space-y-2 bg-white">
+        <div className="flex items-center space-x-2">
+          <Checkbox checked={selected.includes("All")} onCheckedChange={() => toggle("All")} />
+          <Label className="font-normal cursor-pointer" onClick={() => toggle("All")}>All</Label>
+        </div>
+        {options.map(opt => (
+          <div key={opt} className="flex items-center space-x-2">
+            <Checkbox checked={selected.includes(opt)} onCheckedChange={() => toggle(opt)} />
+            <Label className="font-normal cursor-pointer" onClick={() => toggle(opt)}>{opt}</Label>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default function SurveysPage() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
@@ -63,8 +132,15 @@ export default function SurveysPage() {
     urlOrApiEndpoint: "",
     status: "active",
     category: "Other",
-    targetAgeRange: "All",
-    targetGender: "All",
+    targetAgeRange: ["All"],
+    targetGender: ["All"],
+    targetEmploymentStatus: ["All"],
+    targetOccupation: ["All"],
+    targetEducationLevel: ["All"],
+    targetState: "All",
+    targetCity: "All",
+    targetMaritalStatus: ["All"],
+    targetHouseholdIncome: ["All"],
     countryEligibility: "ALL",
     deviceCompatibility: ["desktop", "mobile", "ios", "android"],
     questions: [] as { questionText: string, options: string }[],
@@ -82,8 +158,15 @@ export default function SurveysPage() {
     urlOrApiEndpoint: "",
     status: "active",
     category: "Other",
-    targetAgeRange: "All",
-    targetGender: "All",
+    targetAgeRange: ["All"],
+    targetGender: ["All"],
+    targetEmploymentStatus: ["All"],
+    targetOccupation: ["All"],
+    targetEducationLevel: ["All"],
+    targetState: "All",
+    targetCity: "All",
+    targetMaritalStatus: ["All"],
+    targetHouseholdIncome: ["All"],
     countryEligibility: "ALL",
     deviceCompatibility: ["desktop", "mobile", "ios", "android"],
     questions: [] as { questionText: string, options: string }[],
@@ -102,8 +185,15 @@ export default function SurveysPage() {
       urlOrApiEndpoint: survey.urlOrApiEndpoint || "",
       status: survey.status,
       category: survey.category || "Other",
-      targetAgeRange: survey.targetAgeRange || "All",
-      targetGender: survey.targetGender || "All",
+      targetAgeRange: survey.targetAgeRange?.length ? survey.targetAgeRange : ["All"],
+      targetGender: survey.targetGender?.length ? survey.targetGender : ["All"],
+      targetEmploymentStatus: survey.targetEmploymentStatus?.length ? survey.targetEmploymentStatus : ["All"],
+      targetOccupation: survey.targetOccupation?.length ? survey.targetOccupation : ["All"],
+      targetEducationLevel: survey.targetEducationLevel?.length ? survey.targetEducationLevel : ["All"],
+      targetState: survey.targetState?.join(", ") || "All",
+      targetCity: survey.targetCity?.join(", ") || "All",
+      targetMaritalStatus: survey.targetMaritalStatus?.length ? survey.targetMaritalStatus : ["All"],
+      targetHouseholdIncome: survey.targetHouseholdIncome?.length ? survey.targetHouseholdIncome : ["All"],
       countryEligibility: survey.countryEligibility?.join(", ") || "ALL",
       deviceCompatibility: survey.deviceCompatibility || ["desktop", "mobile", "ios", "android"],
       questions: (survey.questions || []).map(q => ({ questionText: q.questionText, options: q.options.join(", ") })),
@@ -137,6 +227,13 @@ export default function SurveysPage() {
           category: editFormData.category,
           targetAgeRange: editFormData.targetAgeRange,
           targetGender: editFormData.targetGender,
+          targetEmploymentStatus: editFormData.targetEmploymentStatus,
+          targetOccupation: editFormData.targetOccupation,
+          targetEducationLevel: editFormData.targetEducationLevel,
+          targetState: editFormData.targetState.split(",").map(c => c.trim()).filter(Boolean),
+          targetCity: editFormData.targetCity.split(",").map(c => c.trim()).filter(Boolean),
+          targetMaritalStatus: editFormData.targetMaritalStatus,
+          targetHouseholdIncome: editFormData.targetHouseholdIncome,
           countryEligibility: editFormData.countryEligibility.split(",").map(c => c.trim()).filter(Boolean),
           deviceCompatibility: editFormData.deviceCompatibility,
           questions
@@ -227,6 +324,13 @@ export default function SurveysPage() {
           category: formData.category,
           targetAgeRange: formData.targetAgeRange,
           targetGender: formData.targetGender,
+          targetEmploymentStatus: formData.targetEmploymentStatus,
+          targetOccupation: formData.targetOccupation,
+          targetEducationLevel: formData.targetEducationLevel,
+          targetState: formData.targetState.split(",").map(c => c.trim()).filter(Boolean),
+          targetCity: formData.targetCity.split(",").map(c => c.trim()).filter(Boolean),
+          targetMaritalStatus: formData.targetMaritalStatus,
+          targetHouseholdIncome: formData.targetHouseholdIncome,
           countryEligibility: formData.countryEligibility.split(",").map(c => c.trim()).filter(Boolean),
           deviceCompatibility: formData.deviceCompatibility,
           questions
@@ -245,8 +349,15 @@ export default function SurveysPage() {
           urlOrApiEndpoint: "",
           status: "active",
           category: "Other",
-          targetAgeRange: "All",
-          targetGender: "All",
+          targetAgeRange: ["All"],
+          targetGender: ["All"],
+          targetEmploymentStatus: ["All"],
+          targetOccupation: ["All"],
+          targetEducationLevel: ["All"],
+          targetState: "All",
+          targetCity: "All",
+          targetMaritalStatus: ["All"],
+          targetHouseholdIncome: ["All"],
           countryEligibility: "ALL",
           deviceCompatibility: ["desktop", "mobile", "ios", "android"],
           questions: [],
@@ -279,7 +390,7 @@ export default function SurveysPage() {
               <Plus className="mr-2 h-4 w-4" /> Add Survey
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[450px] max-h-[85vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Survey</DialogTitle>
               <DialogDescription>
@@ -324,45 +435,46 @@ export default function SurveysPage() {
                       <NativeSelectOption value="inactive">Inactive</NativeSelectOption>
                     </NativeSelect>
                   </div>
+                  <div className="space-y-2">
+                    <Label>Category</Label>
+                    <NativeSelect value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })}>
+                      <NativeSelectOption value="Other">Other</NativeSelectOption>
+                      <NativeSelectOption value="Technology">Technology</NativeSelectOption>
+                      <NativeSelectOption value="Gaming">Gaming</NativeSelectOption>
+                      <NativeSelectOption value="Lifestyle">Lifestyle</NativeSelectOption>
+                      <NativeSelectOption value="Finance">Finance</NativeSelectOption>
+                      <NativeSelectOption value="Health">Health</NativeSelectOption>
+                    </NativeSelect>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="targeting" className="space-y-4 mt-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <MultiSelectCheckboxes label="Target Age Range" options={AGE_RANGES} selected={formData.targetAgeRange} onChange={(val) => setFormData({ ...formData, targetAgeRange: val })} />
+                    <MultiSelectCheckboxes label="Target Gender" options={GENDERS} selected={formData.targetGender} onChange={(val) => setFormData({ ...formData, targetGender: val })} />
+                    
                     <div className="space-y-2">
-                      <Label>Category</Label>
-                      <NativeSelect value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })}>
-                        <NativeSelectOption value="Other">Other</NativeSelectOption>
-                        <NativeSelectOption value="Technology">Technology</NativeSelectOption>
-                        <NativeSelectOption value="Gaming">Gaming</NativeSelectOption>
-                        <NativeSelectOption value="Lifestyle">Lifestyle</NativeSelectOption>
-                        <NativeSelectOption value="Finance">Finance</NativeSelectOption>
-                        <NativeSelectOption value="Health">Health</NativeSelectOption>
-                      </NativeSelect>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Target Age Range</Label>
-                      <NativeSelect value={formData.targetAgeRange} onChange={(e) => setFormData({ ...formData, targetAgeRange: e.target.value })}>
-                        <NativeSelectOption value="All">All Ages</NativeSelectOption>
-                        <NativeSelectOption value="18-24">18-24</NativeSelectOption>
-                        <NativeSelectOption value="25-34">25-34</NativeSelectOption>
-                        <NativeSelectOption value="35-44">35-44</NativeSelectOption>
-                        <NativeSelectOption value="45+">45+</NativeSelectOption>
-                      </NativeSelect>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Target Gender</Label>
-                      <NativeSelect value={formData.targetGender} onChange={(e) => setFormData({ ...formData, targetGender: e.target.value })}>
-                        <NativeSelectOption value="All">All Genders</NativeSelectOption>
-                        <NativeSelectOption value="Male">Male</NativeSelectOption>
-                        <NativeSelectOption value="Female">Female</NativeSelectOption>
-                      </NativeSelect>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Country Eligibility</Label>
+                      <Label>Country Eligibility (comma separated)</Label>
                       <Input placeholder="ALL, US, UK..." value={formData.countryEligibility} onChange={(e) => setFormData({ ...formData, countryEligibility: e.target.value })} />
                     </div>
+                    <div className="space-y-2">
+                      <Label>Target State (comma separated)</Label>
+                      <Input placeholder="All, California, Texas..." value={formData.targetState} onChange={(e) => setFormData({ ...formData, targetState: e.target.value })} />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Target City (comma separated)</Label>
+                      <Input placeholder="All, Los Angeles, Austin..." value={formData.targetCity} onChange={(e) => setFormData({ ...formData, targetCity: e.target.value })} />
+                    </div>
+
+                    <MultiSelectCheckboxes label="Target Employment Status" options={EMPLOYMENT_STATUSES} selected={formData.targetEmploymentStatus} onChange={(val) => setFormData({ ...formData, targetEmploymentStatus: val })} />
+                    <MultiSelectCheckboxes label="Target Occupation" options={OCCUPATIONS} selected={formData.targetOccupation} onChange={(val) => setFormData({ ...formData, targetOccupation: val })} />
+                    <MultiSelectCheckboxes label="Target Education Level" options={EDUCATION_LEVELS} selected={formData.targetEducationLevel} onChange={(val) => setFormData({ ...formData, targetEducationLevel: val })} />
+                    <MultiSelectCheckboxes label="Target Marital Status" options={MARITAL_STATUSES} selected={formData.targetMaritalStatus} onChange={(val) => setFormData({ ...formData, targetMaritalStatus: val })} />
+                    <div className="md:col-span-2">
+                      <MultiSelectCheckboxes label="Target Household Income" options={INCOME_LEVELS} selected={formData.targetHouseholdIncome} onChange={(val) => setFormData({ ...formData, targetHouseholdIncome: val })} />
+                    </div>
                   </div>
-                  <div className="space-y-3 pt-2">
+                  <div className="space-y-3 pt-4 border-t">
                     <Label>Device Compatibility</Label>
                     <div className="flex flex-wrap gap-4">
                       {['desktop', 'mobile', 'ios', 'android'].map(device => (
@@ -433,10 +545,10 @@ export default function SurveysPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Title</TableHead>
-                <TableHead>Provider</TableHead>
+                <TableHead className="hidden md:table-cell">Provider</TableHead>
                 <TableHead>Reward</TableHead>
-                <TableHead>Est. Time</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead className="hidden sm:table-cell">Est. Time</TableHead>
+                <TableHead className="hidden sm:table-cell">Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -460,12 +572,12 @@ export default function SurveysPage() {
                       <ClipboardList className="h-4 w-4 text-brand" />
                       {survey.title}
                     </TableCell>
-                    <TableCell>{survey.provider}</TableCell>
+                    <TableCell className="hidden md:table-cell">{survey.provider}</TableCell>
                     <TableCell className="font-sharp font-semibold text-brand">
                       {survey.rewardPoints?.toLocaleString() || 0} pts
                     </TableCell>
-                    <TableCell>{survey.estimatedTimeMins} mins</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">{survey.estimatedTimeMins} mins</TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <Badge variant={survey.status === 'active' ? 'default' : 'secondary'} className={survey.status === 'active' ? 'bg-success text-white' : ''}>
                         {survey.status}
                       </Badge>
@@ -501,7 +613,7 @@ export default function SurveysPage() {
 
       {/* Edit Survey Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="sm:max-w-[450px] max-h-[85vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Survey</DialogTitle>
             <DialogDescription>
@@ -546,45 +658,46 @@ export default function SurveysPage() {
                       <NativeSelectOption value="inactive">Inactive</NativeSelectOption>
                     </NativeSelect>
                   </div>
+                  <div className="space-y-2">
+                    <Label>Category</Label>
+                    <NativeSelect value={editFormData.category} onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}>
+                      <NativeSelectOption value="Other">Other</NativeSelectOption>
+                      <NativeSelectOption value="Technology">Technology</NativeSelectOption>
+                      <NativeSelectOption value="Gaming">Gaming</NativeSelectOption>
+                      <NativeSelectOption value="Lifestyle">Lifestyle</NativeSelectOption>
+                      <NativeSelectOption value="Finance">Finance</NativeSelectOption>
+                      <NativeSelectOption value="Health">Health</NativeSelectOption>
+                    </NativeSelect>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="targeting" className="space-y-4 mt-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <MultiSelectCheckboxes label="Target Age Range" options={AGE_RANGES} selected={editFormData.targetAgeRange} onChange={(val) => setEditFormData({ ...editFormData, targetAgeRange: val })} />
+                    <MultiSelectCheckboxes label="Target Gender" options={GENDERS} selected={editFormData.targetGender} onChange={(val) => setEditFormData({ ...editFormData, targetGender: val })} />
+                    
                     <div className="space-y-2">
-                      <Label>Category</Label>
-                      <NativeSelect value={editFormData.category} onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value })}>
-                        <NativeSelectOption value="Other">Other</NativeSelectOption>
-                        <NativeSelectOption value="Technology">Technology</NativeSelectOption>
-                        <NativeSelectOption value="Gaming">Gaming</NativeSelectOption>
-                        <NativeSelectOption value="Lifestyle">Lifestyle</NativeSelectOption>
-                        <NativeSelectOption value="Finance">Finance</NativeSelectOption>
-                        <NativeSelectOption value="Health">Health</NativeSelectOption>
-                      </NativeSelect>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Target Age Range</Label>
-                      <NativeSelect value={editFormData.targetAgeRange} onChange={(e) => setEditFormData({ ...editFormData, targetAgeRange: e.target.value })}>
-                        <NativeSelectOption value="All">All Ages</NativeSelectOption>
-                        <NativeSelectOption value="18-24">18-24</NativeSelectOption>
-                        <NativeSelectOption value="25-34">25-34</NativeSelectOption>
-                        <NativeSelectOption value="35-44">35-44</NativeSelectOption>
-                        <NativeSelectOption value="45+">45+</NativeSelectOption>
-                      </NativeSelect>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Target Gender</Label>
-                      <NativeSelect value={editFormData.targetGender} onChange={(e) => setEditFormData({ ...editFormData, targetGender: e.target.value })}>
-                        <NativeSelectOption value="All">All Genders</NativeSelectOption>
-                        <NativeSelectOption value="Male">Male</NativeSelectOption>
-                        <NativeSelectOption value="Female">Female</NativeSelectOption>
-                      </NativeSelect>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Country Eligibility</Label>
+                      <Label>Country Eligibility (comma separated)</Label>
                       <Input placeholder="ALL, US, UK..." value={editFormData.countryEligibility} onChange={(e) => setEditFormData({ ...editFormData, countryEligibility: e.target.value })} />
                     </div>
+                    <div className="space-y-2">
+                      <Label>Target State (comma separated)</Label>
+                      <Input placeholder="All, California, Texas..." value={editFormData.targetState} onChange={(e) => setEditFormData({ ...editFormData, targetState: e.target.value })} />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Target City (comma separated)</Label>
+                      <Input placeholder="All, Los Angeles, Austin..." value={editFormData.targetCity} onChange={(e) => setEditFormData({ ...editFormData, targetCity: e.target.value })} />
+                    </div>
+
+                    <MultiSelectCheckboxes label="Target Employment Status" options={EMPLOYMENT_STATUSES} selected={editFormData.targetEmploymentStatus} onChange={(val) => setEditFormData({ ...editFormData, targetEmploymentStatus: val })} />
+                    <MultiSelectCheckboxes label="Target Occupation" options={OCCUPATIONS} selected={editFormData.targetOccupation} onChange={(val) => setEditFormData({ ...editFormData, targetOccupation: val })} />
+                    <MultiSelectCheckboxes label="Target Education Level" options={EDUCATION_LEVELS} selected={editFormData.targetEducationLevel} onChange={(val) => setEditFormData({ ...editFormData, targetEducationLevel: val })} />
+                    <MultiSelectCheckboxes label="Target Marital Status" options={MARITAL_STATUSES} selected={editFormData.targetMaritalStatus} onChange={(val) => setEditFormData({ ...editFormData, targetMaritalStatus: val })} />
+                    <div className="md:col-span-2">
+                      <MultiSelectCheckboxes label="Target Household Income" options={INCOME_LEVELS} selected={editFormData.targetHouseholdIncome} onChange={(val) => setEditFormData({ ...editFormData, targetHouseholdIncome: val })} />
+                    </div>
                   </div>
-                  <div className="space-y-3 pt-2">
+                  <div className="space-y-3 pt-4 border-t">
                     <Label>Device Compatibility</Label>
                     <div className="flex flex-wrap gap-4">
                       {['desktop', 'mobile', 'ios', 'android'].map(device => (

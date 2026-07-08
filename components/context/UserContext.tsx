@@ -18,8 +18,19 @@ interface DBUser {
   referredBy?: string;
   referralEarnings: number;
   country?: string;
-  dateOfBirth?: string;
-  gender?: string;
+  demographicsCompleted?: boolean;
+  demographics?: {
+    age?: number;
+    gender?: string;
+    employmentStatus?: string;
+    occupation?: string;
+    educationLevel?: string;
+    country?: string;
+    state?: string;
+    city?: string;
+    maritalStatus?: string;
+    householdIncome?: string;
+  };
   preferences: {
     darkMode: boolean;
     emailNotifications: boolean;

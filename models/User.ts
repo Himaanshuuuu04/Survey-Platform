@@ -31,8 +31,19 @@ const userSchema = new mongoose.Schema({
   country: { type: String },
 
   // Demographics
-  dateOfBirth: { type: String }, // YYYY-MM-DD
-  gender: { type: String, enum: ['Male', 'Female', 'Other', 'Prefer not to say'] },
+  demographicsCompleted: { type: Boolean, default: false },
+  demographics: {
+    age: { type: Number },
+    gender: { type: String },
+    employmentStatus: { type: String },
+    occupation: { type: String },
+    educationLevel: { type: String },
+    country: { type: String },
+    state: { type: String },
+    city: { type: String },
+    maritalStatus: { type: String },
+    householdIncome: { type: String },
+  },
 
   // Preferences
   preferences: {

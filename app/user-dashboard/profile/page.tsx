@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function ProfilePage() {
   const { user } = useUser();
@@ -34,13 +35,8 @@ export default function ProfilePage() {
   
   const [fullName, setFullName] = useState("");
   const [country, setCountry] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [gender, setGender] = useState("");
-  
-  // Track if they were already set to disable the fields
   const [hasCountry, setHasCountry] = useState(false);
-  const [hasDateOfBirth, setHasDateOfBirth] = useState(false);
-  const [hasGender, setHasGender] = useState(false);
+  const [countries, setCountries] = useState<string[]>([]);
 
   const [emailNotifications, setEmailNotifications] = useState(true);
   
@@ -55,15 +51,22 @@ export default function ProfilePage() {
       setCountry(dbUser.country || "");
       if (dbUser.country) setHasCountry(true);
 
-      setDateOfBirth(dbUser.dateOfBirth || "");
-      if (dbUser.dateOfBirth) setHasDateOfBirth(true);
-
-      setGender(dbUser.gender || "");
-      if (dbUser.gender) setHasGender(true);
-
       setEmailNotifications(dbUser.preferences?.emailNotifications ?? true);
     }
   }, [dbUser]);
+
+  useEffect(() => {
+    if (!hasCountry) {
+      fetch("https://countriesnow.space/api/v0.1/countries")
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) {
+            setCountries(data.data.map((c: any) => c.country).sort());
+          }
+        })
+        .catch(err => console.error("Error fetching countries", err));
+    }
+  }, [hasCountry]);
 
   const handleSaveChanges = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,8 +86,6 @@ export default function ProfilePage() {
         body: JSON.stringify({
           fullName,
           country,
-          dateOfBirth,
-          gender,
           preferences: {
             emailNotifications,
           },
@@ -115,6 +116,12 @@ export default function ProfilePage() {
     referrals: dbUser?.referralEarnings || 0,
   };
 
+  const isChanged = !!dbUser && (
+    fullName !== (dbUser.fullName || "") ||
+    country !== (dbUser.country || "") ||
+    emailNotifications !== (dbUser.preferences?.emailNotifications ?? true)
+  );
+
   return (
     <div className="space-y-8 pb-12">
       {/* Header */}
@@ -133,18 +140,12 @@ export default function ProfilePage() {
         <div className="space-y-6 lg:col-span-1">
           <Card className="bg-white border-zinc-200 shadow-sm overflow-hidden text-center p-6">
             <CardContent className="pt-6 space-y-4">
-              <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden border-2 border-blue-500 shadow-sm">
-                {user?.imageUrl && (
-                  <Image 
-                    src={user.imageUrl} 
-                    alt={dbUser?.fullName || "User"} 
-                    width={96}
-                    height={96}
-                    unoptimized
-                    className="w-full h-full object-cover"
-                  />
-                )}
-              </div>
+              <Avatar className="w-24 h-24 mx-auto border-2 border-blue-500 shadow-sm">
+                <AvatarImage src={user?.imageUrl} alt={dbUser?.fullName || "User"} className="object-cover" />
+                <AvatarFallback className="bg-zinc-100 text-zinc-900 font-bold text-2xl">
+                  {(dbUser?.fullName || user?.fullName || "U").charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
 
               <div>
                 <h2 className="text-xl font-bold text-zinc-900">{dbUser?.fullName || user?.fullName}</h2>
@@ -152,10 +153,26 @@ export default function ProfilePage() {
               </div>
 
               <div className="flex justify-center gap-2">
-                <Badge variant="secondary" className="text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700">
+                <Badge 
+                  variant="secondary" 
+                  className={`text-[10px] font-bold uppercase tracking-wider ${
+                    dbUser?.role === "admin" 
+                      ? "bg-purple-50 text-purple-700 border border-purple-200" 
+                      : "bg-blue-50 text-blue-700 border border-blue-200"
+                  }`}
+                >
                   {dbUser?.role || "User"}
                 </Badge>
-                <Badge variant="secondary" className="text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700">
+                <Badge 
+                  variant="secondary" 
+                  className={`text-[10px] font-bold uppercase tracking-wider ${
+                    dbUser?.status === "suspended" 
+                      ? "bg-amber-50 text-amber-700 border border-amber-200" 
+                      : dbUser?.status === "banned"
+                        ? "bg-rose-50 text-rose-700 border border-rose-200"
+                        : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                  }`}
+                >
                   {dbUser?.status || "Active"}
                 </Badge>
               </div>
@@ -175,7 +192,7 @@ export default function ProfilePage() {
                   <Calendar className="w-4 h-4 text-zinc-400" />
                   <div>
                     <p className="font-bold text-zinc-900">Joined Date</p>
-                    <p className="text-zinc-550">
+                    <p className="text-zinc-500">
                       {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Recently"}
                     </p>
                   </div>
@@ -194,7 +211,9 @@ export default function ProfilePage() {
                 <span className="text-zinc-500 font-medium flex items-center gap-2">
                   <Coins className="w-4 h-4 text-amber-500" /> Current Points
                 </span>
-                <span className="font-extrabold text-zinc-900">{stats.balance.toLocaleString()} PTS</span>
+                <span className="font-extrabold text-zinc-900">
+                  {stats.balance.toLocaleString()} PTS <span className="text-xs font-normal text-zinc-500">(${stats.usdVal.toFixed(2)} USD)</span>
+                </span>
               </div>
 
               <div className="flex items-center justify-between text-sm pb-3 border-b border-zinc-100">
@@ -216,7 +235,7 @@ export default function ProfilePage() {
 
         {/* Right Column: Settings Form */}
         <div className="lg:col-span-2">
-          <Card className="bg-white border-zinc-200 shadow-sm h-full">
+          <Card className="bg-white border-zinc-200 shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg font-bold text-zinc-900">Profile Details & Settings</CardTitle>
               <CardDescription>Update your personal information and adjust default account preferences.</CardDescription>
@@ -258,63 +277,31 @@ export default function ProfilePage() {
                   <label htmlFor="country" className="text-xs font-bold text-zinc-650 uppercase tracking-wider flex items-center gap-1.5">
                     <Globe className="w-3.5 h-3.5" /> Country / Region
                   </label>
-                  <select 
-                    id="country"
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    disabled={hasCountry}
-                    className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 ring-offset-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-500"
-                  >
-                    <option value="">Select Country</option>
-                    <option value="United States">United States</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Australia">Australia</option>
-                    <option value="India">India</option>
-                    <option value="Germany">Germany</option>
-                    <option value="France">France</option>
-                    <option value="Japan">Japan</option>
-                    <option value="Brazil">Brazil</option>
-                  </select>
+                  {hasCountry ? (
+                    <Input 
+                      id="country" 
+                      type="text" 
+                      value={country} 
+                      disabled 
+                      className="bg-zinc-50 border-zinc-200 text-zinc-500 cursor-not-allowed text-sm font-mono"
+                    />
+                  ) : (
+                    <select 
+                      id="country"
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
+                      className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 ring-offset-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="">Select Country</option>
+                      {countries.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  )}
                   {hasCountry && <p className="text-[10px] text-zinc-450">Country cannot be changed once set.</p>}
                 </div>
 
-                {/* Date of Birth */}
-                <div className="space-y-2">
-                  <label htmlFor="dateOfBirth" className="text-xs font-bold text-zinc-650 uppercase tracking-wider flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5" /> Date of Birth
-                  </label>
-                  <Input 
-                    id="dateOfBirth" 
-                    type="date"
-                    value={dateOfBirth}
-                    onChange={(e) => setDateOfBirth(e.target.value)}
-                    disabled={hasDateOfBirth}
-                    className="border-zinc-200 text-zinc-800 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-500"
-                  />
-                  {hasDateOfBirth && <p className="text-[10px] text-zinc-450">Date of Birth cannot be changed once set.</p>}
-                </div>
 
-                {/* Gender */}
-                <div className="space-y-2">
-                  <label htmlFor="gender" className="text-xs font-bold text-zinc-650 uppercase tracking-wider flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5" /> Gender
-                  </label>
-                  <select 
-                    id="gender"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    disabled={hasGender}
-                    className="flex h-10 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-800 ring-offset-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:bg-zinc-50 disabled:text-zinc-500"
-                  >
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                    <option value="Prefer not to say">Prefer not to say</option>
-                  </select>
-                  {hasGender && <p className="text-[10px] text-zinc-450">Gender cannot be changed once set.</p>}
-                </div>
 
                 {/* Preferences */}
                 <div className="space-y-4 pt-4 border-t border-zinc-100">
@@ -356,8 +343,8 @@ export default function ProfilePage() {
                 {/* Actions */}
                 <Button
                   type="submit"
-                  disabled={saving}
-                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 text-white font-bold uppercase tracking-wider text-xs shadow-md flex items-center justify-center gap-2"
+                  disabled={saving || !isChanged}
+                  className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold uppercase tracking-wider text-xs shadow-md flex items-center justify-center gap-2"
                 >
                   {saving ? (
                     <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" />
@@ -372,6 +359,54 @@ export default function ProfilePage() {
               </form>
             </CardContent>
           </Card>
+
+          {/* Demographics Summary */}
+          {dbUser && (
+            <Card className="bg-white border-zinc-200 shadow-sm mt-6">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold text-zinc-900">Demographic Profile</CardTitle>
+                <CardDescription>Your demographic information helps us match you with the best surveys.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                  <div className="space-y-1 border-b border-zinc-100 pb-2">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Age</p>
+                    <p className="text-sm font-medium text-zinc-900">{dbUser.demographics?.age || "N/A"}</p>
+                  </div>
+                  <div className="space-y-1 border-b border-zinc-100 pb-2">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Gender</p>
+                    <p className="text-sm font-medium text-zinc-900">{dbUser.demographics?.gender || "N/A"}</p>
+                  </div>
+                  <div className="space-y-1 border-b border-zinc-100 pb-2">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Employment</p>
+                    <p className="text-sm font-medium text-zinc-900">{dbUser.demographics?.employmentStatus || "N/A"}</p>
+                  </div>
+                  <div className="space-y-1 border-b border-zinc-100 pb-2">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Occupation</p>
+                    <p className="text-sm font-medium text-zinc-900">{dbUser.demographics?.occupation || "N/A"}</p>
+                  </div>
+                  <div className="space-y-1 border-b border-zinc-100 pb-2">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Education</p>
+                    <p className="text-sm font-medium text-zinc-900">{dbUser.demographics?.educationLevel || "N/A"}</p>
+                  </div>
+                  <div className="space-y-1 border-b border-zinc-100 pb-2">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Marital Status</p>
+                    <p className="text-sm font-medium text-zinc-900">{dbUser.demographics?.maritalStatus || "N/A"}</p>
+                  </div>
+                  <div className="space-y-1 border-b border-zinc-100 pb-2">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Household Income</p>
+                    <p className="text-sm font-medium text-zinc-900">{dbUser.demographics?.householdIncome || "N/A"}</p>
+                  </div>
+                  <div className="space-y-1 border-b border-zinc-100 pb-2">
+                    <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Location</p>
+                    <p className="text-sm font-medium text-zinc-900">
+                      {[dbUser.demographics?.city, dbUser.demographics?.state, dbUser.demographics?.country].filter(Boolean).join(", ") || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

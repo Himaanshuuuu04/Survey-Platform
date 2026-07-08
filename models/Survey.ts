@@ -10,8 +10,15 @@ const surveySchema = new mongoose.Schema({
   countryEligibility: [{ type: String }], // e.g., ['US', 'UK', 'CA'] or ['ALL']
   deviceCompatibility: [{ type: String, enum: ['desktop', 'mobile', 'ios', 'android'] }],
   category: { type: String, default: 'Other' },
-  targetAgeRange: { type: String, enum: ['All', '18-24', '25-34', '35-44', '45+'], default: 'All' },
-  targetGender: { type: String, enum: ['All', 'Male', 'Female'], default: 'All' },
+  targetAgeRange: [{ type: String, default: 'All' }], // e.g. ['All'] or ['18-24', '25-34']
+  targetGender: [{ type: String, default: 'All' }],
+  targetEmploymentStatus: [{ type: String, default: 'All' }],
+  targetOccupation: [{ type: String, default: 'All' }],
+  targetEducationLevel: [{ type: String, default: 'All' }],
+  targetState: [{ type: String, default: 'All' }],
+  targetCity: [{ type: String, default: 'All' }],
+  targetMaritalStatus: [{ type: String, default: 'All' }],
+  targetHouseholdIncome: [{ type: String, default: 'All' }],
   
   urlOrApiEndpoint: { type: String, required: true },
   status: { type: String, enum: ['active', 'inactive'], default: 'active' },

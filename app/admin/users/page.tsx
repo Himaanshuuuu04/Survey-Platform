@@ -31,7 +31,8 @@ import {
   TrendingUp,
   Clock,
   ClipboardCheck,
-  Check
+  Check,
+  Heart
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -119,6 +120,33 @@ const DetailRow = ({
             )}
           </button>
         )}
+      </div>
+    </div>
+  );
+};
+
+// DemographicBadgeCard for styled grid blocks
+const DemographicBadgeCard = ({
+  icon: Icon,
+  label,
+  value,
+  colorClass = "text-blue-500 bg-blue-500/10",
+  className = ""
+}: {
+  icon: any;
+  label: string;
+  value: string;
+  colorClass?: string;
+  className?: string;
+}) => {
+  return (
+    <div className={`p-4 rounded-xl border border-border/40 bg-muted/10 flex items-start gap-3 hover:shadow-xs hover:border-border/80 transition-all duration-200 ${className}`}>
+      <div className={`p-2.5 rounded-lg ${colorClass} shrink-0`}>
+        <Icon className="h-4.5 w-4.5" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{label}</p>
+        <p className="text-sm font-semibold text-ink mt-0.5 break-words leading-tight">{value}</p>
       </div>
     </div>
   );
@@ -464,16 +492,19 @@ export default function UsersPage() {
           ) : userDetail ? (
             <div className="flex-1 flex flex-col overflow-hidden min-h-0 mt-2">
               <Tabs defaultValue="profile" className="flex-1 flex flex-col overflow-hidden">
-                <TabsList className="grid grid-cols-3 w-full shrink-0 h-auto p-1 bg-muted/30">
-                  <TabsTrigger value="profile" className="text-xs sm:text-sm py-2 px-1">
+                <TabsList className="grid grid-cols-4 w-full shrink-0 h-auto p-1.5 bg-muted/30 gap-1 rounded-xl">
+                  <TabsTrigger value="profile" className="text-xs sm:text-sm py-2.5 px-2 sm:px-3">
                     <span className="hidden sm:inline">Profile & Security</span>
                     <span className="sm:hidden">Profile</span>
                   </TabsTrigger>
-                  <TabsTrigger value="earnings" className="text-xs sm:text-sm py-2 px-1">
+                  <TabsTrigger value="demographics" className="text-xs sm:text-sm py-2.5 px-2 sm:px-3">
+                    <span>Demographics</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="earnings" className="text-xs sm:text-sm py-2.5 px-2 sm:px-3">
                     <span className="hidden sm:inline">Earnings & Activity</span>
                     <span className="sm:hidden">Earnings</span>
                   </TabsTrigger>
-                  <TabsTrigger value="redemptions" className="text-xs sm:text-sm py-2 px-1">
+                  <TabsTrigger value="redemptions" className="text-xs sm:text-sm py-2.5 px-2 sm:px-3">
                     <span className="hidden sm:inline">Redemptions ({userDetail.history?.redemptions?.length || 0})</span>
                     <span className="sm:hidden">Redeems ({userDetail.history?.redemptions?.length || 0})</span>
                   </TabsTrigger>
@@ -483,11 +514,11 @@ export default function UsersPage() {
                 <TabsContent value="profile" className="flex-1 overflow-y-auto pt-4 space-y-4 pr-1 min-h-0">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
-                    {/* Account Demographics */}
+                    {/* Basic Account Details */}
                     <Card className="p-4 sm:p-5 border bg-muted/5 rounded-2xl space-y-3 sm:space-y-3.5">
                       <div className="flex items-center gap-2 border-b pb-2">
                         <UserIcon className="h-4.5 w-4.5 text-brand" />
-                        <h3 className="font-bold text-sm tracking-wide text-ink">Account Demographics</h3>
+                        <h3 className="font-bold text-sm tracking-wide text-ink">Basic Account Details</h3>
                       </div>
                       <div className="space-y-1">
                         <DetailRow icon={UserIcon} label="Full Name" value={userDetail.profile.fullName} />
@@ -581,6 +612,83 @@ export default function UsersPage() {
                       <DetailRow icon={Coins} label="Preferences" value={`Dark Mode: ${userDetail.profile.preferences?.darkMode !== false ? 'On' : 'Off'}`} />
                     </div>
                   </Card>
+                </TabsContent>
+
+                {/* Demographics Tab */}
+                <TabsContent value="demographics" className="flex-1 overflow-y-auto pt-4 space-y-4 pr-1 min-h-0">
+                  {!userDetail.profile.demographicsCompleted ? (
+                    <div className="p-8 border border-dashed rounded-2xl flex flex-col items-center justify-center text-center space-y-4 bg-muted/5 min-h-[250px]">
+                      <div className="p-4 bg-amber-500/10 rounded-full text-amber-500 animate-pulse">
+                        <AlertCircle className="h-8 w-8" />
+                      </div>
+                      <div className="space-y-1 max-w-sm">
+                        <h4 className="font-bold text-base text-ink">Demographics Survey Pending</h4>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          This user has not yet completed the demographic profiling survey. 
+                          Profiling is required for normal users to access their dashboard and receive matched surveys.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 border-b pb-2.5">
+                        <UserIcon className="h-4.5 w-4.5 text-brand" />
+                        <h3 className="font-bold text-sm tracking-wide text-ink">Demographic Survey Profile</h3>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <DemographicBadgeCard 
+                          icon={Calendar} 
+                          label="Age" 
+                          value={`${userDetail.profile.demographics?.age || "N/A"} Years`} 
+                          colorClass="text-blue-600 bg-blue-500/10" 
+                        />
+                        <DemographicBadgeCard 
+                          icon={UserIcon} 
+                          label="Gender" 
+                          value={userDetail.profile.demographics?.gender || "N/A"} 
+                          colorClass="text-purple-600 bg-purple-500/10" 
+                        />
+                        <DemographicBadgeCard 
+                          icon={Heart} 
+                          label="Marital Status" 
+                          value={userDetail.profile.demographics?.maritalStatus || "N/A"} 
+                          colorClass="text-rose-600 bg-rose-500/10" 
+                        />
+                        <DemographicBadgeCard 
+                          icon={Activity} 
+                          label="Employment Status" 
+                          value={userDetail.profile.demographics?.employmentStatus || "N/A"} 
+                          colorClass="text-emerald-600 bg-emerald-500/10" 
+                        />
+                        <DemographicBadgeCard 
+                          icon={Shield} 
+                          label="Occupation" 
+                          value={userDetail.profile.demographics?.occupation || "N/A"} 
+                          colorClass="text-amber-600 bg-amber-500/10" 
+                        />
+                        <DemographicBadgeCard 
+                          icon={DollarSign} 
+                          label="Household Income" 
+                          value={userDetail.profile.demographics?.householdIncome || "N/A"} 
+                          colorClass="text-teal-600 bg-teal-500/10" 
+                        />
+                        <DemographicBadgeCard 
+                          icon={Globe} 
+                          label="Education Level" 
+                          value={userDetail.profile.demographics?.educationLevel || "N/A"} 
+                          colorClass="text-indigo-600 bg-indigo-500/10" 
+                        />
+                        <DemographicBadgeCard 
+                          icon={MapPin} 
+                          label="Location" 
+                          value={[userDetail.profile.demographics?.city, userDetail.profile.demographics?.state, userDetail.profile.demographics?.country].filter(Boolean).join(", ") || "N/A"} 
+                          colorClass="text-cyan-600 bg-cyan-500/10" 
+                          className="sm:col-span-2"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </TabsContent>
 
                 {/* Earnings & Activity Tab */}
