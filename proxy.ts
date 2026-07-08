@@ -58,7 +58,7 @@ export const proxy = clerkMiddleware(async (auth, req) => {
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.[\\w]+$|_next/image|_next/static|favicon.ico|sitemap.xml|robots.txt).*)',
+    '/((?!_next|_vercel|[^?]*\\.[\\w]+$|_next/image|_next/static|favicon.ico|sitemap.xml|robots.txt).*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],

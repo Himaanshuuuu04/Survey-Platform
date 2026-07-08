@@ -73,24 +73,24 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <ClerkProvider>
-      <html
-        lang="en"
-        className={`${calSans.variable} ${fenwick.variable} min-h-full antialiased`}
+    <html
+      lang="en"
+      className={`${calSans.variable} ${fenwick.variable} min-h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <body
+        className="min-h-full flex flex-col bg-white"
         suppressHydrationWarning
       >
-        <body className="min-h-full flex flex-col bg-white " suppressHydrationWarning style={{
-          backgroundImage: 'radial-gradient(#E4E4E7 1.2px, transparent 1.2px)',
-          backgroundSize: '24px 24px',
-        }}>
+        <ClerkProvider>
           {children}
           <Analytics />
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
