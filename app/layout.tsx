@@ -86,7 +86,7 @@ export default function RootLayout({
         className="min-h-full flex flex-col bg-white"
         suppressHydrationWarning
       >
-        <ClerkProvider>
+        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "pk_live_Y2xlcmsuZXZvZ2xvYmFsaW5zaWdodC5jb20k"}>
           {children}
           <Analytics />
         </ClerkProvider>
