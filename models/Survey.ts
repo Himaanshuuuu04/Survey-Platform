@@ -26,7 +26,8 @@ const surveySchema = new mongoose.Schema({
   // Dynamic survey questions
   questions: [{
     questionText: { type: String, required: true },
-    options: [{ type: String, required: true }]
+    options: [{ type: String, required: true }],
+    acceptedAnswers: [{ type: String }] // The answers that qualify the user
   }]
 }, { timestamps: true });
 

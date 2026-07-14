@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Survey from "@/models/Survey";
 import Transaction from "@/models/Transaction";
+import SurveySession from "@/models/SurveySession";
 import { getAuthenticatedUser } from "@/lib/authHelper";
 
 export async function GET(req: NextRequest) {
@@ -43,11 +44,20 @@ export async function GET(req: NextRequest) {
       status: "completed"
     }).distinct("referenceId");
 
+    // Fetch surveys where user has a terminal session (prevent retries for failed/completed)
+    const terminalSessions = await SurveySession.find({
+      user: user._id,
+      status: { $in: ['completed', 'screener_failed', 'screened_out', 'quota_full', 'security_failure'] }
+    }).distinct("survey");
+
+    // Merge both exclusions
+    const excludeIds = [...new Set([...completedSurveyIds.map(String), ...terminalSessions.map(String)])];
+
     // 3. Build MongoDB query
     // Find active surveys that match device compatibility and country eligibility, excluding already completed ones
     const query: Record<string, any> = { 
       status: "active",
-      _id: { $nin: completedSurveyIds }
+      _id: { $nin: excludeIds }
     };
 
     if (device) {

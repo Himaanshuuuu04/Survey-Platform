@@ -21,6 +21,8 @@ import {
   Coins,
   FileText,
   FileSpreadsheet,
+  Activity,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -56,6 +58,16 @@ const items = [
     title: "Surveys",
     url: "/admin/surveys",
     icon: ClipboardList,
+  },
+  {
+    title: "Providers",
+    url: "/admin/providers",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Survey Sessions",
+    url: "/admin/survey-sessions",
+    icon: Activity,
   },
   {
     title: "Points Adjustment",

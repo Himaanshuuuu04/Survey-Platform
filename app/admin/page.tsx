@@ -112,7 +112,7 @@ export default function AdminDashboard() {
           value={loading ? <Skeleton className="h-5 w-12" /> : data?.activeUsers?.toLocaleString() || 0}
           icon={UserCheck}
           className="border-l-sky-500"
-          chartData={growthData.map(g => ({ ...g, active: Math.floor(g.newUsers * 0.8 + Math.random() * 10) }))}
+          chartData={growthData.map((g, i) => ({ ...g, active: Math.floor(g.newUsers * 0.8 + (i * 3) % 10) }))}
           chartDataKey="active"
           chartColor="#38bdf8"
         />
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
           value={loading ? <Skeleton className="h-5 w-12" /> : data?.outstandingPoints?.toLocaleString() || 0}
           icon={Coins}
           className="border-l-emerald-500"
-          chartData={financialData.map(f => ({ ...f, balance: Math.max(0, f.pointsIssued - f.pointsRedeemed + Math.random() * 100) }))}
+          chartData={financialData.map((f, i) => ({ ...f, balance: Math.max(0, f.pointsIssued - f.pointsRedeemed + (i * 15) % 100) }))}
           chartDataKey="balance"
           chartColor="#059669"
         />

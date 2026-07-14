@@ -109,6 +109,9 @@ export default function SurveysPage() {
   };
 
   const handleCloseSurvey = () => {
+    if (surveyStep === 999 && activeSurvey) {
+      setSurveys((prev) => prev.filter((s) => s._id !== activeSurvey._id));
+    }
     setActiveSurvey(null);
     setSurveyStep(0);
     setAnswers({});
@@ -118,32 +121,62 @@ export default function SurveysPage() {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
+  const [disqualifiedMessage, setDisqualifiedMessage] = useState<string | null>(null);
+
   const handleSubmitSurveyAnswers = async () => {
     if (!activeSurvey || !user) return;
     setCompleting(true);
-    const surveyQuestions = activeSurvey.questions && activeSurvey.questions.length > 0
-      ? activeSurvey.questions
-      : DEFAULT_QUESTIONS;
+    setDisqualifiedMessage(null);
+    
     try {
-      const res = await fetch("/api/user/surveys/complete", {
+      const res = await fetch(`/api/user/surveys/${activeSurvey._id}/screener`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-clerk-user-id": user.id,
         },
-        body: JSON.stringify({ surveyId: activeSurvey._id }),
+        body: JSON.stringify({ answers }),
       });
       const json = await res.json();
-      if (json.success) {
-        setSurveyStep(surveyQuestions.length + 1); // Success step
-        refreshUser(); // Refresh global balance
-        fetchSurveys(); // Refresh surveys list
+      
+      if (json.success && json.passed) {
+        // Successful pre-screen! Redirect to provider
+        window.location.href = json.redirectUrl;
+      } else if (!json.passed) {
+        // Screened out
+        setDisqualifiedMessage(json.message || "You did not qualify for this survey.");
+        setSurveyStep(999); // Magic number for disqualified state
       } else {
         alert(json.error || "Failed to submit survey");
       }
     } catch (err) {
-      console.error("Error completing survey:", err);
+      console.error("Error evaluating screener:", err);
       alert("Something went wrong. Please try again.");
+    } finally {
+      setCompleting(false);
+    }
+  };
+
+  const handleBeginSurvey = async () => {
+    if (!activeSurvey || !user) return;
+    setCompleting(true);
+    try {
+      const res = await fetch(`/api/user/surveys/${activeSurvey._id}/start`, {
+        method: "POST",
+        headers: { "x-clerk-user-id": user.id }
+      });
+      const data = await res.json();
+      if (data.success) {
+        // We could store the questions from the API if we want, 
+        // but for now we just use the ones already in activeSurvey or DEFAULT
+        setSurveyStep(1);
+      } else {
+        setDisqualifiedMessage(data.error || "Unable to start survey.");
+        setSurveyStep(999);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to start survey.");
     } finally {
       setCompleting(false);
     }
@@ -322,10 +355,11 @@ export default function SurveysPage() {
                     </span>
                   </div>
                   <Button
-                    onClick={() => setSurveyStep(1)}
+                    onClick={handleBeginSurvey}
+                    disabled={completing}
                     className="w-full h-12 bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 text-white font-bold uppercase tracking-wider text-sm shadow-md"
                   >
-                    Agree & Begin Survey
+                    {completing ? "Loading..." : "Agree & Begin Survey"}
                   </Button>
                 </div>
               )}
@@ -399,6 +433,24 @@ export default function SurveysPage() {
                     <Coins className="w-5 h-5 text-amber-500" />
                     <span>+{activeSurvey.rewardPoints.toLocaleString()} Evo Points</span>
                   </div>
+                  <Button
+                    variant="outline"
+                    onClick={handleCloseSurvey}
+                    className="w-full h-12 border-zinc-200 text-zinc-700 font-bold uppercase tracking-wider text-sm hover:bg-zinc-50 mt-4"
+                  >
+                    Back to Surveys
+                  </Button>
+                </div>
+              )}
+              {surveyStep === 999 && (
+                <div className="text-center py-8 space-y-5">
+                  <div className="w-20 h-20 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto shadow-sm">
+                    <X className="w-10 h-10" />
+                  </div>
+                  <DialogTitle className="text-2xl font-bold text-zinc-900">Not a Match</DialogTitle>
+                  <DialogDescription className="text-sm text-zinc-600 max-w-sm mx-auto">
+                    {disqualifiedMessage || "Unfortunately, you do not qualify for this survey based on your answers."}
+                  </DialogDescription>
                   <Button
                     variant="outline"
                     onClick={handleCloseSurvey}

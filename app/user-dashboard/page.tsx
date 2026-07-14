@@ -207,6 +207,9 @@ export default function DashboardPage() {
   };
 
   const handleCloseSurvey = () => {
+    if (surveyStep === 999 && activeSurvey) {
+      setSurveys((prev) => prev.filter((s) => s._id !== activeSurvey._id));
+    }
     setActiveSurvey(null);
     setSurveyStep(0);
     setAnswers({});
@@ -216,29 +219,58 @@ export default function DashboardPage() {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
+  const [disqualifiedMessage, setDisqualifiedMessage] = useState<string | null>(null);
+
   const handleSubmitSurveyAnswers = async () => {
     if (!activeSurvey || !user) return;
     setCompleting(true);
-    const surveyQuestions = activeSurvey.questions && activeSurvey.questions.length > 0
-      ? activeSurvey.questions
-      : DEFAULT_QUESTIONS;
+    setDisqualifiedMessage(null);
+    
     try {
-      const res = await fetch("/api/user/surveys/complete", {
+      const res = await fetch(`/api/user/surveys/${activeSurvey._id}/screener`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-clerk-user-id": user.id,
         },
-        body: JSON.stringify({ surveyId: activeSurvey._id }),
+        body: JSON.stringify({ answers }),
       });
       const json = await res.json();
-      if (json.success) {
-        setSurveyStep(surveyQuestions.length + 1);
-        refreshUser();
-        fetchDashboardData();
+      
+      if (json.success && json.passed) {
+        window.location.href = json.redirectUrl;
+      } else if (!json.passed) {
+        setDisqualifiedMessage(json.message || "You did not qualify for this survey.");
+        setSurveyStep(999);
+      } else {
+        alert(json.error || "Failed to submit survey");
       }
     } catch (err) {
-      console.error("Error completing survey:", err);
+      console.error("Error evaluating screener:", err);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setCompleting(false);
+    }
+  };
+
+  const handleBeginSurvey = async () => {
+    if (!activeSurvey || !user) return;
+    setCompleting(true);
+    try {
+      const res = await fetch(`/api/user/surveys/${activeSurvey._id}/start`, {
+        method: "POST",
+        headers: { "x-clerk-user-id": user.id }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSurveyStep(1);
+      } else {
+        setDisqualifiedMessage(data.error || "Unable to start survey.");
+        setSurveyStep(999);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to start survey.");
     } finally {
       setCompleting(false);
     }
@@ -581,85 +613,109 @@ export default function DashboardPage() {
                     </Badge>
                   </div>
                 </div>
-                <Button
-                  onClick={() => setSurveyStep(1)}
-                  className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold uppercase tracking-wider text-xs shadow-md hover:opacity-90"
-                >
-                  Begin Questionnaire
-                </Button>
-              </div>
-            )}
-
-            {surveyStep >= 1 && surveyStep <= surveyQuestions.length && (() => {
-              const currentQuestion = surveyQuestions[surveyStep - 1];
-              const key = `q${surveyStep}`;
-              const isLastQuestion = surveyStep === surveyQuestions.length;
-
-              return (
-                <div className="space-y-6">
-                  <h4 className="text-lg font-bold text-zinc-900 leading-snug">{currentQuestion.questionText}</h4>
-                  <div className="space-y-3">
-                    {currentQuestion.options.map((opt) => (
-                      <Button
-                        key={opt}
-                        variant="outline"
-                        onClick={() => handleAnswerSelect(key, opt)}
-                        className={`w-full justify-start h-auto py-4 px-5 whitespace-normal text-left text-sm font-medium transition-all rounded-xl ${
-                          answers[key] === opt 
-                            ? "bg-blue-50 border-blue-400 text-blue-700 hover:bg-blue-50 hover:text-blue-800 ring-1 ring-blue-400" 
-                            : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50"
-                        }`}
-                      >
-                        {opt}
-                      </Button>
-                    ))}
-                  </div>
                   <Button
-                    disabled={!answers[key] || (isLastQuestion && completing)}
-                    onClick={isLastQuestion ? handleSubmitSurveyAnswers : () => setSurveyStep(surveyStep + 1)}
-                    className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold uppercase tracking-wider text-xs hover:opacity-90 transition-all flex items-center justify-center gap-2 mt-6"
+                    onClick={handleBeginSurvey}
+                    disabled={completing}
+                    className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold uppercase tracking-wider text-xs shadow-md hover:opacity-90"
                   >
-                    {isLastQuestion ? (
-                      completing ? (
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" />
-                      ) : (
-                        <><span>Submit Response</span> <CheckCircle className="w-4 h-4 ml-1" /></>
-                      )
-                    ) : (
-                      <><span>Next Question</span> <ArrowRight className="w-4 h-4 ml-1" /></>
-                    )}
+                    {completing ? "Loading..." : "Begin Questionnaire"}
                   </Button>
                 </div>
-              );
-            })()}
+              )}
 
-            {surveyStep === (surveyQuestions.length + 1) && (
-              <div className="text-center py-8 space-y-5">
-                <div className="w-20 h-20 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center mx-auto animate-bounce shadow-sm">
-                  <Sparkles className="w-10 h-10" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold text-zinc-900">Awesome!</h3>
-                  <p className="text-sm text-zinc-500 max-w-sm mx-auto">
-                    Your answers were submitted successfully. Your wallet has been credited.
-                  </p>
-                </div>
-                <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 font-bold text-base px-4 py-2 border-none">
-                  <Coins className="w-5 h-5 mr-2" />
-                  +{activeSurvey?.rewardPoints.toLocaleString()} Evo Points
-                </Badge>
-                <div className="pt-6">
+              {surveyStep >= 1 && surveyStep <= surveyQuestions.length && (() => {
+                const currentQuestion = surveyQuestions[surveyStep - 1];
+                const key = `q${surveyStep}`;
+                const isLastQuestion = surveyStep === surveyQuestions.length;
+
+                return (
+                  <div className="space-y-6">
+                    <h4 className="text-lg font-bold text-zinc-900 leading-snug">{currentQuestion.questionText}</h4>
+                    <div className="space-y-3">
+                      {currentQuestion.options.map((opt) => (
+                        <Button
+                          key={opt}
+                          variant="outline"
+                          onClick={() => handleAnswerSelect(key, opt)}
+                          className={`w-full justify-start h-auto py-4 px-5 whitespace-normal text-left text-sm font-medium transition-all rounded-xl ${
+                            answers[key] === opt 
+                              ? "bg-blue-50 border-blue-400 text-blue-700 hover:bg-blue-50 hover:text-blue-800 ring-1 ring-blue-400" 
+                              : "bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50"
+                          }`}
+                        >
+                          {opt}
+                        </Button>
+                      ))}
+                    </div>
+                    <Button
+                      disabled={!answers[key] || (isLastQuestion && completing)}
+                      onClick={isLastQuestion ? handleSubmitSurveyAnswers : () => setSurveyStep(surveyStep + 1)}
+                      className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 text-white font-bold uppercase tracking-wider text-xs hover:opacity-90 transition-all flex items-center justify-center gap-2 mt-6"
+                    >
+                      {isLastQuestion ? (
+                        completing ? (
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent animate-spin rounded-full" />
+                        ) : (
+                          <><span>Submit Response</span> <CheckCircle className="w-4 h-4 ml-1" /></>
+                        )
+                      ) : (
+                        <><span>Next Question</span> <ArrowRight className="w-4 h-4 ml-1" /></>
+                      )}
+                    </Button>
+                  </div>
+                );
+              })()}
+
+              {surveyStep === 999 && (
+                <div className="text-center py-8 space-y-5">
+                  <div className="w-20 h-20 rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto shadow-sm">
+                    <X className="w-10 h-10" />
+                  </div>
+                  <DialogTitle className="text-2xl font-bold text-zinc-900">Not a Match</DialogTitle>
+                  <DialogDescription className="text-sm text-zinc-600 max-w-sm mx-auto">
+                    {disqualifiedMessage || "Unfortunately, you do not qualify for this survey based on your answers."}
+                  </DialogDescription>
                   <Button
                     variant="outline"
                     onClick={handleCloseSurvey}
-                    className="w-full h-12 rounded-xl border-zinc-200 text-zinc-700 font-bold uppercase tracking-wider text-xs hover:bg-zinc-50"
+                    className="w-full h-12 rounded-xl border-zinc-200 text-zinc-700 font-bold uppercase tracking-wider text-xs hover:bg-zinc-50 mt-4"
                   >
                     Close & Return to Dashboard
                   </Button>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+
+              {/* Keep the completed step 
+                  although it should theoretically never be hit anymore because 
+                  successful screeners redirect to the provider url, but we'll leave it
+                  for any manual/internal survey logic that might still exist */}
+              {surveyStep === (surveyQuestions.length + 1) && (
+                <div className="text-center py-8 space-y-5">
+                  <div className="w-20 h-20 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center mx-auto animate-bounce shadow-sm">
+                    <Sparkles className="w-10 h-10" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold text-zinc-900">Awesome!</h3>
+                    <p className="text-sm text-zinc-500 max-w-sm mx-auto">
+                      Your answers were submitted successfully. Your wallet has been credited.
+                    </p>
+                  </div>
+                  <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 font-bold text-base px-4 py-2 border-none">
+                    <Coins className="w-5 h-5 mr-2" />
+                    +{activeSurvey?.rewardPoints.toLocaleString()} Evo Points
+                  </Badge>
+                  <div className="pt-6">
+                    <Button
+                      variant="outline"
+                      onClick={handleCloseSurvey}
+                      className="w-full h-12 rounded-xl border-zinc-200 text-zinc-700 font-bold uppercase tracking-wider text-xs hover:bg-zinc-50"
+                    >
+                      Close & Return to Dashboard
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
         </DialogContent>
       </Dialog>
     </div>

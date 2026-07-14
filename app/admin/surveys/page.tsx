@@ -52,6 +52,7 @@ interface Survey {
   questions?: Array<{
     questionText: string;
     options: string[];
+    acceptedAnswers?: string[];
   }>;
 }
 
@@ -143,7 +144,7 @@ export default function SurveysPage() {
     targetHouseholdIncome: ["All"],
     countryEligibility: "ALL",
     deviceCompatibility: ["desktop", "mobile", "ios", "android"],
-    questions: [] as { questionText: string, options: string }[],
+    questions: [] as { questionText: string, options: string, acceptedAnswers?: string }[],
   });
 
   // Edit & Delete States
@@ -169,7 +170,7 @@ export default function SurveysPage() {
     targetHouseholdIncome: ["All"],
     countryEligibility: "ALL",
     deviceCompatibility: ["desktop", "mobile", "ios", "android"],
-    questions: [] as { questionText: string, options: string }[],
+    questions: [] as { questionText: string, options: string, acceptedAnswers?: string }[],
   });
 
   const [deleteConfirmSurvey, setDeleteConfirmSurvey] = useState<Survey | null>(null);
@@ -196,7 +197,11 @@ export default function SurveysPage() {
       targetHouseholdIncome: survey.targetHouseholdIncome?.length ? survey.targetHouseholdIncome : ["All"],
       countryEligibility: survey.countryEligibility?.join(", ") || "ALL",
       deviceCompatibility: survey.deviceCompatibility || ["desktop", "mobile", "ios", "android"],
-      questions: (survey.questions || []).map(q => ({ questionText: q.questionText, options: q.options.join(", ") })),
+      questions: (survey.questions || []).map(q => ({ 
+        questionText: q.questionText, 
+        options: q.options.join(", "),
+        acceptedAnswers: q.acceptedAnswers ? q.acceptedAnswers.join(", ") : ""
+      })),
     });
     setIsEditOpen(true);
   };
@@ -208,7 +213,8 @@ export default function SurveysPage() {
 
     const questions = editFormData.questions.filter(q => q.questionText && q.options).map(q => ({
       questionText: q.questionText,
-      options: q.options.split(",").map(o => o.trim()).filter(Boolean)
+      options: q.options.split(",").map(o => o.trim()).filter(Boolean),
+      acceptedAnswers: q.acceptedAnswers ? q.acceptedAnswers.split(",").map(a => a.trim()).filter(Boolean) : []
     }));
 
     try {
@@ -305,7 +311,8 @@ export default function SurveysPage() {
 
     const questions = formData.questions.filter(q => q.questionText && q.options).map(q => ({
       questionText: q.questionText,
-      options: q.options.split(",").map(o => o.trim()).filter(Boolean)
+      options: q.options.split(",").map(o => o.trim()).filter(Boolean),
+      acceptedAnswers: q.acceptedAnswers ? q.acceptedAnswers.split(",").map(a => a.trim()).filter(Boolean) : []
     }));
 
     try {
@@ -516,10 +523,15 @@ export default function SurveysPage() {
                         newQ[idx].options = e.target.value;
                         setFormData({ ...formData, questions: newQ });
                       }} />
+                      <Input placeholder="Accepted Answers (comma-separated, matches options)" value={q.acceptedAnswers} onChange={(e) => {
+                        const newQ = [...formData.questions];
+                        newQ[idx].acceptedAnswers = e.target.value;
+                        setFormData({ ...formData, questions: newQ });
+                      }} />
                     </div>
                   ))}
                   <Button type="button" variant="outline" className="w-full mt-2 border-dashed" onClick={() => {
-                    setFormData({ ...formData, questions: [...formData.questions, { questionText: "", options: "" }] });
+                    setFormData({ ...formData, questions: [...formData.questions, { questionText: "", options: "", acceptedAnswers: "" }] });
                   }}>
                     <Plus className="h-4 w-4 mr-2" /> Add Question
                   </Button>
@@ -739,10 +751,15 @@ export default function SurveysPage() {
                         newQ[idx].options = e.target.value;
                         setEditFormData({ ...editFormData, questions: newQ });
                       }} />
+                      <Input placeholder="Accepted Answers (comma-separated, matches options)" value={q.acceptedAnswers} onChange={(e) => {
+                        const newQ = [...editFormData.questions];
+                        newQ[idx].acceptedAnswers = e.target.value;
+                        setEditFormData({ ...editFormData, questions: newQ });
+                      }} />
                     </div>
                   ))}
                   <Button type="button" variant="outline" className="w-full mt-2 border-dashed" onClick={() => {
-                    setEditFormData({ ...editFormData, questions: [...editFormData.questions, { questionText: "", options: "" }] });
+                    setEditFormData({ ...editFormData, questions: [...editFormData.questions, { questionText: "", options: "", acceptedAnswers: "" }] });
                   }}>
                     <Plus className="h-4 w-4 mr-2" /> Add Question
                   </Button>
