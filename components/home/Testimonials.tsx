@@ -36,7 +36,7 @@ const cases = [
     objective: "Healthcare Tracker Consolidation",
     metricValue: "60%",
     metricLabel: "Vendor Cost Reduction",
-    subMetric: "250K+ Monthly Responses",
+    subMetric: "1.8M+ Monthly Responses",
     quote: "We replaced four vendors with EvoGlobalInsight. Faster, cleaner data, and a partner that actually understands our category.",
     name: "Priya Raman",
     role: "CMO, Brightleaf Health",

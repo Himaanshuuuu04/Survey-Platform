@@ -517,7 +517,7 @@ export function ServicesHero() {
                 </div>
               </motion.div>
 
-              {/* Bottom-Right: 250K+ Respondents (Connected to Healthcare node at 371, 290) */}
+              {/* Bottom-Right: 1.8M+ Respondents (Connected to Healthcare node at 371, 290) */}
               <motion.div
                 animate={{ y: [0, -4, 0] }}
                 transition={floatTransition(4.8, 1.2)}
@@ -527,7 +527,7 @@ export function ServicesHero() {
                   <Users size={10} strokeWidth={2.5} />
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="text-[11px] font-black text-zinc-950 leading-none">250K+</span>
+                  <span className="text-[11px] font-black text-zinc-950 leading-none">1.8M+</span>
                   <span className="text-[7.5px] font-extrabold text-zinc-400 uppercase tracking-wider leading-none mt-0.5 whitespace-nowrap">Verified Respondents</span>
                 </div>
               </motion.div>

@@ -8,7 +8,7 @@ export default function Stats() {
                 <Container>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-6 items-center text-center">
                     {[
-                      { val: 250, suffix: 'K+', desc: 'Responses Generated' },
+                      { val: 1.8, suffix: 'M+', desc: 'Responses Generated' },
                       { val: 500, suffix: '+', desc: 'Campaigns Delivered' },
                       { val: 92, suffix: '%', desc: 'Completion Rate' },
                       { val: 99.7, suffix: '%', desc: 'Fraud Detection Accuracy' }
