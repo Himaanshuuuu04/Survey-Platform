@@ -49,7 +49,7 @@ async function handleCallback(req: NextRequest, providerName: string) {
 
     // IP Whitelisting Validation (if configured)
     if (providerConfig.whitelistedIps && providerConfig.whitelistedIps.length > 0) {
-      const clientIp = req.headers.get("x-forwarded-for") || req.ip;
+      const clientIp = req.headers.get("x-forwarded-for");
       if (clientIp && !providerConfig.whitelistedIps.includes(clientIp)) {
         return NextResponse.json({ error: "IP not whitelisted" }, { status: 403 });
       }

@@ -71,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       preScreenerPassed: true,
       status: 'redirected',
       potentialReward: survey.rewardPoints,
-      ipAddress: req.headers.get("x-forwarded-for") || req.ip || "unknown"
+      ipAddress: req.headers.get("x-forwarded-for") || "unknown"
     });
 
     // Construct redirect URL
